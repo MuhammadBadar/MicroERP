@@ -1,0 +1,27 @@
+C:\SSASOFT\Projects\PQS\New folder\SSA.Avella.PQS.Domain\bin\Debug\QST.ERP.Domain.dll
+C:\SSASOFT\Projects\PQS\New folder\SSA.Avella.PQS.Domain\bin\Debug\QST.ERP.Domain.pdb
+C:\SSASOFT\Projects\PQS\New folder\SSA.Avella.PQS.Domain\bin\Debug\AutoMapper.dll
+C:\SSASOFT\Projects\PQS\New folder\SSA.Avella.PQS.Domain\bin\Debug\AutoMapper.xml
+C:\SSASOFT\Projects\PQS\New folder\SSA.Avella.PQS.Domain\obj\Debug\QST.ERP.Domain.dll
+C:\SSASOFT\Projects\PQS\New folder\SSA.Avella.PQS.Domain\obj\Debug\QST.ERP.Domain.pdb
+C:\SSASOFT\Projects\PQS\New folder\QST.ERP.Domain\bin\Debug\QST.ERP.Domain.dll
+C:\SSASOFT\Projects\PQS\New folder\QST.ERP.Domain\bin\Debug\QST.ERP.Domain.pdb
+C:\SSASOFT\Projects\PQS\New folder\QST.ERP.Domain\bin\Debug\AutoMapper.dll
+C:\SSASOFT\Projects\PQS\New folder\QST.ERP.Domain\bin\Debug\AutoMapper.xml
+C:\SSASOFT\Projects\PQS\New folder\QST.ERP.Domain\obj\Debug\QST.ERP.Domain.dll
+C:\SSASOFT\Projects\PQS\New folder\QST.ERP.Domain\obj\Debug\QST.ERP.Domain.pdb
+C:\SSASOFT\Projects\PQS\New folder\QST.ERP.Domain\obj\Debug\QST.ERP.Domain.csprojResolveAssemblyReference.cache
+C:\QST\Projects\SameerSb\Medical\QST.ERP.Domain\bin\Debug\QST.ERP.Domain.dll
+C:\QST\Projects\SameerSb\Medical\QST.ERP.Domain\bin\Debug\QST.ERP.Domain.pdb
+C:\QST\Projects\SameerSb\Medical\QST.ERP.Domain\bin\Debug\AutoMapper.dll
+C:\QST\Projects\SameerSb\Medical\QST.ERP.Domain\bin\Debug\AutoMapper.xml
+C:\QST\Projects\SameerSb\Medical\QST.ERP.Domain\obj\Debug\QST.ERP.Domain.dll
+C:\QST\Projects\SameerSb\Medical\QST.ERP.Domain\obj\Debug\QST.ERP.Domain.pdb
+C:\QST\Projects\SameerSb\Medical\QST.ERP.Domain\obj\Debug\QST.ERP.Domain.csprojResolveAssemblyReference.cache
+C:\Telenoc\Docs\Learning\NGO\QST.ERP.Domain\bin\Debug\QST.ERP.Domain.dll
+C:\Telenoc\Docs\Learning\NGO\QST.ERP.Domain\bin\Debug\QST.ERP.Domain.pdb
+C:\Telenoc\Docs\Learning\NGO\QST.ERP.Domain\bin\Debug\AutoMapper.dll
+C:\Telenoc\Docs\Learning\NGO\QST.ERP.Domain\bin\Debug\AutoMapper.xml
+C:\Telenoc\Docs\Learning\NGO\QST.ERP.Domain\obj\Debug\QST.ERP.Domain.dll
+C:\Telenoc\Docs\Learning\NGO\QST.ERP.Domain\obj\Debug\QST.ERP.Domain.pdb
+C:\Telenoc\Docs\Learning\NGO\QST.ERP.Domain\obj\Debug\QST.ERP.Domain.csprojResolveAssemblyReference.cache

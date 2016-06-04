@@ -1,0 +1,345 @@
+﻿<div class="modal-header">
+    <h4 class="modal-title">Grocery Kit Form [Mode:{{model.Mode}}]</h4>
+</div>
+
+<div class="modal-body">
+
+    <form name="frmGroceryKit" novalidate>
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>Date:<em>*</em></label>
+                    <p class="input-group">
+                        <input id="regDate" name="regDate" type="text" ng-model="model.Form.RegDate" class="form-control"
+                               placeholder="Registration Date" is-open="regDateStatus.opened"
+                               datepicker-popup="{{format}}"
+                               datepicker-options="dateOptions"
+                               min-date="minDate"
+                               show-button-bar="false" ng-required="true" ng-focus="errorMessage=''">
+                        <span class="input-group-btn">
+                            <button style="font-size: 11.5px;" type="button" class="btn btn-default" ng-click="regDateOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </p>
+                    <!--<input type="text" class="form-control" placeholder="Date" name="regDate" id="regDate"
+                   ng-model="model.Form.RegDate" />
+            <span ng-messages="frmGroceryKit.regDate.$touched && frmGroceryKit.regDate.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>-->
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>Form No:<em>*</em></label>
+                    <input type="text" class="form-control" placeholder="Form No" name="formNo" id="formNo"
+                           ng-model="model.Form.FormNo" ng-minlength=3 ng-maxlength=20 autofocus />
+                    <span ng-messages="frmGroceryKit.formNo.$touched && frmGroceryKit.formNo.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>House Status:<em>*</em></label>
+                    <select id="houseStatus" name="houseStatus" ng-model="model.Form.HouseStatus" class="form-control">
+                        <option value="R">Rented</option>
+                        <option value="P">Personal</option>
+                        <option value="O">Other</option>
+                    </select>
+                    <span ng-messages="frmGroceryKit.houseStatus.$touched && frmGroceryKit.houseStatus.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>Distribution Point:<em>*</em></label>
+                    <select id="areaCode" name="areaCode" ng-model="model.Address.AreaCode" class="form-control">
+                        <option ng-repeat="mod in model.Form.Person.Areas" value="{{mod.AreaCode}}">{{mod.AreaName}}</option>
+                    </select>
+                    <span ng-messages="frmArea.areaCode.$touched && frmArea.areaCode.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>Name:<em>*</em></label>
+                    <input type="text" class="form-control" placeholder="Name" name="name" id="name"
+                           ng-model="model.Form.Person.EntityName" ng-minlength=3 ng-maxlength=40 autofocus />
+                    <span ng-messages="frmGroceryKit.name.$touched && frmGroceryKit.name.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>Contact Nos:<em></em></label>
+                    <input type="number" class="form-control" placeholder="Contact Nos" name="contactNos" id="contactNos"
+                           ng-model="model.Form.Person.ContactNos" ng-minlength=3 ng-maxlength=40 />
+                    <span ng-messages="frmGroceryKit.contactNos.$touched && frmGroceryKit.contactNos.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>CNIC:<em></em></label>
+                    <input type="text" class="form-control" placeholder="CNIC" name="cnic" id="cnic"
+                           ng-model="model.Form.Person.CNIC" ng-minlength=3 ng-maxlength=40 />
+                    <span ng-messages="frmGroceryKit.cnic.$touched && frmGroceryKit.cnic.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label>Occupation:<em></em></label>
+                    <select id="occupation" name="occupation" ng-model="model.Form.Person.Occupation" class="form-control">
+                        <option ng-repeat="mod in model.Occupations" value="{{mod.ID}}">{{mod.Occupation}}</option>
+                    </select>
+                    <span ng-messages="frmGroceryKit.occupation.$touched && frmGroceryKit.occupation.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Address :<em></em></label>
+                    <input type="text" class="form-control" placeholder="Address" name="address" id="address"
+                           ng-model="model.Form.Person.Address" ng-minlength=3 ng-maxlength=100 />
+                    <span ng-messages="frmGroceryKit.address.$touched && frmGroceryKit.address.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Medical Problems:<em></em></label>
+                    <select id="medicalProblems" name="medicalProblems" ng-model="model.Form.Person.MedicalProblems" class="form-control">
+                        <option ng-repeat="mod in model.MedicalProblems" value="{{mod.ID}}">{{mod.MedicalProblem}}</option>
+                    </select>
+                    <span ng-messages="frmGroceryKit.medicalProblems.$touched && frmGroceryKit.medicalProblems.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Gender:<em>*</em></label>
+                    <select id="gender" name="gender" ng-model="model.Form.Person.Gender" class="form-control" required>
+                        <option value="M">Male</option>
+                        <option selected="selected" value="F">Female</option>
+                    </select>
+                    <span ng-messages="frmGroceryKit.gender.$touched && frmGroceryKit.gender.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Birth Date:<em>*</em></label>
+                    <p class="input-group">
+                        <input id="dob" name="dob" type="text" ng-model="model.Form.Person.DOB" class="form-control"
+                               placeholder="Birth Date" is-open="dobOpen.opened"
+                               datepicker-popup="{{format}}"
+                               datepicker-options="dateOptions"
+                               min-date="minDate"
+                               show-button-bar="false" ng-required="true" ng-focus="errorMessage=''">
+                        <span class="input-group-btn">
+                            <button style="font-size: 11.5px;" type="button" class="btn btn-default" ng-click="dobOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </p>
+                    <span ng-messages="frmGroceryKit.dob.$touched && frmGroceryKit.dob.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Age:<em>*</em></label>
+                    <input type="number" class="form-control" placeholder="Age" name="age" id="age"
+                           ng-model="model.Form.Person.Age" ng-minlength=2 ng-maxlength=2 />
+                    <span ng-messages="frmGroceryKit.age.$touched && frmGroceryKit.age.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Member Status:<em>*</em></label>
+                    <select id="memberStatus" name="memberStatus" ng-model="model.Form.MemberStatus" class="form-control">
+                        <option ng-repeat="mod in model.MemberStatuses" value="{{mod.ID}}">{{mod.MemberStatus}}</option>
+                    </select>
+                    <span ng-messages="frmGroceryKit.memberStatus.$touched && frmGroceryKit.memberStatus.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Zakat Acceptable:<em></em></label>
+                    <input type="checkbox" class="form-control" placeholder="Zakat Acceptable" name="phone2" id="phone2"
+                           ng-model="model.Contact.Phone2" ng-minlength=3 ng-maxlength=40 autofocus />
+                    <span ng-messages="frmGroceryKit.areaName.$touched && frmGroceryKit.areaName.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Family Size:<em></em></label>
+                    <input type="number" class="form-control" placeholder="Family Size" name="phone2" id="phone2"
+                           ng-model="model.Contact.Phone2" ng-minlength=3 ng-maxlength=40 autofocus />
+                    <span ng-messages="frmGroceryKit.areaName.$touched && frmGroceryKit.areaName.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="form-wrapper">
+            <div class="form-group">
+                <div style="text-align:center; background-color:ActiveBorder; font-size:larger">
+                    Family Members
+                </div>
+                <table class=" table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Relation</th>
+                            <th>Age</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control" placeholder="Name" name="familyName" id="familyName" ng-model="model.Family.Name" ng-minlength=3 ng-maxlength=40 />
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" placeholder="Relation" name="familyName" id="familyName" ng-model="model.Family.Name" ng-minlength=3 ng-maxlength=40 />
+                            </td>
+                            <td>
+                                <input type="number" class="form-control" placeholder="Age" name="familyName" id="familyName" ng-model="model.Family.Name" ng-minlength=3 ng-maxlength=40 />
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" placeholder="Status" name="familyName" id="familyName" ng-model="model.Family.Name" ng-minlength=3 ng-maxlength=40 />
+                            </td>
+                            <td>
+                                <button title="+" class="glyphicon glyphicon-edit" ng-click="edit(mod)"></button>
+                                <button title="-" class="glyphicon glyphicon-trash" ng-click="delete(mod)"></button>
+                            </td>
+
+                        </tr>
+                        <tr ng-repeat="mod in model.Form.FamilyMembers">
+                            <td> {{mod.EntityName}}</td>
+                            <td> {{mod.Relation}}</td>
+                            <td> {{mod.Age}}</td>
+                            <td> {{mod.Status}}</td>
+                            <td>
+                                <button title="+" class="glyphicon glyphicon-edit" ng-click="edit(mod)"></button>
+                                <button title="-" class="glyphicon glyphicon-trash" ng-click="delete(mod)"></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Food Cost:<em></em></label>
+                    <input type="number" class="form-control" placeholder="Food Cost" name="foodCost" id="foodCost"
+                           ng-model="model.FoodCost" min="0" />
+                    <span ng-messages="frmGroceryKit.foodCost.$touched && frmGroceryKit.foodCost.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>House Rent:<em></em></label>
+                    <input type="number" class="form-control" placeholder="House Rent" name="houseRent" id="houseRent"
+                           ng-model="model.HouseRent" min="0" />
+                    <span ng-messages="frmGroceryKit.houseRent.$touched && frmGroceryKit.houseRent.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>School Cost:<em></em></label>
+                    <input type="number" class="form-control" placeholder="School Cost" name="schoolCost" id="schoolCost"
+                           ng-model="model.SchoolCost" min="0" />
+                    <span ng-messages="frmGroceryKit.schoolCost.$touched && frmGroceryKit.schoolCost.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Utilities Cost:<em></em></label>
+                    <input type="number" class="form-control" placeholder="Utilities Cost" name="utilitiesCost" id="utilitiesCost"
+                           ng-model="model.UtilitiesCost" min="0" />
+                    <span ng-messages="frmGroceryKit.utilitiesCost.$touched && frmGroceryKit.utilitiesCost.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Medical Cost:<em></em></label>
+                    <input type="number" class="form-control" placeholder="Medical Cost" name="medicalCost" id="medicalCost"
+                           ng-model="model.MedicalCost" min="0" />
+                    <span ng-messages="frmGroceryKit.medicalCost.$touched && frmGroceryKit.medicalCost.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Other Cost:<em></em></label>
+                    <input type="number" class="form-control" placeholder="Other Cost" name="otherCost" id="otherCost"
+                           ng-model="model.OtherCost" min="0" />
+                    <span ng-messages="frmGroceryKit.otherCost.$touched && frmGroceryKit.otherCost.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Salary:<em></em></label>
+                    <input type="number" class="form-control" placeholder="Salary" name="salary" id="salary"
+                           ng-model="model.Salary" min="0" />
+                    <span ng-messages="frmGroceryKit.salary.$touched && frmGroceryKit.salary.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Donations:<em></em></label>
+                    <input type="number" class="form-control" placeholder="Donations" name="donation" id="donation"
+                           ng-model="model.Donation" min="0" />
+                    <span ng-messages="frmGroceryKit.donation.$touched && frmGroceryKit.donation.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Other Income:<em></em></label>
+                    <input type="number" class="form-control" placeholder="Other Income" name="otherIncome" id="otherIncome"
+                           ng-model="model.OtherIncome" min="0" />
+                    <span ng-messages="frmGroceryKit.otherIncome.$touched && frmGroceryKit.otherIncome.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Total Cost:<em></em></label>
+                    <input type="number" class="form-control" placeholder="Total Cost" name="totalCost" id="totalCost"
+                           ng-model="model.TotalCost" min="0" />
+                    <span ng-messages="frmGroceryKit.totalCost.$touched && frmGroceryKit.totalCost.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Total Income:<em></em></label>
+                    <input type="number" class="form-control" placeholder="Total Income" name="totalIncome" id="totalIncome"
+                           ng-model="model.TotalIncome" min="0" />
+                    <span ng-messages="frmGroceryKit.totalIncome.$touched && frmGroceryKit.totalIncome.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <div class="form-group">
+                    <label>Shortfall In Cash:<em></em></label>
+                    <input type="number" class="form-control" placeholder="Shortfall In Cash" name="shortFallInCash" id="shortFallInCash"
+                           ng-model="model.ShortFallInCash" min="0" />
+                    <span ng-messages="frmGroceryKit.shortFallInCash.$touched && frmGroceryKit.shortFallInCash.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label>Remarks :<em></em></label>
+                    <input type="text" class="form-control" placeholder="Remarks" name="remarks" id="remarks"
+                           ng-model="model.Form.Remarks" ng-minlength=3 ng-maxlength=400 />
+                    <span ng-messages="frmGroceryKit.remarks.$touched && frmGroceryKit.remarks.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <!--<button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="frmGroceryKit.$invalid">Save</button>-->
+                    <button type="submit" class="btn btn-primary" ng-click="save()" >Save</button>
+                    <button type="reset" class="btn btn-grey" ng-click="cancel()">Reset</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

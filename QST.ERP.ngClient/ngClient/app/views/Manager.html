@@ -1,0 +1,136 @@
+﻿<div class="modal-header">
+    <h4 class="modal-title">Employee [Mode:{{model.Mode}}]</h4>
+</div>
+
+<div class="modal-body">
+
+    <form name="frmArea" novalidate>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Employee Name:<em>*</em></label>
+                    <input type="text" class="form-control" placeholder="Name" name="managerName" id="managerName"
+                           ng-model="model.Manager.EntityName" ng-minlength=3 ng-maxlength=50 autofocus />
+                    <span ng-messages="frmArea.managerName.$touched && frmArea.managerName.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Phone (Off):<em>*</em></label>
+                    <input type="text" class="form-control" placeholder="Phone (Off)" name="phone1" id="phone1"
+                           ng-model="model.Contact.Phone1" ng-minlength=3 ng-maxlength=40 />
+                    <span ng-messages="frmArea.areaName.$touched && frmArea.areaName.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Phone (Res):<em></em></label>
+                    <input type="text" class="form-control" placeholder="Phone (Residence)" name="phone2" id="phone2"
+                           ng-model="model.Contact.Phone2" ng-minlength=3 ng-maxlength=40 autofocus />
+                    <span ng-messages="frmArea.areaName.$touched && frmArea.areaName.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Mobile:<em></em></label>
+                    <input type="text" class="form-control" placeholder="Mobile" name="mobile1" id="mobile1"
+                           ng-model="model.Contact.Mobile1" ng-minlength=3 ng-maxlength=40 />
+                    <span ng-messages="frmArea.mobile1.$touched && frmArea.mobile1.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Address Line1:<em>*</em></label>
+                    <input type="text" class="form-control" placeholder="Address Line1" name="addressLine1" id="addressLine1"
+                           ng-model="model.Address.AddressLine1" ng-minlength=3 ng-maxlength=100 />
+                    <span ng-messages="frmArea.addressLine1.$touched && frmArea.addressLine1.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Address Line2:<em></em></label>
+                    <input type="text" class="form-control" placeholder="Address Line2" name="addressLine2" id="addressLine2"
+                           ng-model="model.Address.AddressLine2" ng-minlength=3 ng-maxlength=100 />
+                    <span ng-messages="frmArea.addressLine2.$touched && frmArea.addressLine2.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Region:<em>*</em></label>
+                    <select id="regionCode" name="regionCode" ng-model="model.Address.RegionCode" ng-change="LoadCities(model.Address.RegionCode)" 
+                            class="form-control">
+                        <option ng-repeat="mod in model.Regions" value="{{mod.RegionCode}}">{{mod.RegionName}}</option>
+                    </select>
+                    <span ng-messages="frmArea.regionCode.$touched && frmArea.regionCode.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>City:<em>*</em></label>
+                    <select id="cityCode" name="cityCode" ng-model="model.Address.CityCode" ng-change="LoadAreas(model.Address.CityCode)"
+                            class="form-control">
+                        <option ng-repeat="mod in model.Cities" value="{{mod.CityCode}}">{{mod.CityName}}</option>
+                    </select>
+                    <span ng-messages="frmArea.cityCode.$touched && frmArea.cityCode.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label>Area:<em>*</em></label>
+                    <select id="areaCode" name="areaCode" ng-model="model.Address.AreaCode" class="form-control">
+                        <option ng-repeat="mod in model.Areas" value="{{mod.AreaCode}}">{{mod.AreaName}}</option>
+                    </select>
+                    <span ng-messages="frmArea.areaCode.$touched && frmArea.areaCode.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="frmArea.$invalid">Save</button>
+                    <button type="reset" class="btn btn-grey" ng-click="cancel()">Reset</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="form-wrapper">
+        <table class="table table-striped">
+
+            <thead>
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Phones</th>
+                    <th>Mobiles</th>
+                    <th>Address Lines</th>
+                    <th>Area</th>
+                    <th>City</th>
+                    <th>Region</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="mod in model.Managers">
+                    <td> {{mod.EntityName}}</td>
+                    <td> {{mod.Phone1}}, {{mod.Phone2}}</td>
+                    <td> {{mod.Mobile1}}, {{mod.Mobile2}}</td>
+                    <td> {{mod.AddressLine1}} , {{mod.AddressLine2}}</td>
+                    <td> {{mod.AreaName}}</td>
+                    <td> {{mod.CityName}}</td>
+                    <td> {{mod.RegionName}}</td>
+                    <td>
+                        <button title="Edit" class="glyphicon glyphicon-edit" ng-click="edit(mod)"></button>
+                        <button title="Delete" class="glyphicon glyphicon-trash" ng-click="delete(mod)"></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

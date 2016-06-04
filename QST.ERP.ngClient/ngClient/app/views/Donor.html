@@ -1,0 +1,61 @@
+﻿<div class="modal-header">
+    <h4 class="modal-title">Manage Gift Type [Mode:{{model.Mode}}]</h4>
+</div>
+
+<div class="modal-body">
+
+    <form name="frmDonor" novalidate>
+        <div class="row">
+            
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Name of Donor: اسم المتبرع<em>*</em></label>
+                    <input type="text" class="form-control" placeholder="إدخل اسم المتبرع" name="donorName" id="donorName"
+                           ng-model="model.Donor.EntityName" ng-minlength=3 ng-maxlength=40 autofocus />
+                    <span ng-messages="frmDonor.donorName.$touched && frmDonor.donorName.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Phone: رقم الهاتف <em>*</em></label>
+                    <input type="text" class="form-control" placeholder="إدخل رقم الهاتف" name="phone" id="phone"
+                           ng-model="model.Donor.Phone" ng-minlength=3 ng-maxlength=10 />
+                    <span ng-messages="frmDonor.phone.$touched && frmDonor.phone.$error" ng-messages-include="ngClient/app/views/Messages.html"></span>
+                </div>
+            </div>
+            
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <button type="submit" class="btn btn-primary" ng-click="save()" ng-disabled="frmDonor.$invalid">Save حفظ </button>
+                    <button type="reset" class="btn btn-grey" ng-click="cancel()">Reset جديد</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="form-wrapper">
+        <table class="table table-striped">
+
+            <thead>
+                <tr>
+                    <th>Donor Name اسم المتبرع</th>
+                    <th>Phone رقم الهاتف </th>
+                    <th>Action العملية</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="mod in model.Donors">
+                    <td> {{mod.EntityName}}</td>
+                    <td> {{mod.Phone}}</td>
+
+                    <td>
+                        <button title="Edit" class="glyphicon glyphicon-edit" ng-click="edit(mod)"></button>
+                        <button title="Delete" class="glyphicon glyphicon-trash" ng-click="delete(mod)"></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

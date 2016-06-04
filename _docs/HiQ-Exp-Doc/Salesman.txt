@@ -1,0 +1,10 @@
+sale_link	varchar(50)	Unchecked
+sale_name	varchar(50)	Unchecked
+sale_add1	varchar(50)	Checked
+sale_add2	varchar(50)	Checked
+sale_add3	varchar(50)	Checked
+sale_commp	float	Checked
+sale_doj	datetime	Unchecked
+sale_dol	datetime	Checked
+log_link	varchar(50)	Unchecked
+		Unchecked
