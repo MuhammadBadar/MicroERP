@@ -1,0 +1,23 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+*.config
+*.v2
+*.vsidx
+*.bin
+*.dll
+*.pdb
+/MicroERP.Tests/obj
+/MicroERP.WebAPI/obj
+/MicroERP.Core/obj
+/MicroERP.DAL/obj
+/MicroERP.Service/obj
+/MicroERP.Tests/bin
+/MicroERP.WebAPI/bin
+/MicroERP.Core/bin
+/MicroERP.DAL/bin
+/MicroERP.Service/bin
+/QST.Jobs/bin
+/QST.Jobs/obj
+/.vs/MicroERP/v17/.suo

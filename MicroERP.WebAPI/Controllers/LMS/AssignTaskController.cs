@@ -1,0 +1,74 @@
+﻿using MicroERP.Core;
+using MicroERP.Core.Enums;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using MicroERP.Service.LMS;
+using MicroERP.Core.Entities.LMS;
+
+namespace MicroERP.WebAPI.Controllers.LMS
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AssignTaskController : ControllerBase
+    {
+        #region Class Variables
+        private AssignTaskService _AssignTaskSVC;
+        #endregion
+
+        #region Constructor
+        public AssignTaskController()
+        {
+            _AssignTaskSVC = new AssignTaskService();
+        }
+        #endregion
+
+        #region Http Verbs
+
+        [HttpGet]
+        public ActionResult Get()
+        {
+            AssignTaskDE assignTask = new AssignTaskDE();
+            List<AssignTaskDE> values = _AssignTaskSVC.SearchAssignedTask(assignTask);
+            return Ok(values);
+        }
+        [HttpGet("{id}")]
+        public IActionResult GetTaskById(int id)
+        {
+            List<AssignTaskDE> list = new List<AssignTaskDE>();
+            list = _AssignTaskSVC.SearchAssignedTask(new AssignTaskDE { Id = id });
+            return Ok(list[0]);
+
+        }
+
+        [HttpPost("{Search}")]
+        public ActionResult Search(AssignTaskDE assignTask)
+        {
+            //assignTask.IsActive = true;
+            List<AssignTaskDE> values = _AssignTaskSVC.SearchAssignedTask(assignTask);
+            return Ok(values);
+        }
+        [HttpPost]
+        public ActionResult Post(AssignTaskDE mod)
+        {
+            mod.DBoperation = DBoperations.Insert;
+            bool assignTask = _AssignTaskSVC.ManageAssignedTask(mod);
+            return Ok(assignTask);
+        }
+        [HttpPut]
+        public ActionResult Put(AssignTaskDE mod)
+        {
+            mod.DBoperation = DBoperations.Update;
+            _AssignTaskSVC.ManageAssignedTask(mod);
+            return Ok();
+        }
+        [HttpDelete("{id}")]
+        public void Delete(int id)
+        {
+            AssignTaskDE assignTask = new AssignTaskDE { Id = id, DBoperation = DBoperations.Delete };
+            _AssignTaskSVC.ManageAssignedTask(assignTask);
+        }
+
+
+        #endregion
+    }
+}
