@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "RWD0oROkTWGs899PcHskaODuFKJTu08IfR3IIRKn6T0=",
+  "Source": "QST.MicroERP.WebAPI",
+  "BasePath": "_content/QST.MicroERP.WebAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

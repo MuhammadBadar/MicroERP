@@ -8,12 +8,6 @@
 
   <ItemGroup>
     <Content Remove="NLog.config" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup> 
 	
 	
@@ -57,8 +51,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\QST.MicroERP.Core\QST.MicroERP.Core.csproj" />
-    <ProjectReference Include="..\QST.MicroERP.DAL\MicroERP.DAL.csproj" />
-    <ProjectReference Include="..\QST.MicroERP.Jobs\QST.Scheduling.csproj" />
+    <ProjectReference Include="..\QST.MicroERP.DAL\QST.MicroERP.DAL.csproj" />
+    <ProjectReference Include="..\QST.MicroERP.Jobs\QST.MicroERP.Scheduling.csproj" />
+    <ProjectReference Include="..\QST.MicroERP.Service\QST.MicroERP.Service.csproj" />
   </ItemGroup>
 
 </Project>

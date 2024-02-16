@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "aHONoVwWPBhWaDBdVwp2Ha9yba+ZBGD9GV1EdSNAfAVzzwvxtQMc9y3CxpeLFPidDRH1tcJO6D4vCFbIp2vgYg==",
+  "dgSpecHash": "LGmfvj9lAviZQDLOtuO3667z4rySOPFApKZcTF/zkzLlhIKgo7w19VRR6U+0ECgoZ6WZIZCJMrZq4MdoBAW+Zg==",
   "success": true,
-  "projectFilePath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.WebAPI\\MicroERP.WebAPI.csproj",
+  "projectFilePath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.WebAPI\\QST.MicroERP.WebAPI.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\IBM\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\IBM\\.nuget\\packages\\bouncycastle.netcore\\1.8.5\\bouncycastle.netcore.1.8.5.nupkg.sha512",
     "C:\\Users\\IBM\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512",
     "C:\\Users\\IBM\\.nuget\\packages\\google.protobuf\\3.14.0\\google.protobuf.3.14.0.nupkg.sha512",
@@ -29,7 +30,7 @@
     "C:\\Users\\IBM\\.nuget\\packages\\microsoft.aspnetcore.identity\\2.2.0\\microsoft.aspnetcore.identity.2.2.0.nupkg.sha512",
     "C:\\Users\\IBM\\.nuget\\packages\\microsoft.aspnetcore.identity.entityframeworkcore\\6.0.3\\microsoft.aspnetcore.identity.entityframeworkcore.6.0.3.nupkg.sha512",
     "C:\\Users\\IBM\\.nuget\\packages\\microsoft.aspnetcore.webutilities\\2.2.0\\microsoft.aspnetcore.webutilities.2.2.0.nupkg.sha512",
-    "C:\\Users\\IBM\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
+    "C:\\Users\\IBM\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\IBM\\.nuget\\packages\\microsoft.entityframeworkcore\\6.0.3\\microsoft.entityframeworkcore.6.0.3.nupkg.sha512",
     "C:\\Users\\IBM\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\6.0.3\\microsoft.entityframeworkcore.abstractions.6.0.3.nupkg.sha512",
     "C:\\Users\\IBM\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\6.0.3\\microsoft.entityframeworkcore.analyzers.6.0.3.nupkg.sha512",
