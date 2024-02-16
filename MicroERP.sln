@@ -14,11 +14,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QST.MicroERP.DAL", "QST.Mic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QST.MicroERP.Service", "QST.MicroERP.Service\QST.MicroERP.Service.csproj", "{EC25DEA4-7180-44EB-BF2E-7660F8984A6A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QST.MicroERP.Scheduling", "QST.MicroERP.Jobs\QST.MicroERP.Scheduling.csproj", "{27CE8FDE-33F8-49C8-B118-5D44CD10336A}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QST.MicroERP.Tests", "QST.MicroERP.Tests\QST.MicroERP.Tests.csproj", "{BD63CDD2-6FBB-4E6C-9110-4D56F9CE8204}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QST.MicroERP.WebAPI", "QST.MicroERP.WebAPI\QST.MicroERP.WebAPI.csproj", "{26D43C1A-7928-46A5-8371-6C7B22B03E60}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QST.MicroERP.Scheduling", "QST.MicroERP.Scheduling\QST.MicroERP.Scheduling.csproj", "{F98BBEB2-5545-4143-9239-5BE7944B2A7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,10 +38,6 @@ Global
 		{EC25DEA4-7180-44EB-BF2E-7660F8984A6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC25DEA4-7180-44EB-BF2E-7660F8984A6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC25DEA4-7180-44EB-BF2E-7660F8984A6A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{27CE8FDE-33F8-49C8-B118-5D44CD10336A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{27CE8FDE-33F8-49C8-B118-5D44CD10336A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{27CE8FDE-33F8-49C8-B118-5D44CD10336A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{27CE8FDE-33F8-49C8-B118-5D44CD10336A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BD63CDD2-6FBB-4E6C-9110-4D56F9CE8204}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BD63CDD2-6FBB-4E6C-9110-4D56F9CE8204}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD63CDD2-6FBB-4E6C-9110-4D56F9CE8204}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -50,6 +46,10 @@ Global
 		{26D43C1A-7928-46A5-8371-6C7B22B03E60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26D43C1A-7928-46A5-8371-6C7B22B03E60}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26D43C1A-7928-46A5-8371-6C7B22B03E60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F98BBEB2-5545-4143-9239-5BE7944B2A7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F98BBEB2-5545-4143-9239-5BE7944B2A7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F98BBEB2-5545-4143-9239-5BE7944B2A7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F98BBEB2-5545-4143-9239-5BE7944B2A7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

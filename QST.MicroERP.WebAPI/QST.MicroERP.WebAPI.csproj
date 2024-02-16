@@ -4,11 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Content Remove="NLog.config" />
-  </ItemGroup> 
+  </PropertyGroup> 
 	
 	
 	
@@ -52,7 +48,7 @@
   <ItemGroup>
     <ProjectReference Include="..\QST.MicroERP.Core\QST.MicroERP.Core.csproj" />
     <ProjectReference Include="..\QST.MicroERP.DAL\QST.MicroERP.DAL.csproj" />
-    <ProjectReference Include="..\QST.MicroERP.Jobs\QST.MicroERP.Scheduling.csproj" />
+    <ProjectReference Include="..\QST.MicroERP.Scheduling\QST.MicroERP.Scheduling.csproj" />
     <ProjectReference Include="..\QST.MicroERP.Service\QST.MicroERP.Service.csproj" />
   </ItemGroup>
 
