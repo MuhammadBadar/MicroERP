@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Quartz.AspNetCore" Version="3.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QST.MicroERP.Core\QST.MicroERP.Core.csproj" />
+    <ProjectReference Include="..\QST.MicroERP.DAL\QST.MicroERP.DAL.csproj" />
+    <ProjectReference Include="..\QST.MicroERP.Service\QST.MicroERP.Service.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,15 @@
+C:\QST\Git\MicroERP\QST.MicroERP.Jobs\bin\Debug\net6.0\QST.Scheduling.deps.json
+C:\QST\Git\MicroERP\QST.MicroERP.Jobs\bin\Debug\net6.0\QST.Scheduling.dll
+C:\QST\Git\MicroERP\QST.MicroERP.Jobs\bin\Debug\net6.0\QST.Scheduling.pdb
+C:\QST\Git\MicroERP\QST.MicroERP.Jobs\bin\Debug\net6.0\QST.MicroERP.Core.dll
+C:\QST\Git\MicroERP\QST.MicroERP.Jobs\bin\Debug\net6.0\QST.MicroERP.Core.pdb
+C:\QST\Git\MicroERP\QST.MicroERP.Jobs\obj\Debug\net6.0\QST.Scheduling.csproj.AssemblyReference.cache
+C:\QST\Git\MicroERP\QST.MicroERP.Jobs\obj\Debug\net6.0\QST.Scheduling.GeneratedMSBuildEditorConfig.editorconfig
+C:\QST\Git\MicroERP\QST.MicroERP.Jobs\obj\Debug\net6.0\QST.Scheduling.AssemblyInfoInputs.cache
+C:\QST\Git\MicroERP\QST.MicroERP.Jobs\obj\Debug\net6.0\QST.Scheduling.AssemblyInfo.cs
+C:\QST\Git\MicroERP\QST.MicroERP.Jobs\obj\Debug\net6.0\QST.Scheduling.csproj.CoreCompileInputs.cache
+C:\QST\Git\MicroERP\QST.MicroERP.Jobs\obj\Debug\net6.0\QST.Scheduling.csproj.CopyComplete
+C:\QST\Git\MicroERP\QST.MicroERP.Jobs\obj\Debug\net6.0\QST.Scheduling.dll
+C:\QST\Git\MicroERP\QST.MicroERP.Jobs\obj\Debug\net6.0\refint\QST.Scheduling.dll
+C:\QST\Git\MicroERP\QST.MicroERP.Jobs\obj\Debug\net6.0\QST.Scheduling.pdb
+C:\QST\Git\MicroERP\QST.MicroERP.Jobs\obj\Debug\net6.0\ref\QST.Scheduling.dll

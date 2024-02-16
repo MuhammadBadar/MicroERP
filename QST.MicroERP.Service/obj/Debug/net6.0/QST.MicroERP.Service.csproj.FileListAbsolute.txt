@@ -1,0 +1,17 @@
+C:\QST\Git\MicroERP\QST.MicroERP.Service\obj\Debug\net6.0\QST.MicroERP.Service.csproj.AssemblyReference.cache
+C:\QST\Git\MicroERP\QST.MicroERP.Service\obj\Debug\net6.0\QST.MicroERP.Service.GeneratedMSBuildEditorConfig.editorconfig
+C:\QST\Git\MicroERP\QST.MicroERP.Service\obj\Debug\net6.0\QST.MicroERP.Service.AssemblyInfoInputs.cache
+C:\QST\Git\MicroERP\QST.MicroERP.Service\obj\Debug\net6.0\QST.MicroERP.Service.AssemblyInfo.cs
+C:\QST\Git\MicroERP\QST.MicroERP.Service\obj\Debug\net6.0\QST.MicroERP.Service.csproj.CoreCompileInputs.cache
+C:\QST\Git\MicroERP\QST.MicroERP.Service\bin\Debug\net6.0\QST.MicroERP.Service.deps.json
+C:\QST\Git\MicroERP\QST.MicroERP.Service\bin\Debug\net6.0\QST.MicroERP.Service.dll
+C:\QST\Git\MicroERP\QST.MicroERP.Service\bin\Debug\net6.0\QST.MicroERP.Service.pdb
+C:\QST\Git\MicroERP\QST.MicroERP.Service\bin\Debug\net6.0\QST.MicroERP.Core.dll
+C:\QST\Git\MicroERP\QST.MicroERP.Service\bin\Debug\net6.0\QST.MicroERP.DAL.dll
+C:\QST\Git\MicroERP\QST.MicroERP.Service\bin\Debug\net6.0\QST.MicroERP.Core.pdb
+C:\QST\Git\MicroERP\QST.MicroERP.Service\bin\Debug\net6.0\QST.MicroERP.DAL.pdb
+C:\QST\Git\MicroERP\QST.MicroERP.Service\obj\Debug\net6.0\QST.MicroERP.Service.csproj.CopyComplete
+C:\QST\Git\MicroERP\QST.MicroERP.Service\obj\Debug\net6.0\QST.MicroERP.Service.dll
+C:\QST\Git\MicroERP\QST.MicroERP.Service\obj\Debug\net6.0\refint\QST.MicroERP.Service.dll
+C:\QST\Git\MicroERP\QST.MicroERP.Service\obj\Debug\net6.0\QST.MicroERP.Service.pdb
+C:\QST\Git\MicroERP\QST.MicroERP.Service\obj\Debug\net6.0\ref\QST.MicroERP.Service.dll
