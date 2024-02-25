@@ -10,22 +10,22 @@ using QST.MicroERP.DAL.CTL;
 using MySql.Data.MySqlClient;
 using NLog;
 
-namespace QST.MicroERP.Service
+namespace QST.MicroERP.Service.CTL
 {
-    public class ClientsService
+    public partial class CatalogueService
     {
         #region Class Variables
-        private ClientsDAL _clientsDAL;
-        private CoreDAL _coreDAL;
-        private Logger _logger;
+        //private ClientsDAL _clientsDAL;
+        //private CoreDAL _coreDAL;
+        //private Logger _logger;
         #endregion
         #region Constructor
-        public ClientsService()
-        {
-            _clientsDAL = new ClientsDAL();
-            _coreDAL = new CoreDAL();
-            _logger = LogManager.GetLogger("fileLogger");
-        }
+        //public ClientsService()
+        //{
+        //    _clientsDAL = new ClientsDAL();
+        //    _coreDAL = new CoreDAL();
+        //    _logger = LogManager.GetLogger("fileLogger");
+        //}
         #endregion
         #region  Clients
         public ClientsDE ManageClients(ClientsDE _client)
@@ -39,7 +39,7 @@ namespace QST.MicroERP.Service
                 closeConnectionFlag = true;
 
                 if (_client.DBoperation == DBoperations.Insert)
-                    _client.Id = _coreDAL.GetnextId(TableNames.CTL_Clients.ToString());
+                    _client.Id =  _coreDAL.GetnextId(TableNames.CTL_Clients.ToString());
                 if (_client.ModuleIdList != null)
                     if (_client.ModuleIdList.Count > 0)
                         _client.ModuleIds = string.Join (",", _client.ModuleIdList.ToArray ());

@@ -5,18 +5,17 @@ using System.Linq;
 using NLog;
 
 using QST.MicroERP.Service;
-using QST.MicroERP.Services.NTF;
 
 namespace QST.Scheduling
 {
     [DisallowConcurrentExecution]
     public class MainJob : IJob
     {
-        private NotificationService _ntfSvc;
+        private NTF_NotificationService _ntfSvc;
 
         public MainJob()
         {
-            _ntfSvc = new NotificationService();
+            _ntfSvc = new NTF_NotificationService();
         }
 
         public async Task Execute(IJobExecutionContext context)

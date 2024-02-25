@@ -10,21 +10,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QST.MicroERP.Service.CLT
+namespace QST.MicroERP.Service.CTL
 {
-    public class CityService
+    public partial class CatalogueService
     {
-        private CityDAL _ctyDAL;
-        private CoreDAL _corDAL;
-        private Logger _logger;
+        //private CityDAL _ctyDAL;
+        //private CoreDAL _corDAL;
+        //private Logger _logger;
 
 
-        public CityService()
-        {
-            _ctyDAL = new CityDAL();
-            _corDAL = new CoreDAL();
-            _logger = LogManager.GetLogger("fileLogger");
-        }
+        //public CatalogueService()
+        //{
+        //    _ctyDAL = new CityDAL();
+        //    _corDAL = new CoreDAL();
+        //    _logger = LogManager.GetLogger("fileLogger");
+        //}
 
         public bool ManageCity(CityDE _City)
         {
@@ -39,7 +39,7 @@ namespace QST.MicroERP.Service.CLT
                 closeConnectionFlag = true;
 
                 if (_City.DBoperation == DBoperations.Insert)
-                    _City.Id = _corDAL.GetnextId(TableNames.City.ToString());
+                    _City.Id = _coreDAL.GetnextId(TableNames.City.ToString());
                 retVal = _ctyDAL.ManageCity(_City, cmd);
                 return retVal;
             }

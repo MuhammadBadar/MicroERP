@@ -1,7 +1,7 @@
 ﻿using QST.MicroERP.Core.Entities.NTF;
-using QST.MicroERP.Services.NTF;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
+using QST.MicroERP.Service;
 //using WhatsAppApi;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -14,13 +14,13 @@ namespace QST.MicroERP.WebAPI.Controllers.NTF
     {
         #region Class Variables
 
-        private NotificationService _notificSVC;
+        private NTF_NotificationService _notificSVC;
 
         #endregion
         #region Constructors
         public NotificationController()
         {
-            _notificSVC = new NotificationService();
+            _notificSVC = new NTF_NotificationService();
         }
 
         #endregion

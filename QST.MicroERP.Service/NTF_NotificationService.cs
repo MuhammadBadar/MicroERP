@@ -18,12 +18,12 @@ using QST.MicroERP.Core.Translators.NTF;
 using Ubiety.Dns.Core.Common;
 using QST.MicroERP.Core.Constants;
 
-namespace QST.MicroERP.Services.NTF
+namespace QST.MicroERP.Service
 {
-    public class NotificationService
+    public class NTF_NotificationService
     {
         #region Class Members/Class Variables
-        
+
         private Logger _logger;
         private Dictionary<string, string> _ntfDict; // Notificaitons Dictionary
 
@@ -32,7 +32,7 @@ namespace QST.MicroERP.Services.NTF
         private NotificationLogDAL _nLogDAL;
 
         #endregion
-        public NotificationService()
+        public NTF_NotificationService()
         {
             _logger = LogManager.GetLogger("fileLogger");
             _ntfDict = new Dictionary<string, string>();
@@ -114,7 +114,7 @@ namespace QST.MicroERP.Services.NTF
                     //else
                     //    console.writeline("email sent successfully.");
                     if (e.Error == null && !e.Cancelled)
-                        retVal = true; 
+                        retVal = true;
                 };
 
                 //smtp.SendCompleted += EmailSendingResult(sender, e);
@@ -371,10 +371,10 @@ namespace QST.MicroERP.Services.NTF
         public NotificationLogDE GenerateNotification(NotificationTemplates template, BaseDomain domain)
         {
             NotificationLogDE mod = new NotificationLogDE();
-            
+
             _ntfDict.Clear();
 
-            switch (template) 
+            switch (template)
             {
                 case NotificationTemplates.ATT_NotificationToSupervisor_OnDayStart:
                     var att = (AttendanceDE)domain;
@@ -383,7 +383,7 @@ namespace QST.MicroERP.Services.NTF
                     mod.KeyCode = NotificationTemplates.ATT_NotificationToSupervisor_OnDayStart.ToString();
                     mod.DBoperation = DBoperations.Insert;
                     mod.IsSent = false;
-                    
+
                     var ntSc = new NotificationTemplateSearchCriteria();
                     ntSc.KeyCode = NotificationTemplates.ATT_NotificationToSupervisor_OnDayStart.ToString();
                     var ntfTemplate = SearchNotificationTemplates(ntSc).FirstOrDefault();
@@ -405,10 +405,10 @@ namespace QST.MicroERP.Services.NTF
                             //var lineBaseContent = mod.Body;
                             sectionNo += 1;
                             //var sectionNo = leaveVM.DBOperation == DBOperations.NA ? 2 : 1;
-                            
+
                             _ntfDict.Clear();
                             task.Translate(ref _ntfDict);
-                            mod = mod.AddTaskLine(lineBaseContent,_ntfDict,sectionNo);
+                            mod = mod.AddTaskLine(lineBaseContent, _ntfDict, sectionNo);
                         });
                         //ntfTemplate.T
                         //var ntfTempTaskDetail = 
@@ -425,14 +425,15 @@ namespace QST.MicroERP.Services.NTF
 
         public void SendNotifications()
         {
-            var notificationsToSend = SearchNotificationLogs(new NotificationLogSearchCriteria { 
-             IsSent = false,
-             ClientId = 1
-            });
-            
-            foreach(var ntf in notificationsToSend)
+            var notificationsToSend = SearchNotificationLogs(new NotificationLogSearchCriteria
             {
-                //if(SendEmail(ntf))
+                IsSent = false,
+                ClientId = 1
+            });
+
+            foreach (var ntf in notificationsToSend)
+            {
+                if (SendEmail(ntf))
                 {
                     // Set IsSent Flag to True
                     ntf.IsSent = true;

@@ -11,7 +11,6 @@ using QST.MicroERP.Core.ViewModel;
 using QST.MicroERP.Service.ATT;
 using QST.MicroERP.Service.SEC;
 using QST.MicroERP.Service.SCH;
-using QST.MicroERP.Services.NTF;
 using QST.MicroERP.DAL.ATT;
 using QST.MicroERP.DAL.TMS;
 using QST.MicroERP.Core.Entities.TMS;
@@ -32,7 +31,7 @@ namespace QST.MicroERP.Service.TMS
         private AttendanceService _attSvc;
         private ScheduleService _schSvc;
         private AttendanceDAL _attDAL;
-        private NotificationService _notifSvc;
+        private NTF_NotificationService _notifSvc;
         private UserService _userSvc;
         private TaskDAL _taskDAL;
         #endregion
@@ -45,7 +44,7 @@ namespace QST.MicroERP.Service.TMS
             _taskSvc = new TaskService();
             _tskDAL = new UserTaskDAL();
             _coreDAL = new CoreDAL();
-            _notifSvc = new NotificationService();
+            _notifSvc = new NTF_NotificationService();
             _userSvc = new UserService();
             _taskDAL = new TaskDAL();
             _logger = LogManager.GetLogger("fileLogger");

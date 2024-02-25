@@ -3,31 +3,32 @@ using QST.MicroERP.Core.Enums;
 using QST.MicroERP.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QST.MicroERP.Service.CTL;
 
 namespace QST.MicroERP.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ClientsController : ControllerBase
+    public class ClientsController : BaseController
     {
-        private ClientsService _clientsSvc;
+        //private CatalogueService _catSvc;
         public ClientsController()
         {
-            _clientsSvc = new ClientsService();
+            //_catSvc = new CatalogueService();
         }
         // HTTP Methods 
         [HttpGet]
         public IActionResult GetClients()
         {
             List<ClientsDE> list = new List<ClientsDE>();
-            list = _clientsSvc.SearchClients(new ClientsDE());
+            list = _catSvc.SearchClients(new ClientsDE());
             return Ok(list);
         }
 
         [HttpPost("{Search}")]
         public IActionResult SearchClients(ClientsDE clients)
         {
-            List<ClientsDE> list = _clientsSvc.SearchClients(clients);
+            List<ClientsDE> list = _catSvc.SearchClients(clients);
             return Ok(list);
         }
 
@@ -36,7 +37,7 @@ namespace QST.MicroERP.WebAPI.Controllers
         public IActionResult GetClientsById(int id)
         {
             List<ClientsDE> list = new List<ClientsDE>();
-            list = _clientsSvc.SearchClients(new ClientsDE { Id = id });
+            list = _catSvc.SearchClients(new ClientsDE { Id = id });
             return Ok(list[0]);
 
         }
@@ -45,7 +46,7 @@ namespace QST.MicroERP.WebAPI.Controllers
         public IActionResult PostClients(ClientsDE clients)
         {
             clients.DBoperation = DBoperations.Insert;
-            ClientsDE client = _clientsSvc.ManageClients (clients);
+            ClientsDE client = _catSvc.ManageClients (clients);
             return Ok (client);
         }
 
@@ -53,7 +54,7 @@ namespace QST.MicroERP.WebAPI.Controllers
         public IActionResult PutClients(ClientsDE clients)
         {
             clients.DBoperation = DBoperations.Update;
-           ClientsDE client= _clientsSvc.ManageClients(clients);
+           ClientsDE client= _catSvc.ManageClients(clients);
             return Ok(client);
         }
 
@@ -63,7 +64,7 @@ namespace QST.MicroERP.WebAPI.Controllers
             ClientsDE clientsDe = new ClientsDE();
             clientsDe.DBoperation = DBoperations.Delete;
             clientsDe.Id = id;
-            ClientsDE client = _clientsSvc.ManageClients (clientsDe);
+            ClientsDE client = _catSvc.ManageClients (clientsDe);
             return Ok (client);
         }
     }

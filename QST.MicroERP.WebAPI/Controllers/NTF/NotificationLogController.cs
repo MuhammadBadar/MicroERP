@@ -1,7 +1,7 @@
 ﻿using QST.MicroERP.Core.Entities.NTF;
 using QST.MicroERP.Core.Enums;
-using QST.MicroERP.Services.NTF;
 using Microsoft.AspNetCore.Mvc;
+using QST.MicroERP.Service;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,13 +13,13 @@ namespace QST.MicroERP.WebAPI.Controllers.NTF
     {
         #region Class Variables
 
-        private NotificationService _nLogSVC;
+        private NTF_NotificationService _nLogSVC;
 
         #endregion
         #region Constructors
         public NotificationLogController()
         {
-            _nLogSVC = new NotificationService();
+            _nLogSVC = new NTF_NotificationService();
         }
 
         #endregion

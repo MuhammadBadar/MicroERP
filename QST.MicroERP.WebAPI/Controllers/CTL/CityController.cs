@@ -2,6 +2,7 @@
 using QST.MicroERP.Core.Enums;
 using QST.MicroERP.Service.CLT;
 using Microsoft.AspNetCore.Mvc;
+using QST.MicroERP.Service.CTL;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,19 +10,19 @@ namespace QST.MicroERP.WebAPI.Controllers.CTL
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CityController : ControllerBase
+    public class CityController : BaseController
     {
 
         // GET: api/<CityController>
         #region Class Variables
 
-        private CityService _ctySVC;
+        //private CatalogueService _catSvc;
 
         #endregion
         #region Constructors
         public CityController()
         {
-            _ctySVC = new CityService();
+            //_catSvc = new CatalogueService();
         }
 
         #endregion
@@ -34,7 +35,8 @@ namespace QST.MicroERP.WebAPI.Controllers.CTL
         public IActionResult GetCity()
         {
             CityDE ctySC = new CityDE();
-            List<CityDE> city = _ctySVC.SearchCity(ctySC);
+            List<CityDE> city = _catSvc.SearchCity(ctySC);
+            //_catSvc.
             return Ok(city);
         }
 
@@ -49,7 +51,7 @@ namespace QST.MicroERP.WebAPI.Controllers.CTL
         [HttpPost("{Search}")]
         public IActionResult SearchCity(CityDE city)
         {
-            List<CityDE> list = _ctySVC.SearchCity(city);
+            List<CityDE> list = _catSvc.SearchCity(city);
             return Ok(list);
         }
 
@@ -57,7 +59,7 @@ namespace QST.MicroERP.WebAPI.Controllers.CTL
         public IActionResult PostCity(CityDE city)
         {
             city.DBoperation = DBoperations.Insert;
-            bool cty = _ctySVC.ManageCity(city);
+            bool cty = _catSvc.ManageCity(city);
             return Ok(cty);
         }
 
@@ -67,7 +69,7 @@ namespace QST.MicroERP.WebAPI.Controllers.CTL
         public IActionResult PutCity(CityDE city)
         {
             city.DBoperation = DBoperations.Update;
-            _ctySVC.ManageCity(city);
+            _catSvc.ManageCity(city);
             return Ok();
         }
 
@@ -77,7 +79,7 @@ namespace QST.MicroERP.WebAPI.Controllers.CTL
             CityDE city = new CityDE();
             city.DBoperation = DBoperations.Delete;
             city.Id = id;
-            _ctySVC.ManageCity(city);
+            _catSvc.ManageCity(city);
             return Ok();
         }
     }
