@@ -58,7 +58,7 @@ namespace QST.MicroERP.DAL.VOC
                     cmd = MicroERPDataContext.OpenMySqlConnection();
                     closeConnection = true;
                 }
-                lec = cmd.Connection.Query<VocabularyDE>("call QST.MicroERP.SearchVocabulary('" + WhereClause + "')").ToList();
+                lec = cmd.Connection.Query<VocabularyDE>("call SearchVocabulary('" + WhereClause + "')").ToList();
                 return lec;
             }
             catch (Exception)
@@ -125,7 +125,7 @@ namespace QST.MicroERP.DAL.VOC
                     cmd = MicroERPDataContext.OpenMySqlConnection();
                     closeConnection = true;
                 }
-                userVocabularies = cmd.Connection.Query<UserVocabularyDE>("call QST.MicroERP.SearchUserVocabulary('" + WhereClause + "')").ToList();
+                userVocabularies = cmd.Connection.Query<UserVocabularyDE>("call SearchUserVocabulary('" + WhereClause + "')").ToList();
                 return userVocabularies;
             }
             catch (Exception)

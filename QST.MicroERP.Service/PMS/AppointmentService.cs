@@ -38,7 +38,7 @@ namespace QST.MicroERP.Service
                 closeConnectionFlag = true;
                 if (mod.DBoperation == DBoperations.Insert)
                 {
-                    mod.Id = _coreDAL.GetNextIdByClient (TableNames.appointment.ToString (), mod.ClientId, "ClientId");
+                    mod.Id = _coreDAL.GetNextIdByClient (TableNames.PMS_Appointment.ToString (), mod.ClientId, "ClientId");
                     if (mod.TokenId == 0 || mod.TokenId == default)
                     {
                         List<AppointmentDE> appts = SearchData (new AppointmentDE { ClientId = mod.ClientId, ApptDate = mod.Date, DoctorId = mod.DoctorId });

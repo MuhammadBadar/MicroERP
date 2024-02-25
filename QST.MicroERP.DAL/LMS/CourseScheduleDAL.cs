@@ -65,7 +65,7 @@ namespace QST.MicroERP.DAL.LMS
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<CourseScheduleDE>("call QST.MicroERP.SearchCourseSchedule( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<CourseScheduleDE>("call SearchCourseSchedule( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception)
@@ -137,7 +137,7 @@ namespace QST.MicroERP.DAL.LMS
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<ClassTimingDE>("call QST.MicroERP.SearchClassTiming( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<ClassTimingDE>("call SearchClassTiming( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception exp)

@@ -42,7 +42,7 @@ namespace QST.MicroERP.Service
                 closeConnectionFlag = true;
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _coreDAL.GetNextIdByClient (TableNames.patient.ToString (),mod.ClientId,"ClientId");
+                    mod.Id = _coreDAL.GetNextIdByClient (TableNames.PMS_Patient.ToString (),mod.ClientId,"ClientId");
                 retVal = _patDAL.ManagePatient (mod, cmd);
                 if (mod.DBoperation == DBoperations.Insert || mod.DBoperation == DBoperations.Update)
                     foreach (var line in mod.ptFData)

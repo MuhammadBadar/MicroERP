@@ -71,7 +71,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                top = cmd.Connection.Query<ProductTaxesDE> ("call QST.MicroERP.SearchProductTaxes( '" + whereClause + "')").ToList ();
+                top = cmd.Connection.Query<ProductTaxesDE> ("call SearchProductTaxes( '" + whereClause + "')").ToList ();
                 return top;
             }
             catch (Exception)
@@ -100,7 +100,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                top = cmd.Connection.Query<ProductWithVariantsVM> ("call QST.MicroERP.GetProductwithVariants( '" + whereClause + "')").ToList ();
+                top = cmd.Connection.Query<ProductWithVariantsVM> ("call GetProductwithVariants( '" + whereClause + "')").ToList ();
                 return top;
             }
             catch (Exception)

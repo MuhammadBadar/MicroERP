@@ -15,4 +15,14 @@ namespace QST.MicroERP.Core.Entities.NTF
         public string? SMS { get; set; }
 
     }
+
+    public class NotificationTemplateSearchCriteria : BaseDomain
+    {
+        public string? KeyCode { get; set; }
+        public string? TemplateName { get; set; }
+        public string? Body { get; set; }
+        public string? Subject { get; set; }
+        public string? SMS { get; set; }
+
+    }
 }

@@ -73,7 +73,7 @@ namespace QST.MicroERP.DAL.TMS
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<TaskCommentVM>("call QST.MicroERP.SearchTaskComments( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<TaskCommentVM>("call SearchTaskComments( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception exp)

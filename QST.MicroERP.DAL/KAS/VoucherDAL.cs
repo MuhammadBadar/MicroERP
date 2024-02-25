@@ -131,7 +131,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<VoucherDE>("call QST.MicroERP.SearchVoucher( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<VoucherDE>("call SearchVoucher( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception exp)
@@ -159,7 +159,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<VoucherDetailDE>("call QST.MicroERP.SearchVoucherDetail( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<VoucherDetailDE>("call SearchVoucherDetail( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception exp)

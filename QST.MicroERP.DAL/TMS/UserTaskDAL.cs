@@ -23,28 +23,30 @@ namespace QST.MicroERP.DAL.TMS
                     cmd = MicroERPDataContext.OpenMySqlConnection();
                     closeConnection = true;
                 }
-                cmd.CommandText = "ManageUserTask";
-                cmd.Parameters.AddWithValue("id", _tsk.Id);
-                cmd.Parameters.AddWithValue("userId", _tsk.UserId);
-                cmd.Parameters.AddWithValue("taskId", _tsk.TaskId);
-                cmd.Parameters.AddWithValue("lastClaimId", _tsk.LastClaimId);
-                cmd.Parameters.AddWithValue("statusId", _tsk.StatusId);
-                cmd.Parameters.AddWithValue("parent", _tsk.Parent);
-                cmd.Parameters.AddWithValue("date", _tsk.Date);
-                cmd.Parameters.AddWithValue("claimId", _tsk.ClaimId);
-                cmd.Parameters.AddWithValue("approvedClaimId", _tsk.ApprovedClaimId);
-                cmd.Parameters.AddWithValue("sp", _tsk.Sp);
-                cmd.Parameters.AddWithValue("workTime", _tsk.WorkTime);
-                cmd.Parameters.AddWithValue("comments", _tsk.Comments);
-                cmd.Parameters.AddWithValue("isDayEnded", _tsk.IsDayEnded);
-                cmd.Parameters.AddWithValue("reviewedby", _tsk.ReviewedBy);
-                cmd.Parameters.AddWithValue("reviewcomments", _tsk.ReviewComments);
-                cmd.Parameters.AddWithValue("createdOn", _tsk.CreatedOn);
-                cmd.Parameters.AddWithValue("createdById", _tsk.CreatedById);
-                cmd.Parameters.AddWithValue("modifiedOn", _tsk.ModifiedOn);
-                cmd.Parameters.AddWithValue("modifiedById", _tsk.ModifiedById);
-                cmd.Parameters.AddWithValue("isActive", _tsk.IsActive);
-                cmd.Parameters.AddWithValue("DbOperation", _tsk.DBoperation.ToString());
+                cmd.CommandText = "TMS_Manage_UserTask";
+                cmd.Parameters.AddWithValue("prm_id", _tsk.Id);
+                cmd.Parameters.AddWithValue("prm_ClientId", _tsk.ClientId);
+
+                cmd.Parameters.AddWithValue("prm_userId", _tsk.UserId);
+                cmd.Parameters.AddWithValue("prm_taskId", _tsk.TaskId);
+                cmd.Parameters.AddWithValue("prm_lastClaimId", _tsk.LastClaimId);
+                cmd.Parameters.AddWithValue("prm_statusId", _tsk.StatusId);
+                cmd.Parameters.AddWithValue("prm_parent", _tsk.Parent);
+                cmd.Parameters.AddWithValue("prm_date", _tsk.Date);
+                cmd.Parameters.AddWithValue("prm_claimId", _tsk.ClaimId);
+                cmd.Parameters.AddWithValue("prm_approvedClaimId", _tsk.ApprovedClaimId);
+                cmd.Parameters.AddWithValue("prm_sp", _tsk.Sp);
+                cmd.Parameters.AddWithValue("prm_workTime", _tsk.WorkTime);
+                cmd.Parameters.AddWithValue("prm_comments", _tsk.Comments);
+                cmd.Parameters.AddWithValue("prm_isDayEnded", _tsk.IsDayEnded);
+                cmd.Parameters.AddWithValue("prm_reviewedby", _tsk.ReviewedBy);
+                cmd.Parameters.AddWithValue("prm_reviewcomments", _tsk.ReviewComments);
+                cmd.Parameters.AddWithValue("prm_createdOn", _tsk.CreatedOn);
+                cmd.Parameters.AddWithValue("prm_createdById", _tsk.CreatedById);
+                cmd.Parameters.AddWithValue("prm_modifiedOn", _tsk.ModifiedOn);
+                cmd.Parameters.AddWithValue("prm_modifiedById", _tsk.ModifiedById);
+                cmd.Parameters.AddWithValue("prm_isActive", _tsk.IsActive);
+                cmd.Parameters.AddWithValue("prm_DbOperation", _tsk.DBoperation.ToString());
                 cmd.ExecuteNonQuery();
                 retVal = true;
                 return retVal;
@@ -72,7 +74,7 @@ namespace QST.MicroERP.DAL.TMS
                     cmd = MicroERPDataContext.OpenMySqlConnection();
                     closeConnection = true;
                 }
-                lec = cmd.Connection.Query<UserTaskDE>("call QST.MicroERP.SearchUserTask('" + WhereClause + "')").ToList();
+                lec = cmd.Connection.Query<UserTaskDE>("call TMS_Search_UserTask('" + WhereClause + "')").ToList();
                 return lec;
             }
             catch (Exception)
@@ -98,7 +100,7 @@ namespace QST.MicroERP.DAL.TMS
                     cmd = MicroERPDataContext.OpenMySqlConnection();
                     closeConnection = true;
                 }
-                lec = cmd.Connection.Query<UserTaskDE>("call QST.MicroERP.GetTodaysTasks('" + UserId + "')").ToList();
+                lec = cmd.Connection.Query<UserTaskDE>("call GetTodaysTasks('" + UserId + "')").ToList();
                 return lec;
             }
             catch (Exception)

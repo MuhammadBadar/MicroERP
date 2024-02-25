@@ -46,7 +46,7 @@ namespace QST.MicroERP.Service
                 MicroERPDataContext.StartTransaction(cmd);
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetnextId(TableNames.supplier.ToString());
+                    mod.Id = _corDAL.GetnextId(TableNames.CTL_Supplier.ToString());
                 if (mod.DBoperation == DBoperations.Update)
                     this.UpdateCustomer(mod);
                 _supplierDAL.ManageSupplier(mod, cmd);
@@ -122,7 +122,7 @@ namespace QST.MicroERP.Service
                 {
                     if (mod.CustomerId == 0)
                     {
-                        searchedCust.Id = _corDAL.GetnextId(TableNames.customer.ToString());
+                        searchedCust.Id = _corDAL.GetnextId(TableNames.CTL_Customer.ToString());
                         searchedCust.DBoperation = DBoperations.Insert;
                         searchedCust.Name = mod.ContactName;
                         searchedCust.Phone = mod.Phone;

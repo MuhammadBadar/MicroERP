@@ -56,7 +56,7 @@ namespace QST.MicroERP.DAL.LMS
                     cmd = MicroERPDataContext.OpenMySqlConnection();
                     closeConnection = true;
                 }
-                assignedTasks = cmd.Connection.Query<AssignTaskDE>("call QST.MicroERP.SearchAssignTask('" + WhereClause + "')").ToList();
+                assignedTasks = cmd.Connection.Query<AssignTaskDE>("call SearchAssignTask('" + WhereClause + "')").ToList();
                 return assignedTasks;
             }
             catch (Exception)

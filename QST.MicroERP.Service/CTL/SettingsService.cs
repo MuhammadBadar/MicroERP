@@ -40,7 +40,7 @@ namespace QST.MicroERP.Service.CLT
                 cmd = MicroERPDataContext.OpenMySqlConnection ();
                 if (mod.DBoperation == DBoperations.Insert)
                 {
-                    mod.Id = _corDAL.GetNextLineIdByClt (TableNames.enumline.ToString (), "EnumTypeId", (int)mod.EnumTypeId, mod.ClientId);
+                    mod.Id = _corDAL.GetNextLineIdByClt (TableNames.CTL_EnumLine.ToString (), "EnumTypeId", (int)mod.EnumTypeId, mod.ClientId);
                     if (mod.Id == 1)
                         mod.Id = int.Parse (mod.EnumTypeId + "001");
                     //else

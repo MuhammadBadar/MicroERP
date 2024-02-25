@@ -101,7 +101,7 @@ namespace QST.MicroERP.DAL.LMS
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<StudentDE>("call QST.MicroERP.SearchStudent( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<StudentDE>("call SearchStudent( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception)

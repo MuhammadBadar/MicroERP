@@ -59,11 +59,11 @@ namespace QST.MicroERP.Service.ATT
                 cmd = MicroERPDataContext.OpenMySqlConnection();
                 closeConnectionFlag = true;
                 if (Attendance.DBoperation == DBoperations.Insert)
-                    Attendance.Id = _corDAL.GetnextId(TableNames.attendance.ToString());
+                    Attendance.Id = _corDAL.GetnextId(TableNames.ATT_Attendance.ToString());
                 retVal = attDAL.ManageAttendance(Attendance, cmd);
                 return retVal;
             }
-            catch (Exception ex)
+             catch (Exception ex)
             {
                 _logger.Error(ex);
                 throw;

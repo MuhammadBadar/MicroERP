@@ -46,7 +46,7 @@ namespace QST.MicroERP.Service
                 cmd = MicroERPDataContext.OpenMySqlConnection();
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetnextId(TableNames.customer.ToString());
+                    mod.Id = _corDAL.GetnextId(TableNames.CTL_Customer.ToString());
                 if ( mod.DBoperation == DBoperations.Update)
                     this.UpdateSupplier(mod);
                 retVal = _customerDAL.ManageCustomer(mod, cmd);
@@ -118,7 +118,7 @@ namespace QST.MicroERP.Service
                 {
                     if (mod.SupplierId == 0)
                     {
-                        _supplier.Id = _corDAL.GetnextId(TableNames.supplier.ToString());
+                        _supplier.Id = _corDAL.GetnextId(TableNames.CTL_Supplier.ToString());
                         _supplier.ContactName = mod.Name;
                         _supplier.Phone = mod.Phone;
                         _supplier.CountryId = mod.CountryId;

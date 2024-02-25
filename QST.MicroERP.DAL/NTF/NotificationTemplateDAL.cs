@@ -100,7 +100,7 @@ namespace QST.MicroERP.DAL.NTF
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<NotificationTemplateDE>("call QST.MicroERP.SearchNotificationTemplate( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<NotificationTemplateDE>("call NTF_Search_NotificationTemplate( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception exp)

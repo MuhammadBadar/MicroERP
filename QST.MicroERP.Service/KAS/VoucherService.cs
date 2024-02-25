@@ -43,10 +43,10 @@ namespace QST.MicroERP.Service
                 {
                     if(mod.VchTypeKeyCode!=null)
                     mod.VchNo = GetNextVchNo(mod.VchTypeKeyCode, mod.ClientId);
-                    mod.Id = _corDAL.GetNextIdByClient (TableNames.voucher.ToString (), mod.ClientId, "ClientId");
+                    mod.Id = _corDAL.GetNextIdByClient (TableNames.ACC_Voucher.ToString (), mod.ClientId, "ClientId");
                 }
                 retVal = _vchDAL.ManageVoucher(mod,cmd);
-                var _Id = _corDAL.GetMaxLineIdByClt (TableNames.voucherdetail.ToString (), "VchId", mod.Id, mod.ClientId);
+                var _Id = _corDAL.GetMaxLineIdByClt (TableNames.ACC_VoucherDetail.ToString (), "VchId", mod.Id, mod.ClientId);
                 if (mod.DBoperation == DBoperations.Insert || mod.DBoperation == DBoperations.Update)
                     foreach (var vchDet in mod.VoucherDetails)
                     {                    

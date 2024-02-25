@@ -68,7 +68,7 @@ namespace QST.MicroERP.DAL
                     cmd = MicroERPDataContext.OpenMySqlConnection ();
                     closeConnection = true;
                 }
-                doc = cmd.Connection.Query<StaffDE> ("call QST.MicroERP.SearchStaff('" + WhereClause + "')").ToList ();
+                doc = cmd.Connection.Query<StaffDE> ("call SearchStaff('" + WhereClause + "')").ToList ();
                 return doc;
             }
             catch (Exception)

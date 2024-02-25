@@ -138,7 +138,7 @@ namespace QST.MicroERP.DAL.TMS
                 else
                     Console.WriteLine("Connection error");
 
-                top = cmd.Connection.Query<AttachmentsDE>("call QST.MicroERP.SearchAttachments( '" + whereClause + "'  ) ").ToList();
+                top = cmd.Connection.Query<AttachmentsDE>("call SearchAttachments( '" + whereClause + "'  ) ").ToList();
                 return top;
             }
             catch (Exception)
@@ -169,12 +169,12 @@ namespace QST.MicroERP.DAL.TMS
                 whereClause = " " + whereClause + " order by Id desc";
                 if (retType == TaskReturnTypes.Task.ToString())
                 {
-                    result.Tasks = cmd.Connection.Query<TaskDE>("call QST.MicroERP.SearchTask( '" + whereClause + "'  ) ").ToList();
+                    result.Tasks = cmd.Connection.Query<TaskDE>("call TMS_Search_Tasks( '" + whereClause + "'  ) ").ToList();
                     return result;
                 }
                 else
                 {
-                    result.UserTasks = cmd.Connection.Query<UserTaskVM>("call QST.MicroERP.SearchTask( '" + whereClause + "'  ) ").ToList();
+                    result.UserTasks = cmd.Connection.Query<UserTaskVM>("call TMS_Search_Tasks( '" + whereClause + "'  ) ").ToList();
                     return result;
                 }
             }

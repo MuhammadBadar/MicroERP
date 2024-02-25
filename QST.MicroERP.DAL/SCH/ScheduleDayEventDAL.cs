@@ -72,7 +72,7 @@ namespace QST.MicroERP.DAL.SCH
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<ScheduleDayEventDE>("call QST.MicroERP.SearchScheduleDayEvent( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<ScheduleDayEventDE>("call SearchScheduleDayEvent( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception)

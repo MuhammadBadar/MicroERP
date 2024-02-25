@@ -33,7 +33,7 @@ namespace QST.MicroERP.DAL
                     _cmd = MicroERPDataContext.OpenMySqlConnection ();
                     closeConnection = true;
                 }
-                appts = _cmd.Connection.Query<AppointmentDE> ("call QST.MicroERP.SearchAppointment('" + whereClause + "')").ToList ();
+                appts = _cmd.Connection.Query<AppointmentDE> ("call SearchAppointment('" + whereClause + "')").ToList ();
                 return appts;
             }
             catch (Exception)
@@ -106,7 +106,7 @@ namespace QST.MicroERP.DAL
                 };
                 string procedureName = "QST.MicroERP.GetNextAppt";
                 string sql = $"CALL {procedureName}(@whereClause, @clientId, @doctorId)";
-                //appts = _cmd.Connection.Query<AppointmentDE> ("call QST.MicroERP.GetNextAppt('" + whereClause + ""+","+"" + ClientId + " ')").ToList (); 
+                //appts = _cmd.Connection.Query<AppointmentDE> ("call GetNextAppt('" + whereClause + ""+","+"" + ClientId + " ')").ToList (); 
                 appts = _cmd.Connection.Query<AppointmentDE> (sql, parameters, commandType: CommandType.Text).ToList ();
                 return appts;
             }
@@ -173,7 +173,7 @@ namespace QST.MicroERP.DAL
                     cmd = MicroERPDataContext.OpenMySqlConnection ();
                     closeConnection = true;
                 }
-                test = cmd.Connection.Query<AppointmentDE> ("call QST.MicroERP.SearchAppointment('" + WhereClause + "')").ToList ();
+                test = cmd.Connection.Query<AppointmentDE> ("call SearchAppointment('" + WhereClause + "')").ToList ();
                 return test;
             }
             catch (Exception)
@@ -198,7 +198,7 @@ namespace QST.MicroERP.DAL
                     cmd = MicroERPDataContext.OpenMySqlConnection ();
                     closeConnection = true;
                 }
-                test = cmd.Connection.Query<AppointmentDE> ("call QST.MicroERP.GetNextAppt('" + WhereClause + "')").ToList ();
+                test = cmd.Connection.Query<AppointmentDE> ("call GetNextAppt('" + WhereClause + "')").ToList ();
                 return test;
             }
             catch (Exception)

@@ -71,7 +71,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                top = cmd.Connection.Query<PatientReportDE> ("call QST.MicroERP.SearchPatientReport( '" + whereClause + "')").ToList ();
+                top = cmd.Connection.Query<PatientReportDE> ("call SearchPatientReport( '" + whereClause + "')").ToList ();
                 return top;
             }
             catch (Exception)

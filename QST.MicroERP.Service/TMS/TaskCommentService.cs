@@ -43,7 +43,7 @@ namespace QST.MicroERP.Service.TMS
                 cmd = MicroERPDataContext.OpenMySqlConnection ();
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetnextId (TableNames.taskcomment.ToString ());
+                    mod.Id = _corDAL.GetnextId (TableNames.TMS_TaskComment.ToString ());
                 check = _taskDAL.ManageTaskComment (mod);
                 if (check == true)
                     mod.DBoperation = DBoperations.NA;

@@ -69,7 +69,7 @@ namespace QST.MicroERP.DAL.CTL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                top = cmd.Connection.Query<SettingsTypeDE> ("call QST.MicroERP.SearchSettingsType( '" + whereClause + "')").ToList ();
+                top = cmd.Connection.Query<SettingsTypeDE> ("call SearchSettingsType( '" + whereClause + "')").ToList ();
                 return top;
             }
             catch (Exception)

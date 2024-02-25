@@ -114,7 +114,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<DCDE>("call QST.MicroERP.SearchDC( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<DCDE>("call SearchDC( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception exp)
@@ -142,7 +142,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<DCDetailDE>("call QST.MicroERP.SearchDCDetail( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<DCDetailDE>("call SearchDCDetail( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception exp)

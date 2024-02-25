@@ -52,11 +52,11 @@ namespace QST.MicroERP.Service.TMS
                 MicroERPDataContext.StartTransaction (cmd);
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetnextId (TableNames.task.ToString ());
+                    mod.Id = _corDAL.GetnextId (TableNames.TMS_Task.ToString ());
                 if (mod.Id == 1)
                     mod.Id = 1001;
                 check = _taskDAL.ManageTask (mod);
-                fileId= _corDAL.GetnextId (TableNames.attachments.ToString ());
+                fileId= _corDAL.GetnextId (TableNames.TMS_Attachments.ToString ());
                 foreach (var file in mod.Attachments)
                 {
                     if (!Directory.Exists (AppDirectory))
@@ -185,7 +185,7 @@ namespace QST.MicroERP.Service.TMS
             try
             {
                 cmd = MicroERPDataContext.OpenMySqlConnection ();
-                MicroERPDataContext.StartTransaction (cmd);
+                //MicroERPDataContext.StartTransaction (cmd);
 
                 #region Search
 
@@ -245,11 +245,11 @@ namespace QST.MicroERP.Service.TMS
 
                 #endregion
 
-                MicroERPDataContext.EndTransaction (cmd);
+                //MicroERPDataContext.EndTransaction (cmd);
             }
             catch (Exception exp)
             {
-                MicroERPDataContext.CancelTransaction (cmd);
+                //MicroERPDataContext.CancelTransaction (cmd);
                 throw;
             }
             finally

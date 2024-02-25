@@ -42,7 +42,7 @@ namespace QST.MicroERP.Service.SCH
                 closeConnectionFlag = true;
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _coreDAL.GetnextId(TableNames.ScheduleDayEvent.ToString());
+                    mod.Id = _coreDAL.GetnextId(TableNames.SCH_ScheduleDayEvent.ToString());
                 retVal = _schEvtDAL.ManageScheduleDayEvent(mod, cmd);
                 if (retVal == true)
                 {

@@ -70,7 +70,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                list = cmd.Connection.Query<VoucherTypeDE>("call QST.MicroERP.Get_VoucherType( '" + whereClause + "')").ToList();
+                list = cmd.Connection.Query<VoucherTypeDE>("call Get_VoucherType( '" + whereClause + "')").ToList();
                 return list;
             }
             catch (Exception )

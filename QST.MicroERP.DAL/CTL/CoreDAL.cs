@@ -15,7 +15,7 @@ namespace QST.MicroERP.DAL.CTL
             MySqlCommand cmd = MicroERPDataContext.OpenMySqlConnection ();
             try
             {
-                cmd = MicroERPDataContext.SetStoredProcedure (cmd, "GetMaxId");
+                cmd = MicroERPDataContext.SetStoredProcedure (cmd, "CTL_GetMaxId");
                 retVal = MicroERPDataContext.ExecuteScalar (MicroERPDataContext.AddParameters (cmd
                     , "@prm_TableName", mod.ToString ()
                     ));

@@ -42,7 +42,7 @@ namespace QST.MicroERP.Service
                 closeConnectionFlag = true;
 
                 if (_doc.DBoperation == DBoperations.Insert)
-                    _doc.Id = _coreDAL.GetNextIdByClient(TableNames.doctor.ToString(),_doc.ClientId,"ClientId");
+                    _doc.Id = _coreDAL.GetNextIdByClient(TableNames.PMS_Doctor.ToString(),_doc.ClientId,"ClientId");
                 retVal = _baseDAL.ManageData(_doc, cmd);
                 return retVal;
             }

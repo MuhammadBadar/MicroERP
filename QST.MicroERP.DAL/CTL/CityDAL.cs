@@ -97,7 +97,7 @@ namespace QST.MicroERP.DAL.CTL
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<CityDE>("call QST.MicroERP.Get_City( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<CityDE>("call Get_City( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception)

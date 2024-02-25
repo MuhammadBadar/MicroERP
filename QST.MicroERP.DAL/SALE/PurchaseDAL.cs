@@ -78,7 +78,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<PurchaseDE>("call QST.MicroERP.SearchPurchase( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<PurchaseDE>("call SearchPurchase( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception)
@@ -159,7 +159,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<PurchaseLineDE>("call QST.MicroERP.SearchPurchaseLine( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<PurchaseLineDE>("call SearchPurchaseLine( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception)

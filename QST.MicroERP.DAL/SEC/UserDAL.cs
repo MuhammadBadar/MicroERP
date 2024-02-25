@@ -23,7 +23,7 @@ namespace QST.MicroERP.DAL.SEC
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                top = cmd.Connection.Query<UserDE> ("call QST.MicroERP.SearchUser( '" + whereClause + "')").ToList ();
+                top = cmd.Connection.Query<UserDE> ("call SearchUser( '" + whereClause + "')").ToList ();
                 return top;
             }
             catch (Exception)

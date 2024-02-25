@@ -49,7 +49,7 @@ namespace QST.MicroERP.Service
                 else
                     mod.DBoperation = DBoperations.Insert;
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetNextIdByClient (TableNames.producttaxes.ToString (), mod.ClientId,"ClientId");
+                    mod.Id = _corDAL.GetNextIdByClient (TableNames.SAL_ProductTaxes.ToString (), mod.ClientId,"ClientId");
                 retVal = _proTaxDAL.ManageProductTaxes (mod);
                 if (retVal == true)
                     mod.DBoperation = DBoperations.NA;

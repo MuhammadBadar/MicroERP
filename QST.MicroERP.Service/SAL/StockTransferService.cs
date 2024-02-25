@@ -40,7 +40,7 @@ namespace QST.MicroERP.Service
                 MicroERPDataContext.StartTransaction(cmd);
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetnextId(TableNames.stocktransfer.ToString());
+                    mod.Id = _corDAL.GetnextId(TableNames.SAL_StockTransfer.ToString());
                 retVal = _stDAL.ManageStockTransfer(mod, cmd);
 
                 if (mod.DBoperation == DBoperations.Insert || mod.DBoperation == DBoperations.Update)
@@ -48,7 +48,7 @@ namespace QST.MicroERP.Service
                     {
                         stLine.STId = mod.Id;
                         if (stLine.DBoperation == DBoperations.Insert)
-                            stLine.Id = _corDAL.GetnextLineId(TableNames.stocktransferline.ToString(), mod.Id, "STId");
+                            stLine.Id = _corDAL.GetnextLineId(TableNames.SAL_StockTransferLine.ToString(), mod.Id, "STId");
                         retVal = _stDAL.ManageStockTransferLine(stLine, cmd);
                     }
 

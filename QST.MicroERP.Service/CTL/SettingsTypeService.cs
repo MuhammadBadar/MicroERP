@@ -37,11 +37,11 @@ namespace QST.MicroERP.Service.CLT
                 // MicroERPDataContext.StartTransaction (cmd);
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetNextIdByClient (TableNames.enums.ToString (), mod.ClientId, "ClientId");
+                    mod.Id = _corDAL.GetNextIdByClient (TableNames.CTL_Enums.ToString (), mod.ClientId, "ClientId");
                 if (mod.Id == 1)
                     mod.Id = 1001;
                 retVal = _settingsTypeDAL.ManageSettingsType (mod, cmd);
-                var _Id = _corDAL.GetMaxLineIdByClt (TableNames.enumline.ToString (), "EnumTypeId", (int)mod.Id, mod.ClientId);
+                var _Id = _corDAL.GetMaxLineIdByClt (TableNames.CTL_EnumLine.ToString (), "EnumTypeId", (int)mod.Id, mod.ClientId);
                 foreach (var line in mod.SettingList)
                 {
                     if (line.DBoperation == DBoperations.Insert)

@@ -42,7 +42,7 @@ namespace QST.MicroERP.Service
             {
                 cmd = MicroERPDataContext.OpenMySqlConnection();
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetnextId(TableNames.salestock.ToString());
+                    mod.Id = _corDAL.GetnextId(TableNames.SAL_SaleStock.ToString());
                 retVal = _SaleStockDAL.ManageSaleStock(mod);
                 if (retVal == true)
                     mod.DBoperation = DBoperations.NA;

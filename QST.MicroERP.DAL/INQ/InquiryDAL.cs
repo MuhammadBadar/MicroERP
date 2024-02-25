@@ -70,7 +70,7 @@ namespace QST.MicroERP.DAL.INQ
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<InquiryDE>("call QST.MicroERP.SearchInquiry( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<InquiryDE>("call SearchInquiry( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception exp)

@@ -39,7 +39,7 @@ namespace QST.MicroERP.Service
                 closeConnectionFlag = true;
 
                 if (_client.DBoperation == DBoperations.Insert)
-                    _client.Id = _coreDAL.GetnextId(TableNames.clients.ToString());
+                    _client.Id = _coreDAL.GetnextId(TableNames.CTL_Clients.ToString());
                 if (_client.ModuleIdList != null)
                     if (_client.ModuleIdList.Count > 0)
                         _client.ModuleIds = string.Join (",", _client.ModuleIdList.ToArray ());

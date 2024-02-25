@@ -38,7 +38,7 @@ namespace QST.MicroERP.Service.CLT
             {
                 cmd = MicroERPDataContext.OpenMySqlConnection();
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetnextId(TableNames.logevent.ToString());
+                    mod.Id = _corDAL.GetnextId(TableNames.CTL_LogEvent.ToString());
                 retVal = _LogEventDAL.ManageLogEvent(mod, cmd);
                 if (retVal == true)
                     mod.DBoperation = DBoperations.NA;

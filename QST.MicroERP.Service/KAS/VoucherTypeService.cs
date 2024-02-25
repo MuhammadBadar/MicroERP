@@ -42,7 +42,7 @@ namespace QST.MicroERP.Service
             {
                 cmd = MicroERPDataContext.OpenMySqlConnection();
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetNextIdByClient (TableNames.vouchertype.ToString (), mod.ClientId, "ClientId");
+                    mod.Id = _corDAL.GetNextIdByClient (TableNames.ACC_VoucherType.ToString (), mod.ClientId, "ClientId");
                 retVal = _VoucherTypeDAL.ManageVoucherType(mod);
                 if (retVal == true)
                     mod.DBoperation = DBoperations.NA;

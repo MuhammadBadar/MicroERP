@@ -58,7 +58,7 @@ namespace QST.MicroERP.DAL.LMS
                     cmd = MicroERPDataContext.OpenMySqlConnection();
                     closeConnection = true;
                 }
-                topics = cmd.Connection.Query<TopicDE>("call QST.MicroERP.SearchTopic('" + WhereClause + "')").ToList();
+                topics = cmd.Connection.Query<TopicDE>("call SearchTopic('" + WhereClause + "')").ToList();
                 return topics;
             }
             catch (Exception)

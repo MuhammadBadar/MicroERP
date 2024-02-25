@@ -71,7 +71,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                top = cmd.Connection.Query<DocExtrasDE> ("call QST.MicroERP.SearchDocumentExtras( '" + whereClause + "')").ToList ();
+                top = cmd.Connection.Query<DocExtrasDE> ("call SearchDocumentExtras( '" + whereClause + "')").ToList ();
                 return top;
             }
             catch (Exception)

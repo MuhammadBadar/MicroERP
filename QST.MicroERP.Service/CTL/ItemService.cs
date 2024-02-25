@@ -61,13 +61,14 @@ namespace QST.MicroERP.Service
                 MicroERPDataContext.StartTransaction (cmd);
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetNextIdByClient (TableNames.item.ToString (),mod.ClientId,"ClientId");
+                    mod.Id = _corDAL.GetNextIdByClient (TableNames.CTL_Item.ToString (),mod.ClientId,"ClientId");
                 if (mod.DBoperation == DBoperations.Insert || mod.DBoperation == DBoperations.Update)
                 {
                     #region ProductAttributes
                     if (mod.ProductAttribs.Count > 0)
+
                     {
-                        var AttribId = _corDAL.GetMaxIdByClient (TableNames.productattrib.ToString (),mod.ClientId,"ClientId");
+                        var AttribId = _corDAL.GetMaxIdByClient (TableNames.SAL_ProductAttrib.ToString (),mod.ClientId,"ClientId");
                         foreach (var line in mod.ProductAttribs)
                         {
                             if (line.AttribValues != null)
@@ -113,7 +114,7 @@ namespace QST.MicroERP.Service
                                 mod.SaleUnits = string.Join (",", mod.SaleUnitIds.ToArray ());
                             if (mod.PurUnitIds.Count > 0)
                                 mod.PurUnits = string.Join (",", mod.PurUnitIds.ToArray ());
-                            var unitId = _corDAL.GetMaxIdByClient (TableNames.itemuom.ToString (),mod.ClientId,"ClientId");
+                            var unitId = _corDAL.GetMaxIdByClient (TableNames.SAL_ItemUOM.ToString (),mod.ClientId,"ClientId");
                             foreach (var unit in mod.ItemUOMList)
                             {
                                 unit.ClientId = mod.ClientId;
@@ -198,7 +199,7 @@ namespace QST.MicroERP.Service
                         variant.ItemId = mod.Id;
                         if (variant.DBoperation == DBoperations.Insert)
                         {
-                            var Id = _corDAL.GetMaxVariantId (TableNames.itemvariants.ToString (), "ItemId", mod.Id,mod.ClientId);
+                            var Id = _corDAL.GetMaxVariantId (TableNames.SAL_ItemVariants.ToString (), "ItemId", mod.Id,mod.ClientId);
                             var regex = new Regex (Regex.Escape (mod.Id.ToString ()));
                             Id = int.Parse (regex.Replace (Id.ToString (), "", 1));
                             Id += 1;

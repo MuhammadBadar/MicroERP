@@ -39,7 +39,7 @@ namespace QST.MicroERP.Service
                 closeConnectionFlag = true;
 
                 if (_exfd.DBoperation == DBoperations.Insert)
-                    _exfd.Id = _coreDAL.GetNextIdByClient (TableNames.ptextrafieldsdata.ToString (),_exfd.ClientId, "ClientId");
+                    _exfd.Id = _coreDAL.GetNextIdByClient (TableNames.PMS_PtExtraFieldsData.ToString (),_exfd.ClientId, "ClientId");
                 retVal = _exfdDAL.ManagePtExtraFieldsData (_exfd, cmd);
                 return retVal;
             }

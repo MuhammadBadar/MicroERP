@@ -18,6 +18,7 @@ using QST.MicroERP.Core.Entities.TMS;
 using QST.MicroERP.DAL.CTL;
 using QST.MicroERP.Core.Entities.ATT;
 using QST.MicroERP.Core.Entities.SEC;
+using QST.MicroERP.Core.Entities.NTF;
 
 namespace QST.MicroERP.Service.TMS
 {
@@ -87,7 +88,7 @@ namespace QST.MicroERP.Service.TMS
                     {
                         if (counter == 0)
                         {
-                            _tsk.Id = _coreDAL.GetnextId(TableNames.usertask.ToString());
+                            _tsk.Id = _coreDAL.GetnextId(TableNames.TMS_UserTask.ToString());
                             lastId = _tsk.Id;
                         }
                         else
@@ -141,9 +142,9 @@ namespace QST.MicroERP.Service.TMS
                 #region MarkAttendance
                 if (_tsks != null && _tsks.Count > 0)
                     if (markAttendance == true)
-                        DayStart(_tsks[0].UserId);
+                        DayStart(_tsks[0].UserId, _tsks[0].ClientId, _tsks);
                 if (markDayEnd == true)
-                    DayEnd(_tsks[0].UserId);
+                    DayEnd(_tsks[0].UserId, _tsks[0].ClientId);
                 #endregion
 
                 MicroERPDataContext.EndTransaction(cmd);
@@ -162,11 +163,11 @@ namespace QST.MicroERP.Service.TMS
             }
             return retVal;
         }
-        public void DayEnd(string UserId)
+        public void DayEnd(string UserId, int clientId)
         {
             try
             {
-                string whereClause = "WHERE UserId like ''" + UserId + "'' ORDER BY Id DESC LIMIT 1";
+                string whereClause = "WHERE UserId like ''" + UserId + "'' AND ClientId = " + clientId + " ORDER BY Id DESC LIMIT 1";
                 var att = _attDAL.SearchAttendance(whereClause);
                 if (att != null && att.Count > 0)
                 {
@@ -182,11 +183,12 @@ namespace QST.MicroERP.Service.TMS
                 throw;
             }
         }
-        public void DayStart(string UserId)
+        public void DayStart(string UserId, int clientId, List<UserTaskDE> userTasks)
         {
             try
             {
                 var att = new AttendanceDE();
+                att.ClientId = clientId;
                 att.UserId = UserId;
                 att.IsActive = true;
                 att.DayStartTime = DateTime.Now;
@@ -198,7 +200,20 @@ namespace QST.MicroERP.Service.TMS
                 att.IsActive = true;
                 att.CreatedOn = DateTime.Now;
                 att.ModifiedOn = DateTime.Now;
+                att.User = "Sumaira";
+                att.Supervisor = "Badar";
+                att.UserTasks = userTasks;
                 _attSvc.ManageAttendance(att);
+
+                
+                var ntf = _notifSvc.GenerateNotification(NotificationTemplates.ATT_NotificationToSupervisor_OnDayStart, att);
+                ntf.ClientId = att.ClientId;
+                ntf.UserId = att.UserId;
+                ntf.KeyCode = NotificationTemplates.ATT_NotificationToSupervisor_OnDayStart.ToString();
+                ntf.DBoperation = DBoperations.Insert;
+                bool retVal = _notifSvc.ManagementNotificationLog(ntf);
+                
+
             }
             catch (Exception ex)
             {

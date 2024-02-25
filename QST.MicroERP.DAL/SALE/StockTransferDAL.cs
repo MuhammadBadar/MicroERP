@@ -116,7 +116,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<StockTransferDE>("call QST.MicroERP.SearchStockTransfer( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<StockTransferDE>("call SearchStockTransfer( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception exp)
@@ -144,7 +144,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<StockTransferLineDE>("call QST.MicroERP.SearchSTLine( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<StockTransferLineDE>("call SearchSTLine( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception exp)

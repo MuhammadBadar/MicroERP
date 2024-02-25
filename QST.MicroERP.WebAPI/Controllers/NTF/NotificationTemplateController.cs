@@ -13,13 +13,13 @@ namespace QST.MicroERP.WebAPI.Controllers.NTF
     {
         #region Class Variables
 
-        private NotificationTemplateService _nTemSVC;
+        private NotificationService _nTemSVC;
 
         #endregion
         #region Constructors
         public NotificationTemplateController()
         {
-            _nTemSVC = new NotificationTemplateService();
+            _nTemSVC = new NotificationService();
         }
 
         #endregion
@@ -28,19 +28,19 @@ namespace QST.MicroERP.WebAPI.Controllers.NTF
         [HttpGet]
         public ActionResult Get()
         {
-            NotificationTemplateDE nTemSC = new NotificationTemplateDE();
+            var nTemSC = new NotificationTemplateSearchCriteria();
             List<NotificationTemplateDE> nTem = _nTemSVC.SearchNotificationTemplates(nTemSC);
             return Ok(nTem);
         }
         [HttpGet("{id}")]
         public ActionResult GetNotificationTemplateById(int id)
         {
-            NotificationTemplateDE nTemSC = new NotificationTemplateDE { Id = id };
+            var nTemSC = new NotificationTemplateSearchCriteria { Id = id };
             var nTem = _nTemSVC.SearchNotificationTemplates(nTemSC);
             return Ok(nTem);
         }
         [HttpPost("{Search}")]
-        public ActionResult Search(NotificationTemplateDE Search)
+        public ActionResult Search(NotificationTemplateSearchCriteria Search)
         {
             List<NotificationTemplateDE> nTem = _nTemSVC.SearchNotificationTemplates(Search);
             return Ok(nTem);

@@ -19,8 +19,9 @@ namespace QST.MicroERP.DAL.ATT
                     cmd = MicroERPDataContext.OpenMySqlConnection();
                     closeConnection = true;
                 }
-                cmd.CommandText = "ManageAttendance";
+                cmd.CommandText = "ATT_Manage_Attendance";
                 cmd.Parameters.AddWithValue("prm_Id", Attendance.Id);
+                cmd.Parameters.AddWithValue("prm_ClientId", Attendance.ClientId);
                 cmd.Parameters.AddWithValue("prm_SchDayId", Attendance.SchDayId);
                 cmd.Parameters.AddWithValue("prm_UserId", Attendance.UserId);
                 cmd.Parameters.AddWithValue("prm_DayStartTime", Attendance.DayStartTime);
@@ -62,7 +63,7 @@ namespace QST.MicroERP.DAL.ATT
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<AttendanceDE>("call QST.MicroERP.SearchAttendance( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<AttendanceDE>("call SearchAttendance( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception)

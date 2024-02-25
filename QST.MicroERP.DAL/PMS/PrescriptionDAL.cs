@@ -82,7 +82,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                top = cmd.Connection.Query<PrescriptionDE> ("call QST.MicroERP.SearchPrescription( '" + whereClause + "')").ToList ();
+                top = cmd.Connection.Query<PrescriptionDE> ("call SearchPrescription( '" + whereClause + "')").ToList ();
                 return top;
             }
             catch (Exception exp)
@@ -159,7 +159,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                top = cmd.Connection.Query<RxMedicineDE> ("call QST.MicroERP.SearchRxMedicine( '" + whereClause + "')").ToList ();
+                top = cmd.Connection.Query<RxMedicineDE> ("call SearchRxMedicine( '" + whereClause + "')").ToList ();
                 return top;
             }
             catch (Exception exp)

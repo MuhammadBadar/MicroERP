@@ -66,7 +66,7 @@ namespace QST.MicroERP.DAL
                     cmd = MicroERPDataContext.OpenMySqlConnection();
                     closeConnection = true;
                 }
-                clients = cmd.Connection.Query<ClientsDE>("call QST.MicroERP.SearchClients('" + WhereClause + "')").ToList();
+                clients = cmd.Connection.Query<ClientsDE>("call SearchClients('" + WhereClause + "')").ToList();
                 return clients;
             }
             catch (Exception)

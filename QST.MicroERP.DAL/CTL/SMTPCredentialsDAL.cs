@@ -24,7 +24,7 @@ namespace QST.MicroERP.DAL
                     cmd = MicroERPDataContext.OpenMySqlConnection ();
                     closeConnection = true;
                 }
-                SMTPCredentials = cmd.Connection.Query<SMTPCredentialsDE> ("call QST.MicroERP.SearchSMTPCredentials('" + whereClause + "')").ToList ();
+                SMTPCredentials = cmd.Connection.Query<SMTPCredentialsDE> ("call SearchSMTPCredentials('" + whereClause + "')").ToList ();
                 return SMTPCredentials;
             }
             catch (Exception)

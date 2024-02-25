@@ -28,19 +28,21 @@ namespace QST.MicroERP.DAL.NTF
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                cmd.CommandText = "ManageNotificationLog";
-                cmd.Parameters.AddWithValue("@id", log.Id);
-                cmd.Parameters.AddWithValue("@userId", log.UserId);
-                cmd.Parameters.AddWithValue("@sMS", log.SMS);
-                cmd.Parameters.AddWithValue("@isSent", log.IsSent);
-                cmd.Parameters.AddWithValue("@phone", log.Phone);
-                cmd.Parameters.AddWithValue("@dateTime", log.DateTime);
-                cmd.Parameters.AddWithValue("@createdOn", log.CreatedOn);
-                cmd.Parameters.AddWithValue("@createdById", log.CreatedById);
-                cmd.Parameters.AddWithValue("@modifiedOn", log.ModifiedOn);
-                cmd.Parameters.AddWithValue("@modifiedById", log.ModifiedById);
-                cmd.Parameters.AddWithValue("@isActive", log.IsActive);
-                cmd.Parameters.AddWithValue("@filter", log.DBoperation.ToString());
+                cmd.CommandText = "NTF_Manage_NotificationLog";
+                cmd.Parameters.AddWithValue("@prm_Id", log.Id);
+                cmd.Parameters.AddWithValue("@prm_ClientId", log.ClientId);
+                cmd.Parameters.AddWithValue("@prm_UserId", log.UserId);
+                cmd.Parameters.AddWithValue("@prm_KeyCode", log.KeyCode);
+                cmd.Parameters.AddWithValue("@prm_SMS", log.SMS);
+                cmd.Parameters.AddWithValue("@prm_IsSent", log.IsSent);
+                cmd.Parameters.AddWithValue("@prm_Subject", log.Subject);
+                cmd.Parameters.AddWithValue("@prm_Body", log.Body);
+                cmd.Parameters.AddWithValue("@prm_CreatedOn", log.CreatedOn);
+                cmd.Parameters.AddWithValue("@prm_CreatedById", log.CreatedById);
+                cmd.Parameters.AddWithValue("@prm_ModifiedOn", log.ModifiedOn);
+                cmd.Parameters.AddWithValue("@prm_ModifiedById", log.ModifiedById);
+                cmd.Parameters.AddWithValue("@prm_IsActive", log.IsActive);
+                cmd.Parameters.AddWithValue("@prm_Filter", log.DBoperation.ToString());
 
                 cmd.ExecuteNonQuery();
                 return true;
@@ -100,13 +102,13 @@ namespace QST.MicroERP.DAL.NTF
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<NotificationLogDE>("call QST.MicroERP.SearchNotificationLog( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<NotificationLogDE>("call NTF_Search_NotificationLog( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception exp)
             {
-
-                return top;
+                throw exp;
+                //return top;
             }
             finally
             {

@@ -14,20 +14,25 @@ namespace QST.MicroERP.Core.Entities
             DBoperation = new DBoperations ();
             this.CreatedOn = DateTime.Now;
             this.ModifiedOn = DateTime.Now;
-            //this.IsActive = true;
+            this.IsActive = true;
         }
         #endregion
         #region Class Properties
         public int Id { get; set; }
-        public bool IsActive { get; set; }
+        public int ClientId { get; set; }
+        public string KeyCode { get; set; }
+        
         public DBoperations DBoperation { get; set; }
         public int CreatedById { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int ModifiedById { get; set; }
         public DateTime ModifiedOn { get; set; }
+
+        //public bool IsSent { get; set; }
+        public bool IsActive { get; set; }
+
         public string? ResponseMessage { get; set; }
         public string? UserFriendlyMessage { get; set; }
-        public int ClientId { get; set; }
         public string? Client { get; set; }
         private bool _hasErrors;
         public bool HasErrors
@@ -57,6 +62,9 @@ namespace QST.MicroERP.Core.Entities
         }
         public List<ResultMsg> ResultMessages { get; set; }
         public bool IncludeSubordinatesData { get; set; }
+
+        public int SupervisorId { get; set; }
+        public string Supervisor { get; set; }
         #endregion
         #region Methods
         public void AddErrorMessage ( string message )

@@ -71,7 +71,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                top = cmd.Connection.Query<UOMConversionDE> ("call QST.MicroERP.SearchUOMConversion( '" + whereClause + "')").ToList ();
+                top = cmd.Connection.Query<UOMConversionDE> ("call SearchUOMConversion( '" + whereClause + "')").ToList ();
                 return top;
             }
             catch (Exception)

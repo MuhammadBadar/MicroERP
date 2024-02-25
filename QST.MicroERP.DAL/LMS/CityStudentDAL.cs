@@ -58,7 +58,7 @@ namespace QST.MicroERP.DAL.LMS
                     cmd = MicroERPDataContext.OpenMySqlConnection();
                     closeConnection = true;
                 }
-                lec = cmd.Connection.Query<CityStudentDE>("call QST.MicroERP.SearchCityStudent('" + WhereClause + "')").ToList();
+                lec = cmd.Connection.Query<CityStudentDE>("call SearchCityStudent('" + WhereClause + "')").ToList();
                 return lec;
             }
             catch (Exception)

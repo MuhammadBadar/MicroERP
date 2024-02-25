@@ -71,7 +71,7 @@ namespace QST.MicroERP.Service.VOC
                                     _vcb.UserVocab.DBoperation = DBoperations.Insert;
 
 
-                                _entity = TableNames.UserVocabulary.ToString();
+                                _entity = TableNames.VOC_UserVocabulary.ToString();
                                 if (_vcb.UserVocab.DBoperation == DBoperations.Insert)
                                     _vcb.UserVocab.Id = _coreDAL.GetnextId(_entity);
 

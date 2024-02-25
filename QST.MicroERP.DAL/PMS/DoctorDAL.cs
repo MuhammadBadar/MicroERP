@@ -71,7 +71,7 @@ namespace QST.MicroERP.DAL
                     cmd = MicroERPDataContext.OpenMySqlConnection();
                     closeConnection = true;
                 }
-                doc = cmd.Connection.Query<DoctorDE>("call QST.MicroERP.SearchDoctor('" + WhereClause + "')").ToList();
+                doc = cmd.Connection.Query<DoctorDE>("call SearchDoctor('" + WhereClause + "')").ToList();
                 return doc;
             }
             catch (Exception)
@@ -140,7 +140,7 @@ namespace QST.MicroERP.DAL
                     cmd = MicroERPDataContext.OpenMySqlConnection ();
                     closeConnection = true;
                 }
-                doc = cmd.Connection.Query<DoctorDE> ("call QST.MicroERP.SearchDoctor('" + WhereClause + "')").ToList ();
+                doc = cmd.Connection.Query<DoctorDE> ("call SearchDoctor('" + WhereClause + "')").ToList ();
                 return doc;
             }
             catch (Exception)

@@ -71,7 +71,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<ProductAttribDE>("call QST.MicroERP.SearchProductAttrib( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<ProductAttribDE>("call SearchProductAttrib( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception)

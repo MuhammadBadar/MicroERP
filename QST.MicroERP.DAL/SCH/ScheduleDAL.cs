@@ -75,7 +75,7 @@ namespace QST.MicroERP.DAL.SCH
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<ScheduleDE>("call QST.MicroERP.SearchSchedule( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<ScheduleDE>("call SCH_Search_Schedule( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception)
@@ -148,7 +148,7 @@ namespace QST.MicroERP.DAL.SCH
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<ScheduleDayEventDE>("call QST.MicroERP.SearchScheduleDayEvent( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<ScheduleDayEventDE>("call SearchScheduleDayEvent( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception)
@@ -224,7 +224,7 @@ namespace QST.MicroERP.DAL.SCH
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<ScheduleDayDE>("call QST.MicroERP.SearchScheduleDay( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<ScheduleDayDE>("call SCH_Search_ScheduleDay( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception)

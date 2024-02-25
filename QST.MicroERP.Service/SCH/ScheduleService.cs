@@ -63,11 +63,11 @@ namespace QST.MicroERP.Service.SCH
                 }
                 if (mod.DBoperation == DBoperations.Insert)
                 {
-                    mod.Id = _corDAL.GetnextId(TableNames.Schedule.ToString());
+                    mod.Id = _corDAL.GetnextId(TableNames.SCH_Schedule.ToString());
                     retVal = _schDAL.ManageSchedule(mod, cmd);
                 }
                 int schDayId = 0;
-                schDayId = _corDAL.GetnextId(TableNames.scheduleday.ToString());
+                schDayId = _corDAL.GetnextId(TableNames.SCH_ScheduleDay.ToString());
                 var schedules = SearchSchedule(new ScheduleDE { Id = mod.Id });
                 var sch = new ScheduleDE();
                 if (schedules != null && schedules.Count > 0) { sch = schedules[0]; }
@@ -155,13 +155,13 @@ namespace QST.MicroERP.Service.SCH
                 MicroERPDataContext.StartTransaction(cmd);
                 if (mod.DBoperation == DBoperations.Insert)
                 {
-                    mod.Id = _corDAL.GetnextId(TableNames.Schedule.ToString());
+                    mod.Id = _corDAL.GetnextId(TableNames.SCH_Schedule.ToString());
                     retVal = _schDAL.ManageSchedule(mod, cmd);
                 }
                 int schDayId = 0;
                 int dayEvtId = 0;
-                schDayId = _corDAL.GetnextId(TableNames.scheduleday.ToString());
-                dayEvtId = _corDAL.GetnextId(TableNames.ScheduleDayEvent.ToString());
+                schDayId = _corDAL.GetnextId(TableNames.SCH_ScheduleDay.ToString());
+                dayEvtId = _corDAL.GetnextId(TableNames.SCH_ScheduleDayEvent.ToString());
                 foreach (var day in mod.ScheduleDays)
                 {
                     var SchLine = new ScheduleDayDE();
@@ -270,7 +270,7 @@ namespace QST.MicroERP.Service.SCH
                 closeConnectionFlag = true;
 
                 if (schDay.DBoperation == DBoperations.Insert)
-                    schDay.Id = _corDAL.GetnextId(TableNames.scheduleday.ToString());
+                    schDay.Id = _corDAL.GetnextId(TableNames.SCH_ScheduleDay.ToString());
                 if (schDay.DBoperation == DBoperations.Delete)
                 {
                     var schDayEvents = _schDayEvntSvc.GetScheduleDayEvents(schDay.Id);

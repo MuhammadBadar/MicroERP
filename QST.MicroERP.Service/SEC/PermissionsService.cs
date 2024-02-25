@@ -47,7 +47,7 @@ namespace QST.MicroERP.Services
                 closeConnectionFlag = true;
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetnextId (TableNames.permission.ToString ());
+                    mod.Id = _corDAL.GetnextId (TableNames.SEC_Permission.ToString ());
                 retVal = _permsDAL.ManageData (mod, cmd);
                 return retVal;
             }
@@ -73,7 +73,7 @@ namespace QST.MicroERP.Services
                 MicroERPDataContext.StartTransaction (cmd);
 
                 closeConnectionFlag = true;
-                var Id = _corDAL.GetMaxId (TableNames.permission.ToString ());
+                var Id = _corDAL.GetMaxId (TableNames.SEC_Permission.ToString ());
                 foreach (var perm in permissions)
                 {
                     //if (perm.PermissionId != 0)

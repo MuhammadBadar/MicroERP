@@ -69,7 +69,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                top = cmd.Connection.Query<RxMedExtraFieldsDataDE> ("call QST.MicroERP.SearchRxMedExtraFieldsData( '" + whereClause + "')").ToList ();
+                top = cmd.Connection.Query<RxMedExtraFieldsDataDE> ("call SearchRxMedExtraFieldsData( '" + whereClause + "')").ToList ();
                 return top;
             }
             catch (Exception)

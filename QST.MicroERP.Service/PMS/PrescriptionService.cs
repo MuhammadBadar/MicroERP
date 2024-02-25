@@ -53,11 +53,11 @@ namespace QST.MicroERP.Service
                 MicroERPDataContext.StartTransaction (cmd);
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetNextIdByClient (TableNames.prescription.ToString (), mod.ClientId, "ClientId");
+                    mod.Id = _corDAL.GetNextIdByClient (TableNames.PMS_Prescription.ToString (), mod.ClientId, "ClientId");
                 if (mod.Precauts != null)
                     mod.PrecautionIds = string.Join (",", mod.Precauts.ToArray ());
-                var _rptId = _corDAL.GetMaxLineIdByClt (TableNames.patientreport.ToString (), "RxId", mod.Id, mod.ClientId);
-                var _medId = _corDAL.GetMaxLineIdByClt (TableNames.rxmedicine.ToString (), "RxId", mod.Id, mod.ClientId);
+                var _rptId = _corDAL.GetMaxLineIdByClt (TableNames.PMS_PatientReport.ToString (), "RxId", mod.Id, mod.ClientId);
+                var _medId = _corDAL.GetMaxLineIdByClt (TableNames.PMS_RxMedicine.ToString (), "RxId", mod.Id, mod.ClientId);
                 if (mod.DBoperation == DBoperations.Insert || mod.DBoperation == DBoperations.Update)
                 {
                     #region Medicines

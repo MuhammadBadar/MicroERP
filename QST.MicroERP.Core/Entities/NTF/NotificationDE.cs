@@ -19,6 +19,7 @@ namespace QST.MicroERP.Core.Entities.NTF
         public string DirectSupervisorMail { get; set; }
         public string SenderMail { get; set; }
         public string ReceiverMail { get; set; }
+
         public IFormFile? Attachment { get; set; }
         public NotificationDE()
         {

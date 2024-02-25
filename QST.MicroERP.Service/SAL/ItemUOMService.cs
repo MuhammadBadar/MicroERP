@@ -40,7 +40,7 @@ namespace QST.MicroERP.Service
                 cmd = MicroERPDataContext.OpenMySqlConnection ();
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetNextIdByClient (TableNames.itemuom.ToString (), mod.ClientId, "ClientId");
+                    mod.Id = _corDAL.GetNextIdByClient (TableNames.SAL_ItemUOM.ToString (), mod.ClientId, "ClientId");
                 retVal = _itmUOM.ManageItemUOM (mod, cmd);
                 if (retVal == true)
                     mod.DBoperation = DBoperations.NA;

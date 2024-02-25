@@ -40,14 +40,14 @@ namespace QST.MicroERP.Service
                 MicroERPDataContext.StartTransaction(cmd);
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetnextId(TableNames.purchase.ToString());
+                    mod.Id = _corDAL.GetnextId(TableNames.PUR_Purchase.ToString());
                 retVal = _PrchDAL.ManagePurchase(mod, cmd);
                 if (mod.DBoperation == DBoperations.Insert || mod.DBoperation == DBoperations.Update)
                     foreach (var PrchDet in mod.PurchaseLines)
                     {
                         PrchDet.PrchId = mod.Id;
                         if (PrchDet.DBoperation == DBoperations.Insert)
-                            PrchDet.Id = _corDAL.GetnextLineId(TableNames.purchaseline.ToString(), mod.Id, "PrchId");
+                            PrchDet.Id = _corDAL.GetnextLineId(TableNames.PUR_PurchaseLine.ToString(), mod.Id, "PrchId");
                         retVal = _PrchDAL.ManagePurchaseLine(PrchDet, cmd);
                     }
                 if (retVal == true)

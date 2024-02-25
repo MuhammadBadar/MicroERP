@@ -69,7 +69,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                top = cmd.Connection.Query<PtExtraFieldsDataDE> ("call QST.MicroERP.SearchPtExtraFieldsData( '" + whereClause + "')").ToList ();
+                top = cmd.Connection.Query<PtExtraFieldsDataDE> ("call SearchPtExtraFieldsData( '" + whereClause + "')").ToList ();
                 return top;
             }
             catch (Exception)
@@ -98,7 +98,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                ds = cmd.Connection.Query<Object> ("call QST.MicroERP.GetExtraFieldsData( " + TypeId + ")").ToList ();
+                ds = cmd.Connection.Query<Object> ("call GetExtraFieldsData( " + TypeId + ")").ToList ();
                 return ds;
             }
             catch (Exception)
