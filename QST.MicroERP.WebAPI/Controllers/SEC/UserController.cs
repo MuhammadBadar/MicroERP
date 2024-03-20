@@ -93,16 +93,16 @@ namespace QST.MicroERP.WebAPI.Controllers.SEC
             user.RoleId = _user.RoleId;
             user.SupervisorId = _user.SupervisorId;
             user.UserPassword = _user.UserPassword;
-            user.PhoneNumber = user.PhoneNumber;
-            user.ClientId = user.ClientId;
-            user.RoleId = user.RoleId;
-            user.ModuleId = user.ModuleId;
-            user.Name = user.Name;
-            user.Address = user.Address;
-            user.FatherName = user.FatherName;
-            user.FirstName = user.FirstName;
-            user.Designation = user.Designation;
-            user.CNIC = user.CNIC;
+            user.PhoneNumber = _user.PhoneNumber;
+            user.ClientId = _user.ClientId;
+            user.RoleId = _user.RoleId;
+            user.ModuleId = _user.ModuleId;
+            user.Name = _user.Name;
+            user.Address = _user.Address;
+            user.FatherName = _user.FatherName;
+            user.FirstName = _user.FirstName;
+            user.Designation = _user.Designation;
+            user.CNIC = _user.CNIC;
             user.PasswordHash = passwordHasher.HashPassword (user, _user.UserPassword);
             IdentityResult result = await userManager.UpdateAsync (user);
             return Ok (new

@@ -127,18 +127,6 @@ input.mat-chip-input {
   padding: 5px; /* Add some padding for spacing */
   cursor: pointer;
   transition: color 0.2s ease, border-bottom-color 0.2s ease;
-
-  /* Hover effect */
-  &:hover {
-    color: #970541; /* Text color on hover */
-    border-bottom-color: #206b8e; /* Border color on hover */
-  }
-
-  /* Focus effect (for keyboard navigation) */
-  /* &:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(91, 126, 164, 0.5); Focus outline
-  } */
 }
 .custom-sort-header.mat-sort-header.mat-sort-header-sorted .mat-sort-header-arrow {
   color: white; /* Replace 'your-color' with your desired color */

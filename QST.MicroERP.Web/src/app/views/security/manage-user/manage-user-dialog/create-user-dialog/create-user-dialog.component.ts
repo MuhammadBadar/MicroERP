@@ -64,7 +64,7 @@ export class CreateUserDialogComponent implements OnInit {
   isLoading: boolean = false
   constructor(
     private location: Location,
-    private catSvc: CatalogService,
+    public catSvc: CatalogService,
     private pmsSvc: PMSService,
     private injector: Injector,
     private storeSvc: StorageService,

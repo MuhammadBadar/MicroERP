@@ -34,3 +34,5 @@
 /MicroERP.Scheduling/bin
 /MicroERP.Scheduling/obj
 /.vs/MicroERP/v17/.suo
+/_Published
+/QST.MicroERP.Tests/obj/Debug/net6.0/QST.MicroERP.Tests.assets.cache

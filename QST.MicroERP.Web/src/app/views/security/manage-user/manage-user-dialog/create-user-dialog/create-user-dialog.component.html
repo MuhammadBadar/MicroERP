@@ -181,7 +181,7 @@
           fxFlex="100%"
           class="form-group"
         >
-          <mat-form-field fxFlex="50%" appearance="outline">
+          <mat-form-field fxFlex="50%" appearance="outline" *ngIf="(selectedUser.clientId>0 && Edit) || Add">
             <mat-label>--Please Select Role--</mat-label>
             <mat-select
               [disabled]="isReadonly "
@@ -199,7 +199,7 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field fxFlex="50%" appearance="outline">
+          <mat-form-field fxFlex="100%" appearance="outline">
             <mat-label>Phone No</mat-label>
             <!-- <span matPrefix>+1 &nbsp;</span> -->
             <input
