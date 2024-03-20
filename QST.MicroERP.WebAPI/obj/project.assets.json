@@ -4050,8 +4050,8 @@
     },
     "QST.MicroERP.Scheduling/1.0.0": {
       "type": "project",
-      "path": "../QST.MicroERP.Jobs/QST.MicroERP.Scheduling.csproj",
-      "msbuildProject": "../QST.MicroERP.Jobs/QST.MicroERP.Scheduling.csproj"
+      "path": "../QST.MicroERP.Scheduling/QST.MicroERP.Scheduling.csproj",
+      "msbuildProject": "../QST.MicroERP.Scheduling/QST.MicroERP.Scheduling.csproj"
     },
     "QST.MicroERP.Service/1.0.0": {
       "type": "project",
@@ -4082,19 +4082,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\IBM\\.nuget\\packages\\": {}
+    "C:\\Users\\AU TRADERS\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.WebAPI\\QST.MicroERP.WebAPI.csproj",
+      "projectUniqueName": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.WebAPI\\QST.MicroERP.WebAPI.csproj",
       "projectName": "QST.MicroERP.WebAPI",
-      "projectPath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.WebAPI\\QST.MicroERP.WebAPI.csproj",
-      "packagesPath": "C:\\Users\\IBM\\.nuget\\packages\\",
-      "outputPath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.WebAPI\\obj\\",
+      "projectPath": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.WebAPI\\QST.MicroERP.WebAPI.csproj",
+      "packagesPath": "C:\\Users\\AU TRADERS\\.nuget\\packages\\",
+      "outputPath": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.WebAPI\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\IBM\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\AU TRADERS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4108,17 +4113,17 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj": {
-              "projectPath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj"
+            "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj": {
+              "projectPath": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj"
             },
-            "C:\\QST\\Git\\MicroERP\\QST.MicroERP.DAL\\QST.MicroERP.DAL.csproj": {
-              "projectPath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.DAL\\QST.MicroERP.DAL.csproj"
+            "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.DAL\\QST.MicroERP.DAL.csproj": {
+              "projectPath": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.DAL\\QST.MicroERP.DAL.csproj"
             },
-            "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Jobs\\QST.MicroERP.Scheduling.csproj": {
-              "projectPath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Jobs\\QST.MicroERP.Scheduling.csproj"
+            "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Scheduling\\QST.MicroERP.Scheduling.csproj": {
+              "projectPath": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Scheduling\\QST.MicroERP.Scheduling.csproj"
             },
-            "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Service\\QST.MicroERP.Service.csproj": {
-              "projectPath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Service\\QST.MicroERP.Service.csproj"
+            "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Service\\QST.MicroERP.Service.csproj": {
+              "projectPath": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Service\\QST.MicroERP.Service.csproj"
             }
           }
         }

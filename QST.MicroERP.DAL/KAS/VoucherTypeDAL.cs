@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using QST.MicroERP.Core.Constants;
 
 namespace QST.MicroERP.DAL
 {
@@ -27,20 +28,20 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                cmd.CommandText = "Manage_VoucherType";
-                cmd.Parameters.AddWithValue("id", vouc.Id);
-                cmd.Parameters.AddWithValue ("clientId", vouc.ClientId);
-                cmd.Parameters.AddWithValue("name", vouc.Name);
-                cmd.Parameters.AddWithValue("defaultDrCrFirst", vouc.DefaultDrCrFirst);
-                cmd.Parameters.AddWithValue("keyCode", vouc.KeyCode);
-                cmd.Parameters.AddWithValue("defaultDrCrSecondId", vouc.DefaultDrCrSecondId);
-                cmd.Parameters.AddWithValue("createdOn", vouc.CreatedOn);
-                cmd.Parameters.AddWithValue("createdById", vouc.CreatedById);
-                cmd.Parameters.AddWithValue("modifiedOn", vouc.ModifiedOn);
-                cmd.Parameters.AddWithValue("modifiedById", vouc.ModifiedById);
-                cmd.Parameters.AddWithValue("isActive", vouc.IsActive);
-                cmd.Parameters.AddWithValue("DBoperation", vouc.DBoperation.ToString());
-                cmd.Parameters.AddWithValue("Filter", vouc.DBoperation.ToString());
+                cmd.CommandText =SPNames.ACC_Manage_VoucherType.ToString ();
+                cmd.Parameters.AddWithValue("prm_id", vouc.Id);
+                cmd.Parameters.AddWithValue("prm_clientId", vouc.ClientId);
+                cmd.Parameters.AddWithValue("prm_name", vouc.Name);
+                cmd.Parameters.AddWithValue("prm_defaultDrCrFirst", vouc.DefaultDrCrFirst);
+                cmd.Parameters.AddWithValue("prm_keyCode", vouc.KeyCode);
+                cmd.Parameters.AddWithValue("prm_defaultDrCrSecondId", vouc.DefaultDrCrSecondId);
+                cmd.Parameters.AddWithValue("prm_createdOn", vouc.CreatedOn);
+                cmd.Parameters.AddWithValue("prm_createdById", vouc.CreatedById);
+                cmd.Parameters.AddWithValue("prm_modifiedOn", vouc.ModifiedOn);
+                cmd.Parameters.AddWithValue("prm_modifiedById", vouc.ModifiedById);
+                cmd.Parameters.AddWithValue("prm_isActive", vouc.IsActive);
+                cmd.Parameters.AddWithValue("prm_DBoperation", vouc.DBoperation.ToString());
+                cmd.Parameters.AddWithValue("prm_Filter", vouc.DBoperation.ToString());
 
                 cmd.ExecuteNonQuery();
                 return true;
@@ -70,7 +71,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                list = cmd.Connection.Query<VoucherTypeDE>("call Get_VoucherType( '" + whereClause + "')").ToList();
+                list = cmd.Connection.Query<VoucherTypeDE>("call "+SPNames.ACC_Search_VoucherType.ToString () + "( '" + whereClause + "')").ToList();
                 return list;
             }
             catch (Exception )

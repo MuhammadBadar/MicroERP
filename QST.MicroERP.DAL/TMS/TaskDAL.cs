@@ -12,6 +12,8 @@ using QST.MicroERP.DAL;
 using QST.MicroERP.Core.ViewModel;
 using QST.MicroERP.Core.Enums;
 using QST.MicroERP.Core.Entities.TMS;
+using System.Threading.Tasks;
+using QST.MicroERP.Core.Constants;
 
 namespace QST.MicroERP.DAL.TMS
 {
@@ -44,22 +46,23 @@ namespace QST.MicroERP.DAL.TMS
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                cmd.CommandText = "Managetask";
-                cmd.Parameters.AddWithValue("@id", task.Id);
-                cmd.Parameters.AddWithValue("@userId", task.UserId);
-                cmd.Parameters.AddWithValue("@moduleId", task.ModuleId);
-                cmd.Parameters.AddWithValue("@statusId", task.StatusId);
-                cmd.Parameters.AddWithValue("@priorityId", task.PriorityId);
-                cmd.Parameters.AddWithValue("@title", task.Title);
-                cmd.Parameters.AddWithValue("@sp", task.SP);
-                cmd.Parameters.AddWithValue("@description", task.Description);
-                cmd.Parameters.AddWithValue("@reason", task.Reason);
-                cmd.Parameters.AddWithValue("@createdOn", task.CreatedOn);
-                cmd.Parameters.AddWithValue("@createdById", task.CreatedById);
-                cmd.Parameters.AddWithValue("@modifiedOn", task.ModifiedOn);
-                cmd.Parameters.AddWithValue("@modifiedById", task.ModifiedById);
-                cmd.Parameters.AddWithValue("@isActive", task.IsActive);
-                cmd.Parameters.AddWithValue("@filter", task.DBoperation.ToString());
+                cmd.CommandText = SPNames.TMS_Manage_Task.ToString ();
+                cmd.Parameters.AddWithValue("@prm_id", task.Id);
+                cmd.Parameters.AddWithValue("@prm_clientId", task.ClientId);
+                cmd.Parameters.AddWithValue("@prm_userId", task.UserId);
+                cmd.Parameters.AddWithValue("@prm_moduleId", task.ModuleId);
+                cmd.Parameters.AddWithValue("@prm_statusId", task.StatusId);
+                cmd.Parameters.AddWithValue("@prm_priorityId", task.PriorityId);
+                cmd.Parameters.AddWithValue("@prm_title", task.Title);
+                cmd.Parameters.AddWithValue("@prm_sp", task.SP);
+                cmd.Parameters.AddWithValue("@prm_description", task.Description);
+                cmd.Parameters.AddWithValue("@prm_reason", task.Reason);
+                cmd.Parameters.AddWithValue("@prm_createdOn", task.CreatedOn);
+                cmd.Parameters.AddWithValue("@prm_createdById", task.CreatedById);
+                cmd.Parameters.AddWithValue("@prm_modifiedOn", task.ModifiedOn);
+                cmd.Parameters.AddWithValue("@prm_modifiedById", task.ModifiedById);
+                cmd.Parameters.AddWithValue("@prm_isActive", task.IsActive);
+                cmd.Parameters.AddWithValue("@prm_filter", task.DBoperation.ToString());
 
                 cmd.ExecuteNonQuery();
                 retVal = true;
@@ -90,22 +93,20 @@ namespace QST.MicroERP.DAL.TMS
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-
-
-
-                cmd.CommandText = "ManageAttachments";
-                cmd.Parameters.AddWithValue("@id", atchmnt.Id);
-                cmd.Parameters.AddWithValue("@taskId", atchmnt.TaskId);
-                cmd.Parameters.AddWithValue("@name", atchmnt.Name);
-                cmd.Parameters.AddWithValue("@size", atchmnt.Size);
-                cmd.Parameters.AddWithValue("@docPath", atchmnt.DocPath);
-                cmd.Parameters.AddWithValue("@base64File", atchmnt.Base64File);
-                cmd.Parameters.AddWithValue("@createdOn", atchmnt.CreatedOn);
-                cmd.Parameters.AddWithValue("@createdById", atchmnt.CreatedById);
-                cmd.Parameters.AddWithValue("@modifiedOn", atchmnt.ModifiedOn);
-                cmd.Parameters.AddWithValue("@modifiedById", atchmnt.ModifiedById);
-                cmd.Parameters.AddWithValue("@isActive", atchmnt.IsActive);
-                cmd.Parameters.AddWithValue("@DBoperation", atchmnt.DBoperation.ToString());
+                cmd.CommandText = SPNames.TMS_Manage_Attachment.ToString ();
+                cmd.Parameters.AddWithValue("@prm_id", atchmnt.Id);
+                cmd.Parameters.AddWithValue("@prm_clientId", atchmnt.ClientId);
+                cmd.Parameters.AddWithValue("@prm_taskId", atchmnt.TaskId);
+                cmd.Parameters.AddWithValue("@prm_name", atchmnt.Name);
+                cmd.Parameters.AddWithValue("@prm_size", atchmnt.Size);
+                cmd.Parameters.AddWithValue("@prm_docPath", atchmnt.DocPath);
+                cmd.Parameters.AddWithValue("@prm_base64File", atchmnt.Base64File);
+                cmd.Parameters.AddWithValue("@prm_createdOn", atchmnt.CreatedOn);
+                cmd.Parameters.AddWithValue("@prm_createdById", atchmnt.CreatedById);
+                cmd.Parameters.AddWithValue("@prm_modifiedOn", atchmnt.ModifiedOn);
+                cmd.Parameters.AddWithValue("@prm_modifiedById", atchmnt.ModifiedById);
+                cmd.Parameters.AddWithValue("@prm_isActive", atchmnt.IsActive);
+                cmd.Parameters.AddWithValue("@prm_DBoperation", atchmnt.DBoperation.ToString());
 
                 cmd.ExecuteNonQuery();
 
@@ -138,7 +139,7 @@ namespace QST.MicroERP.DAL.TMS
                 else
                     Console.WriteLine("Connection error");
 
-                top = cmd.Connection.Query<AttachmentsDE>("call SearchAttachments( '" + whereClause + "'  ) ").ToList();
+                top = cmd.Connection.Query<AttachmentsDE>("call "+SPNames.TMS_Search_Attachment.ToString () + "( '" + whereClause + "'  ) ").ToList();
                 return top;
             }
             catch (Exception)
@@ -169,12 +170,12 @@ namespace QST.MicroERP.DAL.TMS
                 whereClause = " " + whereClause + " order by Id desc";
                 if (retType == TaskReturnTypes.Task.ToString())
                 {
-                    result.Tasks = cmd.Connection.Query<TaskDE>("call TMS_Search_Tasks( '" + whereClause + "'  ) ").ToList();
+                    result.Tasks = cmd.Connection.Query<TaskDE>("call "+SPNames.TMS_Search_Task.ToString () + "( '" + whereClause + "'  ) ").ToList();
                     return result;
                 }
                 else
                 {
-                    result.UserTasks = cmd.Connection.Query<UserTaskVM>("call TMS_Search_Tasks( '" + whereClause + "'  ) ").ToList();
+                    result.UserTasks = cmd.Connection.Query<UserTaskVM>("call "+SPNames.TMS_Search_Task.ToString () + "( '" + whereClause + "'  ) ").ToList();
                     return result;
                 }
             }

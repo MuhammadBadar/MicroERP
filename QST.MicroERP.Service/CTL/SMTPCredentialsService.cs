@@ -39,7 +39,7 @@ namespace QST.MicroERP.Service
                 cmd = MicroERPDataContext.OpenMySqlConnection ();
                 closeConnectionFlag = true;
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _coreDAL.GetnextId (TableNames.CTL_SMTPCredentials.ToString());
+                    mod.Id = _coreDAL.GetNextIdByClient (TableNames.CTL_SMTPCredentials.ToString (), mod.ClientId, "ClientId");
                 retVal = _baseDAL.ManageData (mod, cmd);
                 return retVal;
             }

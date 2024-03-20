@@ -1,0 +1,157 @@
+<div class="container-fluid page">
+    <div class="d-flex page_box p-3 mt-2  header-sticky" position="sticky">
+        <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+            <div *ngIf="Add">Manage Chart of Account
+            </div>
+            <div *ngIf="Edit">Update Chart of Account
+            </div>
+            <div fxFlex="7%">
+                <button mat-icon-button fxLayoutAlign="end end" (click)="dialogRef.close()" style="color: white">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="page_content shadow p-3 position-relative">
+        <form name="eventForm" #userForm="ngForm">
+            <div fxLayout="row" fxLayoutAlign="space-between">
+                <mat-form-field fxFlex="100%" appearance="outline" class="form-group">
+                    <mat-label> Select Level</mat-label>
+                    <mat-select name="levelId" [(ngModel)]="selectedSettings.levelId" matNativeControl required="true">
+                        <mat-option [value]="0" (click)="Settings.length=0">--Please Select--</mat-option>
+                        <mat-option *ngFor="let pt of levels" [value]=" pt.id" (click)="SearchByLevel(pt)">
+                            {{ pt.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field *ngIf="selectedSettings.levelId>0 && selectedSettings.levelId!==1006" fxFlex="50%" appearance="outline" class="form-group">
+                    <mat-label> Select Parent</mat-label>
+                    <mat-select name="parentId" [required]="selectedSettings.levelId!=1006"
+                        [(ngModel)]="selectedSettings.parentId" matNativeControl>
+                        <mat-option [value]="0" (click)="GetSettings()">--Please Select--</mat-option>
+                        <mat-option *ngFor="let pt of Settings" [value]=" pt.id"
+                            (click)="SearchLevelCode(pt);OnLevelChange(pt);">
+                            {{ pt.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between">
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="50%">
+                    <mat-form-field fxFlex="48%" appearance="outline" class="form-group">
+                        <mat-label>Enter Code</mat-label>
+                        <input matInput #keyCode="ngModel" name="KeyCode" type="text" required="true"
+                            (keypress)="numberOnly($event)" (input)="TextChangeEvent($event);" [maxlength]="maxLength"
+                            [(ngModel)]="selectedSettings.keyCode">
+                    </mat-form-field>
+                    <mat-form-field fxFlex="48%" appearance="outline">
+                        <mat-label>Account Code</mat-label>
+                        <input matInput #accountCode="ngModel" name="accountCode" type="text" readonly="true"
+                            [(ngModel)]="selectedSettings.accountCode">
+                    </mat-form-field>
+                </div>
+                <mat-form-field fxFlex="50%" appearance="outline" class="form-group">
+                    <mat-label>Enter Name</mat-label>
+                    <input matInput #name="ngModel" name="Name" type="text" required="true"
+                        [(ngModel)]="selectedSettings.name">
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between">
+
+                <mat-form-field fxFlex="100%" appearance="outline">
+                    <mat-label>Enter Description</mat-label>
+                    <textarea #Description="ngModel" matInput name="description"
+                        [(ngModel)]="selectedSettings.description"></textarea>
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-checkbox name="isActive" [(ngModel)]="selectedSettings.isActive">
+                    IsActive
+                </mat-checkbox>
+            </div>
+            <div fxLayoutAlign="end end">
+                <c-spinner *ngIf="proccessing" style="height: 50px;width: 50px;color: rgb(3, 71, 102);"></c-spinner>
+                <div style="margin-top: 10px;" *ngIf="!proccessing">
+                    <button *ngIf="Add" mat-button style="background-color:#1e293b ;color: white;"
+                        (click)="CheckCodeLength();">
+                        Save
+                    </button>
+                    <button *ngIf="Edit" cButton class="me-1" style="background-color:#1e293b ;" type="submit"
+                        (click)="CheckCodeLength()">
+                        Update
+                    </button>
+                </div>
+                <div>
+                    <button mat-icon-button mat-sm-button color="primary" cTooltip="Refresh" cTooltipPlacement="top"
+                        (click)="ngOnInit()">
+                        <mat-icon>autorenew</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <!-- <c-card style="padding: 10px; margin-top: 30px;" class="mat-elevation-z8">
+            <h5 cCardTitle> Chart of Account List</h5>
+            <c-card-body
+                style="padding: 10px;background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));margin: 5px;border-radius: 10px;">
+                <div class="example-table-container">
+                    <section class="example-container mat-elevation-z8" tabindex="0" style="border-radius: 5px;">
+                        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                            <ng-container matColumnDef="Id">
+                                <th mat-header-cell *matHeaderCellDef> Sr No </th>
+                                <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="name">
+                                <th mat-header-cell *matHeaderCellDef [style]="style">
+                                    <div style="min-width:100px"> Name</div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width:100px"> {{element.name}} </div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="settingType">
+                                <th mat-header-cell *matHeaderCellDef [style]="style"> Settings Type </th>
+                                <td mat-cell *matCellDef="let element"> {{element.settingType}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="isActive">
+                                <th mat-header-cell *matHeaderCellDef [style]="style"> IsActive </th>
+                                <td mat-cell *matCellDef="let element"> {{element.isActive?'Yes':'No'}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="keyCode">
+                                <th mat-header-cell *matHeaderCellDef [style]="style"> Account Code
+                                </th>
+                                <td mat-cell *matCellDef="let element"> {{element.accountCode}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="level">
+                                <th mat-header-cell *matHeaderCellDef [style]="style"> Level </th>
+                                <td mat-cell *matCellDef="let element"> {{element.level}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="parent">
+                                <th mat-header-cell *matHeaderCellDef [style]="style">
+                                    <div>Parent</div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div>{{element.parentName}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="actions" stickyEnd="true">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <p style="font-size: 14px;text-align: center;color: white;">Action</p>
+                                </th>
+                                <td mat-cell *matCellDef="let row" style="text-align: center;">
+                                    <div>
+                                        <button mat-icon-button mat-sm-button style="color:#1e293b ; "
+                                            (click)="GetSettingsForEdit(row.id)" cTooltip="Edit Settings ">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns sticky: true"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </section>
+                </div>
+            </c-card-body>
+        </c-card> -->
+    </div>
+</div>

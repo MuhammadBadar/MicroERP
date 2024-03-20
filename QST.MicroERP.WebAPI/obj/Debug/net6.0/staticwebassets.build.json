@@ -1,11 +1,19 @@
 {
   "Version": 1,
-  "Hash": "RWD0oROkTWGs899PcHskaODuFKJTu08IfR3IIRKn6T0=",
+  "Hash": "fqxOUd+fnFVh4btJoaAwqI2FWbYpFbmePKepmJztQ4Y=",
   "Source": "QST.MicroERP.WebAPI",
   "BasePath": "_content/QST.MicroERP.WebAPI",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "QST.MicroERP.WebAPI\\wwwroot",
+      "Source": "QST.MicroERP.WebAPI",
+      "ContentRoot": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.WebAPI\\wwwroot\\",
+      "BasePath": "_content/QST.MicroERP.WebAPI",
+      "Pattern": "**"
+    }
+  ],
   "Assets": []
 }

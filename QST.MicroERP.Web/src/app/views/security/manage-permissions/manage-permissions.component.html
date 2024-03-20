@@ -1,0 +1,107 @@
+<div class="container-fluid page">
+    <div class="d-flex page_box p-3 mt-2  header-sticky" position="sticky">
+        <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+            <div>
+                <p> Permissions</p>
+            </div>
+        </div>
+    </div>
+    <div class="page_content shadow p-3 position-relative">
+        <div fxLayout="column">
+            <div fxLayout="row">
+                <button class="icon-button" [ngClass]="{disIconBtn:isReadOnly}"  mat-fab extended (click)="Submit();">
+                    <mat-icon>check_circle</mat-icon> Submit
+                </button>
+                <button mat-icon-button mat-sm-button color="primary" cTooltip="Refresh" cTooltipPlacement="top"
+                    (click)="ngOnInit()">
+                    <mat-icon>autorenew</mat-icon>
+                </button>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                <mat-form-field fxFlex="20% " [inert]="!catSvc.isSuperAdmin()">
+                    <mat-label>Client</mat-label>
+                    <mat-select matNativeControl name="userId" #userId="ngModel"
+                        [(ngModel)]="selectedpermission.clientId">
+                        <mat-option [value]='0' (click)="ngOnInit()">--Please select--</mat-option>
+                        <mat-option (click)="GetPerm();selectedpermission.roleId=0;selectedpermission.userId=ctl.userId" *ngFor="let ctl of clients" [value]="ctl.id"
+                           >
+                            {{ctl.clientName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                 <mat-form-field fxFlex="35% ">
+                    <mat-label>User</mat-label>
+                    <mat-select matNativeControl name="userId" #userId="ngModel"
+                        [(ngModel)]="selectedpermission.userId">
+                        <mat-option value='' (click)="ngOnInit()">--Please select--</mat-option>
+                        <mat-option *ngFor="let u of users" [value]="u.id"
+                            (click)="SearchPermsByUser(u);selectedpermission.roleId=0 ">
+                            {{u.userName}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field fxFlex="35% ">
+                    <mat-label>Role</mat-label>
+                    <mat-select name="roleId" #roleId="ngModel" [(ngModel)]="selectedpermission.roleId">
+                        <mat-option [value]="0" (click)="ngOnInit()"> --Please Select--</mat-option>
+                        <mat-option *ngFor="let r of roles" [value]="r.id"
+                            (click)="SearchPermsByRole(r);selectedpermission.userId=''">
+                            {{r.name}}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <c-card style="padding: 10px; margin-top: 30px;" class="mat-elevation-z8">
+                <c-card-body style="padding: 10px;background-color: rgb(2, 42, 75);border-radius: 10px;">
+                    <div class="example-table-container">
+                        <section class="example-container mat-elevation-z8" tabindex="0" style="border-radius: 5px;">
+                            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                                <ng-container matColumnDef="route">
+                                    <th mat-header-cell *matHeaderCellDef> Route Name</th>
+                                    <td mat-cell *matCellDef="let element"> {{ element.route }} </td>
+                                </ng-container>
+                                <!-- Permission Type columns -->
+                                <ng-container matColumnDef="notSet">
+                                    <th mat-header-cell *matHeaderCellDef> Not Set </th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-radio-group [(ngModel)]="element.permissionId">
+                                            <mat-radio-button [value]="0" class="custom-radio-button">
+                                            </mat-radio-button>
+                                        </mat-radio-group>
+                                    </td>
+                                </ng-container>
+                                <ng-container *ngFor="let permissionType of permsTypes"
+                                    [matColumnDef]="permissionType.name">
+                                    <th mat-header-cell *matHeaderCellDef> {{ permissionType.name }} </th>
+                                    <td mat-cell *matCellDef="let element">
+                                        <mat-radio-group [(ngModel)]="element.permissionId">
+                                            <mat-radio-button class="custom-radio-button" [value]="permissionType.id">
+                                            </mat-radio-button>
+                                        </mat-radio-group>
+                                    </td>
+                                </ng-container>
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+                        </section>
+                    </div>
+                </c-card-body>
+            </c-card>
+            <div fxLayoutAlign="end end" style="margin: 20px;">
+                <div fxLayout="row">
+                    <button class="icon-button" [ngClass]="{disIconBtn:isReadOnly}" mat-fab extended (click)="Submit();">
+                        <mat-icon>check_circle</mat-icon> Submit
+                    </button>
+                    <button mat-icon-button style="margin-top: 5px;" mat-sm-button color="primary" cTooltip="Refresh"
+                        cTooltipPlacement="top" (click)="ngOnInit()">
+                        <mat-icon>autorenew</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+  <div *ngIf="isLoading" class="spinnerBox">
+    <c-spinner style="height: 100px; width: 100px; color: white"></c-spinner>
+  </div>
+</div>

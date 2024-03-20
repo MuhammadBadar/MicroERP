@@ -1,0 +1,158 @@
+<div class="container-fluid page">
+    <div class="d-flex page_box p-3 mt-2 header-sticky" position="sticky">
+        <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+            <div *ngIf="Add">Add Doctor
+            </div>
+            <div *ngIf="Edit">Update Doctor
+            </div>
+            <div fxFlex="7%">
+                <button mat-icon-button fxLayoutAlign="end end" (click)="dialogRef.close()" style="color: white">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="page_content shadow p-3 position-relative">
+        <form  #doctorForm="ngForm">
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Doctor Name</mat-label>
+                        <input  maxlength="100" matInput required #doctorName="ngModel" name="DoctorName"
+                            [(ngModel)]="selectedDoctor.doctorName" />
+                    </mat-form-field>
+                    <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="49%">
+                        <mat-form-field appearance="outline" fxFlex="50%" class="form-group">
+                            <mat-label>Date of Birth</mat-label>
+                            <input [matDatepicker]="picker" readonly matInput class="form-control" [max]="currDate" placeholder="Date of Birth"
+                                name="dateOfBirth" #dateOfBirth="ngModel" [(ngModel)]="selectedDoctor.dateOfBirth" required />
+                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                        <mat-form-field fxFlex="50%" appearance="outline">
+                            <mat-label>Start Time </mat-label>
+                            <input matInput [ngxTimepicker]="end" #startTime="ngModel" name="StartTime" [(ngModel)]="selectedDoctor.startTime" required
+                                readonly [format]="12" />
+                            <ngx-material-timepicker [timepickerClass]="'custome-class'" #end></ngx-material-timepicker>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </Row>
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-radio-group required="true" genderId name="genderId" fxFlex="49%"
+                        [(ngModel)]="selectedDoctor.genderId" #Gender="ngModel">
+                        <mat-label>Gender <span class="required-asterisk"
+                                *ngIf="doctorForm.controls['genderId']?.errors?.['required']">*</span> : </mat-label>
+                        <mat-radio-button *ngFor="let val of genders" [value]="val.id">
+                            {{val.name}}
+                        </mat-radio-button>
+                    </mat-radio-group>
+                     <div fxLayout="row" fxLayoutAlign="space-around" fxFlex="49%">
+                    <mat-form-field fxFlex="60%" appearance="outline" class="form-group">
+                        <mat-label>Contact No</mat-label>
+                        <input type="tel" pattern="^[0-9]+$"  maxlength="45" #contactNo="ngModel" matInput required  name="ContactNo"
+                            [(ngModel)]="selectedDoctor.contactNo" />
+                              <mat-error *ngIf="doctorForm.controls['ContactNo']?.errors?.['pattern']">
+                         Phone number should contain only digits.
+                     </mat-error>
+                    </mat-form-field>
+                     <mat-form-field fxFlex="40%" appearance="outline" class="form-group">
+                                <mat-label>DefApptDur</mat-label>
+                                <input maxlength="3" matInput #defApptDur="ngModel" min="3" pattern="[0-9]*" type="number" oninput="validity.valid||(value='')"
+                                    name="defApptDur" [(ngModel)]="selectedDoctor.defApptDur"
+                                    required="true" />
+                                <span matSuffix style="margin-right: 8px;">Mins</span>
+                            </mat-form-field>
+                    </div>
+                </div>
+            </Row>
+            <div fxLayout="row" fxLayoutAlign="space-between">
+                <div fxLayout="row" fxFlex="49%">
+                    <mat-form-field appearance="outline" fxFlex="50%">
+                        <mat-label>Select Country</mat-label>
+                        <mat-select name="countryId" [(ngModel)]="selectedDoctor.countryId">
+                            <mat-option [value]="0" (click)="GetSettings(1016)">--Please Select--</mat-option>
+                            <mat-option *ngFor="let val of countries" [value]="val.id" (click)="SearchCities()">
+                                {{val.name}}
+                            </mat-option>
+                        </mat-select>
+                        <div matSuffix [ngClass]="{disabledDiv:isReadOnly}">
+                            <button mat-icon-button style="color:#940540;"
+                                (click)="OpenCountryDialog(); $event.stopPropagation()">
+                                <mat-icon cTooltip="Explore Country">add</mat-icon>
+                            </button>
+                        </div>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" fxFlex="50%">
+                        <mat-label>Select City</mat-label>
+                        <mat-select name="cityId" [(ngModel)]="selectedDoctor.cityId">
+                            <mat-option [value]="0" (click)="GetSettings(1036)">--Please Select--</mat-option>
+                            <mat-option *ngFor="let val of cities" [value]="val.id" (click)="SearchArea();
+                                                        selectedDoctor.countryId=val.parentId">
+                                {{val.name}}
+                            </mat-option>
+                        </mat-select>
+                        <div matSuffix [ngClass]="{disabledDiv:isReadOnly}">
+                            <button mat-icon-button style="color:#940540;"
+                                (click)="OpenCityDialog(); $event.stopPropagation()">
+                                <mat-icon cTooltip="Explore City">add</mat-icon>
+                            </button>
+                        </div>
+                    </mat-form-field>
+                </div>
+                <mat-form-field appearance="outline" fxFlex="49%">
+                    <mat-label>--Please Select Area--</mat-label>
+                    <mat-select name="areaId" [(ngModel)]="selectedDoctor.areaId">
+                        <mat-option [value]="0">--Please Select--</mat-option>
+                        <mat-option *ngFor="let val of areas" [value]="val.id" (click)=" selectedDoctor.cityId=val.parentId;
+                                                     selectedDoctor.countryId=val.pParentId">
+                            {{val.name}}
+                        </mat-option>
+                    </mat-select>
+                    <div matSuffix [ngClass]="{disabledDiv:isReadOnly}">
+                        <button mat-icon-button style="color:#940540;"
+                            (click)="OpenAreaDialog(); $event.stopPropagation()">
+                            <mat-icon cTooltip="Explore Area">add</mat-icon>
+                        </button>
+                    </div>
+                </mat-form-field>
+            </div>
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>HouseNo</mat-label>
+                        <input maxlength="65535" matInput #address="ngModel" name="Address" [(ngModel)]="selectedDoctor.address" />
+                    </mat-form-field>
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Address</mat-label>
+                        <textarea maxlength="65535" rows="1" matInput #houseNo="ngModel" name="HouseNo"
+                            [(ngModel)]="selectedDoctor.houseNo"></textarea>
+                    </mat-form-field>
+                </div>
+            </Row>
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-form-field fxFlex="100%" appearance="outline" class="form-group">
+                        <mat-label>Specialization</mat-label>
+                        <textarea maxlength="65535" rows="1" matInput #specialization="ngModel" name="specialization"
+                            [(ngModel)]="selectedDoctor.specialization"></textarea>
+                    </mat-form-field>
+                </div>
+            </Row>
+            <mat-checkbox name="isActive" [(ngModel)]="selectedDoctor.isActive" checked>Is Active</mat-checkbox>
+            <div fxLayoutAlign="end end">
+                <button  *ngIf="Add" [ngClass]="{disabledBtn:isReadOnly}" class="bttn" 
+                    (click)="SaveDoctor()">Submit</button>
+                <button [ngClass]="{disabledBtn:isReadOnly}" class="bttn"  *ngIf="Edit" 
+                    (click)="SaveDoctor()">Update</button>
+                <div>
+                    <button mat-icon-button mat-sm-button color="primary" cTooltip="Refresh" cTooltipPlacement="top"
+                        (click)="Refresh()">
+                        <mat-icon>autorenew</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

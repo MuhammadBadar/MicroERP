@@ -1,0 +1,137 @@
+<div class="container-fluid page">
+    <div class="d-flex page_box p-3 mt-2  header-sticky" position="sticky">
+        <div *ngIf="Add">Manage UOMConversion
+        </div>
+        <div *ngIf="Edit">Edit UOMConversion
+        </div>
+    </div>
+    <div class="page_content shadow p-3 position-relative">
+        <form #userForm="ngForm" [validated]="validFields" novalidate cForm>
+            <div fxLayout="row" fxLayoutAlign="space-between">
+                <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                    <mat-label> Select UOM</mat-label>
+                    <mat-select name="uomId" matNativeControl #uomId="ngModel" required="true"
+                        [(ngModel)]="selectedUOMConversion.uomId">
+                        <mat-option [value]="0">--Please Select--</mat-option>
+                        <mat-option *ngFor="let pt of uom" [value]=" pt.id">
+                            {{ pt.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                    <mat-label>QTY</mat-label>
+                    <input matInput required #qty="ngModel" name="qty" required="true" min="0" type="number"
+                        oninput="validity.valid||(value='')" [(ngModel)]="selectedUOMConversion.qty" />
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between">
+                <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                    <mat-label>Multiplier</mat-label>
+                    <input matInput #multiplier="ngModel" type="number" required="true" name="multiplier"
+                        [(ngModel)]="selectedUOMConversion.multiplier" />
+                </mat-form-field>
+                <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                    <mat-label> Select Converted UOM</mat-label>
+                    <mat-select name="convertedUOMId" required="true" matNativeControl #convertedUOMId="ngModel"
+                        [(ngModel)]="selectedUOMConversion.convertedUOMId">
+                        <mat-option [value]="0">--Please Select--</mat-option>
+                        <mat-option *ngFor="let pt of uom" [value]=" pt.id">
+                            {{ pt.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div>
+                <mat-form-field fxFlex="100%" appearance="outline" class="form-group">
+                    <mat-label>Display UOM</mat-label>
+                    <textarea matInput #displayUOM="ngModel" rows="1" required="true" name="displayUOM"
+                        [(ngModel)]="selectedUOMConversion.displayUOM"></textarea>
+                </mat-form-field>
+            </div>
+            <div fxLayoutAlign="end end">
+                <mat-checkbox name="isActive" [(ngModel)]="selectedUOMConversion.isActive">IsActive</mat-checkbox>
+            </div>
+            <div fxLayoutAlign="end end">
+                <div style="margin-top: 10px;">
+                    <button *ngIf="Add" cButton class="me-1" style="background-color:#1e293b ;" type="submit"
+                        (click)="SaveUOMConversion();">
+                        Save
+                    </button>
+                    <button *ngIf="Edit" cButton class="me-1" style="background-color:#1e293b ;" type="submit"
+                        (click)="SaveUOMConversion()">
+                        Update
+                    </button>
+                </div>
+                <div>
+                    <button mat-icon-button mat-sm-button color="primary" cTooltip="Refresh" cTooltipPlacement="top"
+                        (click)="ngOnInit()">
+                        <mat-icon>autorenew</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <c-card style="padding: 10px; margin-top: 30px;" class="mat-elevation-z8">
+            <h5 cCardTitle>UOMConversion List</h5>
+            <c-card-body style="padding: 10px;background-color: rgb(2, 42, 75);margin: 5px;border-radius: 10px;">
+                <div class="example-table-container">
+                    <section class="example-container mat-elevation-z8" tabindex="0" style="border-radius: 5px;">
+                        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                            <ng-container matColumnDef="Id">
+                                <th mat-header-cell *matHeaderCellDef> Sr No </th>
+                                <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="UOM">
+                                <th mat-header-cell *matHeaderCellDef> UOM </th>
+                                <td mat-cell *matCellDef="let element"> {{element.uom}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="QTY">
+                                <th mat-header-cell *matHeaderCellDef> QTY</th>
+                                <td mat-cell *matCellDef="let element"> {{element.qty}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="displayUOM">
+                                <th mat-header-cell *matHeaderCellDef> DisplayUOM</th>
+                                <td mat-cell *matCellDef="let element"> {{element.displayUOM}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="ConversionRate">
+                                <th mat-header-cell *matHeaderCellDef> Multiplier</th>
+                                <td mat-cell *matCellDef="let element"> {{element.multiplier}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="ConvertedUOM">
+                                <th mat-header-cell *matHeaderCellDef> ConvertedUOM </th>
+                                <td mat-cell *matCellDef="let element"> {{element.convertedUOM}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="isActive">
+                                <th mat-header-cell *matHeaderCellDef> IsActive </th>
+                                <td mat-cell *matCellDef="let element"> {{element.isActive?'Yes':'No'}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="isBaseUnit">
+                                <th mat-header-cell *matHeaderCellDef> IsBaseUnit </th>
+                                <td mat-cell *matCellDef="let element"> {{element.isBaseUnit?'Yes':'No'}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="actions" stickyEnd="true">
+                                <th mat-header-cell *matHeaderCellDef style="text-align: center;">
+                                    <p style="font-size: 14px;">Action</p>
+                                </th>
+                                <td mat-cell *matCellDef="let row" style="text-align: center;">
+                                    <div>
+                                        <button mat-icon-button mat-sm-button style="color:#1e293b ; "
+                                            cTooltip="Edit UOMConversion" (click)="GetUOMConversionForEdit(row.id)">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+
+                                        <!-- <button mat-icon-button mat-sm-button color="warn"
+                                            cTooltip="Delete UOMConversion" (click)="DeleteUOMConversion(row.id)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button> -->
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </section>
+                </div>
+            </c-card-body>
+        </c-card>
+    </div>
+</div>

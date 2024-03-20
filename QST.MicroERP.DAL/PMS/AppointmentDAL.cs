@@ -9,6 +9,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using QST.MicroERP.Core.Constants;
 
 namespace QST.MicroERP.DAL
 {
@@ -33,7 +34,7 @@ namespace QST.MicroERP.DAL
                     _cmd = MicroERPDataContext.OpenMySqlConnection ();
                     closeConnection = true;
                 }
-                appts = _cmd.Connection.Query<AppointmentDE> ("call SearchAppointment('" + whereClause + "')").ToList ();
+                appts = _cmd.Connection.Query<AppointmentDE> ("call "+SPNames.PMS_Search_Appointment.ToString()+"('" + whereClause + "')").ToList ();
                 return appts;
             }
             catch (Exception)
@@ -56,23 +57,23 @@ namespace QST.MicroERP.DAL
                     _cmd = MicroERPDataContext.OpenMySqlConnection ();
                     closeConnection = true;
                 }
-                _cmd.CommandText = "ManageAppointment";
-                _cmd.Parameters.AddWithValue ("id", _appoint.Id);
-                _cmd.Parameters.AddWithValue ("clientId", _appoint.ClientId);
-                _cmd.Parameters.AddWithValue ("patientid", _appoint.PatientId);
-                _cmd.Parameters.AddWithValue ("doctorId", _appoint.DoctorId);
-                _cmd.Parameters.AddWithValue ("tokenNo", _appoint.TokenNo);
-                _cmd.Parameters.AddWithValue ("date", _appoint.Date);
-                _cmd.Parameters.AddWithValue ("time", _appoint.Time);
-                _cmd.Parameters.AddWithValue ("age", _appoint.Age);
-                _cmd.Parameters.AddWithValue ("genderId", _appoint.GenderId);
-                _cmd.Parameters.AddWithValue ("statusId", _appoint.StatusId);
-                _cmd.Parameters.AddWithValue ("createdOn", _appoint.CreatedOn);
-                _cmd.Parameters.AddWithValue ("createdById", _appoint.CreatedById);
-                _cmd.Parameters.AddWithValue ("modifiedOn", _appoint.ModifiedOn);
-                _cmd.Parameters.AddWithValue ("modifiedById", _appoint.ModifiedById);
-                _cmd.Parameters.AddWithValue ("isActive", _appoint.IsActive);
-                _cmd.Parameters.AddWithValue ("DbOperation", _appoint.DBoperation.ToString ());
+                _cmd.CommandText = SPNames.PMS_Manage_Appointment.ToString();
+                _cmd.Parameters.AddWithValue ("prm_id", _appoint.Id);
+                _cmd.Parameters.AddWithValue ("prm_clientId", _appoint.ClientId);
+                _cmd.Parameters.AddWithValue ("prm_patientid", _appoint.PatientId);
+                _cmd.Parameters.AddWithValue ("prm_doctorId", _appoint.DoctorId);
+                _cmd.Parameters.AddWithValue ("prm_tokenNo", _appoint.TokenNo);
+                _cmd.Parameters.AddWithValue ("prm_date", _appoint.Date);
+                _cmd.Parameters.AddWithValue ("prm_time", _appoint.Time);
+                _cmd.Parameters.AddWithValue ("prm_age", _appoint.Age);
+                _cmd.Parameters.AddWithValue ("prm_genderId", _appoint.GenderId);
+                _cmd.Parameters.AddWithValue ("prm_statusId", _appoint.StatusId);
+                _cmd.Parameters.AddWithValue ("prm_createdOn", _appoint.CreatedOn);
+                _cmd.Parameters.AddWithValue ("prm_createdById", _appoint.CreatedById);
+                _cmd.Parameters.AddWithValue ("prm_modifiedOn", _appoint.ModifiedOn);
+                _cmd.Parameters.AddWithValue ("prm_modifiedById", _appoint.ModifiedById);
+                _cmd.Parameters.AddWithValue ("prm_isActive", _appoint.IsActive);
+                _cmd.Parameters.AddWithValue ("prm_DbOperation", _appoint.DBoperation.ToString ());
                 _cmd.ExecuteNonQuery ();
                 return true;
             }
@@ -104,8 +105,8 @@ namespace QST.MicroERP.DAL
                     clientId =ClientId,
                     doctorId=DoctorId
                 };
-                string procedureName = "QST.MicroERP.GetNextAppt";
-                string sql = $"CALL {procedureName}(@whereClause, @clientId, @doctorId)";
+                string procedureName = SPNames.PMS_GET_NextAppt.ToString();
+                string sql = $"CALL {procedureName}(@whereClause, @prm_clientId, @prm_doctorId)";
                 //appts = _cmd.Connection.Query<AppointmentDE> ("call GetNextAppt('" + whereClause + ""+","+"" + ClientId + " ')").ToList (); 
                 appts = _cmd.Connection.Query<AppointmentDE> (sql, parameters, commandType: CommandType.Text).ToList ();
                 return appts;
@@ -121,96 +122,6 @@ namespace QST.MicroERP.DAL
             }
         }
 
-        #endregion
-        #region Operations
-        public bool ManageAppointment ( AppointmentDE _appoint, MySqlCommand? cmd )
-        {
-            bool closeConnection = false;
-            try
-            {
-                if (cmd == null)
-                {
-                    cmd = MicroERPDataContext.OpenMySqlConnection ();
-                    closeConnection = true;
-                }
-                cmd.CommandText = "ManageAppointment";
-                cmd.Parameters.AddWithValue ("id", _appoint.Id);
-                cmd.Parameters.AddWithValue ("patientid", _appoint.PatientId);
-                cmd.Parameters.AddWithValue ("doctorId", _appoint.DoctorId);
-                cmd.Parameters.AddWithValue ("date", _appoint.Date);
-                cmd.Parameters.AddWithValue ("time", _appoint.Time);
-                cmd.Parameters.AddWithValue ("age", _appoint.Age);
-                cmd.Parameters.AddWithValue ("genderId", _appoint.GenderId);
-                cmd.Parameters.AddWithValue ("status", _appoint.Status);
-                cmd.Parameters.AddWithValue ("createdOn", _appoint.CreatedOn);
-                cmd.Parameters.AddWithValue ("createdById", _appoint.CreatedById);
-                cmd.Parameters.AddWithValue ("modifiedOn", _appoint.ModifiedOn);
-                cmd.Parameters.AddWithValue ("modifiedById", _appoint.ModifiedById);
-                cmd.Parameters.AddWithValue ("isActive", _appoint.IsActive);
-                cmd.Parameters.AddWithValue ("DbOperation", _appoint.DBoperation.ToString ());
-                cmd.ExecuteNonQuery ();
-                return true;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                if (closeConnection)
-                    MicroERPDataContext.CloseMySqlConnection (cmd);
-            }
-        }
-        public List<AppointmentDE> SearchAppointment ( string WhereClause, MySqlCommand cmd )
-        {
-            bool closeConnection = false;
-
-            List<AppointmentDE> test = new List<AppointmentDE> ();
-            try
-            {
-                if (cmd == null)
-                {
-                    cmd = MicroERPDataContext.OpenMySqlConnection ();
-                    closeConnection = true;
-                }
-                test = cmd.Connection.Query<AppointmentDE> ("call SearchAppointment('" + WhereClause + "')").ToList ();
-                return test;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                if (closeConnection)
-                    MicroERPDataContext.CloseMySqlConnection (cmd);
-            }
-        }
-        public List<AppointmentDE> SearchNextAppmt ( string WhereClause, MySqlCommand cmd )
-        {
-            bool closeConnection = false;
-
-            List<AppointmentDE> test = new List<AppointmentDE> ();
-            try
-            {
-                if (cmd == null)
-                {
-                    cmd = MicroERPDataContext.OpenMySqlConnection ();
-                    closeConnection = true;
-                }
-                test = cmd.Connection.Query<AppointmentDE> ("call GetNextAppt('" + WhereClause + "')").ToList ();
-                return test;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                if (closeConnection)
-                    MicroERPDataContext.CloseMySqlConnection (cmd);
-            }
-        }
         #endregion
     }
 }

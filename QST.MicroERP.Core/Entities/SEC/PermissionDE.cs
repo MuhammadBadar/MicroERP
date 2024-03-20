@@ -15,5 +15,6 @@
         public int PermissionId { get; set; }
         public string? Permission { get; set; }
         public bool? IsReadOnly { get; set; }
+        public int CltId { get; set; }
     }
 }

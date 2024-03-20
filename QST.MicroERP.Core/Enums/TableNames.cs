@@ -8,7 +8,7 @@
 
         ATT_Attendance,
 
-        CTL_Clients,
+        CTL_Client,
         CTL_Customer,
         CTL_EnumLine,
         CTL_Enums,

@@ -1,0 +1,138 @@
+<div class="container-fluid page">
+    <div class="d-flex page_box p-3 mt-2  header-sticky" position="sticky">
+        <div *ngIf="Add">Manage Clients
+        </div>
+        <div *ngIf="Edit">Edit Clients
+        </div>
+       
+    </div>
+    <div class="page_content shadow p-3 position-relative">
+        <form #clientsInquiryForm="ngForm">
+    
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Client's Name</mat-label>
+                        <input matInput required #clientName="ngModel" name="clientName" [(ngModel)]="selectedClients.clientName" />
+                    </mat-form-field>
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Category</mat-label>
+                        <input matInput required #category="ngModel" name="category" [(ngModel)]="selectedClients.category" />
+                    </mat-form-field>
+                </div>
+            </Row>
+            <Row>    
+
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Address</mat-label>
+                        <input matInput required #address="ngModel" name="address" [(ngModel)]="selectedClients.address" />
+                    </mat-form-field>
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>City</mat-label>
+                        <input matInput required #city="ngModel" name="city" [(ngModel)]="selectedClients.city" />
+                    </mat-form-field>
+                </div>
+            </Row>
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Contact</mat-label>
+                        <input matInput required #contact="ngModel" name="contact" [(ngModel)]="selectedClients.contact" />
+                    </mat-form-field>
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Owner</mat-label>
+                        <input matInput required #owner="ngModel" name="owner" [(ngModel)]="selectedClients.owner" />
+                    </mat-form-field>
+                </div>
+            </Row>    
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Relevent Person</mat-label>
+                        <input matInput required #releventPerson="ngModel" name="releventPerson" [(ngModel)]="selectedClients.releventPerson" />
+                    </mat-form-field>
+                </div>
+            </Row> 
+            <mat-checkbox name="isActive" [(ngModel)]="selectedClients.isActive" checked>Is Active</mat-checkbox>
+
+
+            <div fxLayoutAlign="end end">
+                <button mat-raised-button *ngIf="Add" color="primary" (click)="SaveClients()">Submit</button>
+                <button mat-raised-button *ngIf="Edit" color="primary" (click)="SaveClients()">Update</button>
+                <div>
+                    <button mat-icon-button mat-sm-button color="primary" cTooltip="Refresh" cTooltipPlacement="top"
+                        (click)="Refresh()">
+                        <mat-icon>autorenew</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <c-card style="padding: 10px; margin-top: 30px;" class="mat-elevation-z8">
+            <h5 cCardTitle>Clients List</h5>
+            <c-card-body style="padding: 10px;margin: 5px;border-radius: 10px;">
+                <div class="example-table-container">
+                    <section class="example-container mat-elevation-z8" tabindex="0" style="border-radius: 5px;">
+                        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                            <ng-container matColumnDef="clientName">
+                                <th mat-header-cell *matHeaderCellDef> Client's Name </th>
+                                <td mat-cell *matCellDef="let element"> {{element.clientName}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="category">
+                                <th mat-header-cell *matHeaderCellDef> Category </th>
+                                <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+                            </ng-container>                   
+                            <ng-container matColumnDef="address">
+                                <th mat-header-cell *matHeaderCellDef> Address</th>
+                                <td mat-cell *matCellDef="let element"> {{element.address}} </td>
+                            </ng-container>    
+                            <ng-container matColumnDef="city">
+                                <th mat-header-cell *matHeaderCellDef> City </th>
+                                <td mat-cell *matCellDef="let element"> {{element.city}} </td>
+                            </ng-container>    
+                            <ng-container matColumnDef="contact">
+                                <th mat-header-cell *matHeaderCellDef> Contact </th>
+                                <td mat-cell *matCellDef="let element"> {{element.contact}} </td>
+                            </ng-container>    
+                            <ng-container matColumnDef="owner">
+                                <th mat-header-cell *matHeaderCellDef> Owner </th>
+                                <td mat-cell *matCellDef="let element"> {{element.owner}} </td>
+                            </ng-container>    
+                            <ng-container matColumnDef="releventPerson">
+                                <th mat-header-cell *matHeaderCellDef> Relevent Person </th>
+                                <td mat-cell *matCellDef="let element"> {{element.releventPerson}} </td>
+                            </ng-container>     
+                            <ng-container matColumnDef="isActive">
+                                <th mat-header-cell *matHeaderCellDef>Is Active</th>
+                                <td mat-cell *matCellDef="let element">
+                                  {{ element.isActive ? "Yes" : "No" }}
+                                </td>
+                              </ng-container>
+                            <ng-container matColumnDef="actions" stickyEnd="true">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <p style="font-size: 14px;text-align: center;">Action</p>
+                                </th>
+                                <td mat-cell *matCellDef="let row">
+                                    <div style="text-align: center;">
+                                        <button mat-icon-button mat-sm-button style=" color:#1e293b ; "
+                                            cTooltip=" Edit Clients" (click)="GetClientsForEdit(row.id)">
+                                            <mat-icon>Edit</mat-icon>
+                                        </button>
+                        
+                                        <button mat-icon-button mat-sm-button color="warn" cTooltip="Delete Clients"
+                                            (click)="DeleteClients(row.id)">
+                                            <mat-icon>Delete</mat-icon>
+                                        </button>
+                                    </div>
+                                </td>
+                            </ng-container>
+                        
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </section>
+                </div>
+            </c-card-body>
+        </c-card>
+    </div>
+</div>

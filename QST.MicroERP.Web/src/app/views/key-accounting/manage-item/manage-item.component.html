@@ -1,0 +1,493 @@
+<div class="container-fluid page">
+    <div class="d-flex page_box p-3 mt-2  header-sticky" position="sticky">
+        <div *ngIf="Add">Manage Product
+        </div>
+        <div *ngIf="Edit">Edit Product
+        </div>
+    </div>
+    <div class="page_content shadow p-3 position-relative">
+        <form #userForm="ngForm">
+            <div fxLayoutAlign="end end">
+                <c-spinner *ngIf="proccessing" style="height: 50px;width: 50px;color: rgb(3, 71, 102);"></c-spinner>
+                <div style="margin-top: 10px;" *ngIf="!proccessing">
+                    <button *ngIf="Add" cButton class="me-1" style="background-color:#1e293b ;" type="submit"
+                        (click)="SaveItem();">
+                        Save
+                    </button>
+                    <button *ngIf="Edit" cButton class="me-1" style="background-color:#1e293b ;" type="submit"
+                        (click)="Update()">
+                        Update
+                    </button>
+                    <button cButton color="dark" (click)="Back()" sclass="me-1">Back
+                    </button>
+                </div>
+                <div>
+                    <button mat-icon-button mat-sm-button color="primary" cTooltip="Refresh" cTooltipPlacement="top"
+                        (click)="ngOnInit()">
+                        <mat-icon>autorenew</mat-icon>
+                    </button>
+                </div>
+            </div>
+            <div fxLayout="column">
+                <div class="form-group"
+                    style="text-align: center;justify-content: center;align-items: center;margin-top: 10px;">
+                    <!-- <label style=" font-size: 24px;">Product Name : </label> -->
+                    <mat-form-field appearance="outline" class="col-lg-4 ">
+                        <mat-label> Product Name</mat-label>
+                        <input matInput required placeholder="Enter Name" #Name="ngModel" name="name"
+                            [(ngModel)]="selectedItem.name" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" class="col-lg-4 ">
+                        <mat-label>Select ItemType</mat-label>
+                        <mat-select name="typeId" required="true" [(ngModel)]="selectedItem.typeId">
+                            <mat-option [value]="0">--Please Select--</mat-option>
+                            <mat-option *ngFor="let pt of itemTypes" [value]=" pt.id">
+                                {{ pt.name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <mat-tab-group animationDuration="500ms" style="margin: 50px;" [(selectedIndex)]="TabIndex">
+                    <mat-tab label="General Information">
+                        <c-card style="margin-top: 40px;padding: 40px;" class="mat-elevation-z8 tab">
+                            <div class="row">
+                                <mat-form-field fxFlex="50%" appearance="outline" class="form-group">
+                                    <mat-label>Purchase Rate</mat-label>
+                                    <input matInput required #purRate="ngModel" name="purRate" type="number" min="1"
+                                        oninput="validity.valid||(value='')" step="any"
+                                        [(ngModel)]="selectedItem.purRate" />
+                                </mat-form-field>
+                                <mat-form-field fxFlex="50%" appearance="outline" class="form-group">
+                                    <mat-label>Sale Rate</mat-label>
+                                    <input matInput required #saleRate="ngModel" name="saleRate" type="number" min="1"
+                                        oninput="validity.valid||(value='')" step="any"
+                                        [(ngModel)]="selectedItem.saleRate" />
+                                </mat-form-field>
+                            </div>
+                            <div class="row">
+                                <mat-form-field fxFlex="35%" appearance="outline" class="form-group">
+                                    <mat-label>Manufacturer</mat-label>
+                                    <input matInput #manufacturer="ngModel" name="Manufacturer"
+                                        [(ngModel)]="selectedItem.manufacturer" />
+                                </mat-form-field>
+                                <mat-form-field fxFlex="30%" appearance="outline" class="form-group">
+                                    <mat-label>Formula</mat-label>
+                                    <input matInput #formula="ngModel" name="formula"
+                                        [(ngModel)]="selectedItem.formula" />
+                                </mat-form-field>
+                                <mat-form-field fxFlex="35%" appearance="outline" class="form-group">
+                                    <mat-label>Category</mat-label>
+                                    <input matInput #category="ngModel" name="category"
+                                        [(ngModel)]="selectedItem.category" />
+                                </mat-form-field>
+                            </div>
+                            <div class="row">
+                                <mat-form-field fxFlex="100%" appearance="outline" class="form-group">
+                                    <mat-label>Remarks</mat-label>
+                                    <textarea matInput #remarks="ngModel" name="remarks" rows="1"
+                                        [(ngModel)]="selectedItem.remarks"></textarea>
+                                </mat-form-field>
+                            </div>
+                            <div class="row">
+                                <!-- <div class="col-lg-3">
+                                    <mat-form-field appearance="outline" fxFlex="100%" class="form-group">
+                                        <mat-label>PurStRate</mat-label>
+                                        <input matInput [required]="ispurStRateRequired" #purStRate="ngModel"
+                                            name="purStRate" type="number" min="1" oninput="validity.valid||(value='')"
+                                            step="any" (input)="TextChangeEventforPur()"
+                                            [(ngModel)]="selectedItem.purStRate" />
+                                       
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <mat-form-field appearance="outline" fxFlex="100%" class="form-group">
+                                        <mat-label>Gst Purchase Rate</mat-label>
+                                        <input matInput (input)="TextChangeEventforPur()" #gstPurRate="ngModel"
+                                            name="gstPurRate" type="number" min="0" oninput="validity.valid||(value='')"
+                                            step="any" [(ngModel)]="selectedItem.gstPurRate" />
+                                 
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-3">
+                                    <mat-form-field appearance="outline" fxFlex="100%" class="form-group">
+                                        <mat-label>SaleStRate</mat-label>
+                                        <input matInput [required]="isSaleStRateRequired" #saleStRate="ngModel"
+                                            name="saleStRate" type="number" min="1" (input)="TextChangeEventforSale()"
+                                            oninput="validity.valid||(value='')" step="any"
+                                            [(ngModel)]="selectedItem.saleStRate" />
+                                    </mat-form-field>
+                                </div>
+                               
+                                <div class="col-lg-3">
+                                    <mat-form-field appearance="outline" fxFlex="100%" class="form-group">
+                                        <mat-label>Gst SaleRate</mat-label>
+                                        <input matInput #gstSaleRate="ngModel" name="gstSaleRate" type="number" min="0"
+                                            (input)="TextChangeEventforSale()" oninput="validity.valid||(value='')"
+                                            step="any" [(ngModel)]="selectedItem.gstSaleRate" />
+                                    </mat-form-field>
+                                </div> -->
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <mat-form-field fxFlex="100%" appearance="outline" class="form-group">
+                                        <mat-label>Conversion</mat-label>
+                                        <input matInput #conversion="ngModel" name="conversion" type="number" min="0"
+                                            oninput="validity.valid||(value='')" step="any"
+                                            [(ngModel)]="selectedItem.conversion" />
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-lg-6">
+                                    <mat-form-field fxFlex="100%" appearance="outline" class="form-group">
+                                        <mat-label>Retail Rate</mat-label>
+                                        <input matInput #retailRate="ngModel" name="retailRate" type="number" min="0"
+                                            oninput="validity.valid||(value='')" step="any"
+                                            [(ngModel)]="selectedItem.retailRate" />
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <mat-form-field class="withoutArrow" fxFlex="100%" appearance="outline"
+                                        [inert]="true">
+                                        <mat-label> PurchaseUnits</mat-label>
+                                        <mat-select name="purUnitIds" multiple [(ngModel)]="selectedItem.purUnitIds">
+                                            <mat-option *ngFor="let pt of uomConversions" [value]=" pt.id">
+                                                {{ pt.displayUOM}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <div matSuffix>
+                                        <button type="button" mat-icon-button style="color:#940540 ; "
+                                            (click)="$event.stopPropagation();PurchaseUOMDialog()"
+                                            cTooltip="Select PurchaseUOM">
+                                            <mat-icon>open_in_new</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <mat-form-field class="withoutArrow" fxFlex="100%" appearance="outline"
+                                        [inert]="true">
+                                        <mat-label> SaleUnits</mat-label>
+                                        <mat-select name="saleUnitIds" multiple [(ngModel)]="selectedItem.saleUnitIds">
+                                            <mat-option *ngFor="let pt of uomConversions" [value]=" pt.id">
+                                                {{ pt.displayUOM}}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                    <div matSuffix>
+                                        <button type="button" mat-icon-button style="color:#940540 ; "
+                                            (click)="$event.stopPropagation(); SalesUOMDialog()"
+                                            cTooltip="Select SalesUOM">
+                                            <mat-icon>open_in_new</mat-icon>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div fxLayoutAlign="end end">
+                                <mat-checkbox name="isActive" [(ngModel)]="selectedItem.isActive">
+                                    IsActive
+                                </mat-checkbox>
+                            </div>
+                        </c-card>
+                    </mat-tab>
+                    <mat-tab label="Variants">
+                        <c-card [inert]="!selectedItem.isActive && Edit" style="margin-top: 40px;padding: 40px;"
+                            class="mat-elevation-z8 tab">
+                            <form #proAttr="ngForm">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-lg-5 ">
+                                            <mat-form-field fxFlex="100%" appearance="outline" class="form-group">
+                                                <mat-label> Select Attribute</mat-label>
+                                                <mat-select required name="attribId"
+                                                    [(ngModel)]="selectedProductAttrib.attribId" matNativeControl>
+                                                    <!-- <mat-option [value]="0">--Please Select--</mat-option> -->
+                                                    <mat-option *ngFor="let pt of Attributes" [value]=" pt.id"
+                                                        (click)="GetAttributeValues()">
+                                                        {{ pt.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                                <div matSuffix>
+                                                    <button mat-icon-button style="color:#940540 ; "
+                                                        (click)="AttributeDialog(); $event.stopPropagation()"
+                                                        cTooltip="Manage Attributes ">
+                                                        <mat-icon>open_in_new</mat-icon>
+                                                    </button>
+                                                </div>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-lg-5 ">
+                                            <mat-form-field fxFlex="100%" appearance="outline" class="form-group">
+                                                <mat-label> Select Values</mat-label>
+                                                <mat-select required name="attribValues" multiple
+                                                    [(ngModel)]="selectedProductAttrib.attribValues" matNativeControl>
+                                                    <!-- <mat-option [value]="0">--Please Select--</mat-option> -->
+                                                    <mat-option *ngFor="let val of AttribValues" [value]=" val.id"
+                                                        [disabled]="isDisable(val)">
+                                                        {{ val.name}}
+                                                    </mat-option>
+                                                </mat-select>
+                                                <div matSuffix>
+                                                    <button mat-icon-button style="color:#940540 ; "
+                                                        (click)="AttribValDialog(); $event.stopPropagation()"
+                                                        cTooltip="Manage Attribute Values ">
+                                                        <mat-icon>open_in_new</mat-icon>
+                                                    </button>
+                                                </div>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-lg-2 ml-2">
+                                            <div class="row">
+                                                <button type="submit" mat-icon-button mat-sm-button
+                                                    style="color: rgb(97, 48, 48);" cTooltip="Submit"
+                                                    cTooltipPlacement="top" (click)="AddLine()">
+                                                    <mat-icon>add</mat-icon>
+                                                </button>
+                                                <button mat-icon-button mat-sm-button style="color: rgb(97, 48, 48);"
+                                                    cTooltip="Submit" cTooltipPlacement="top" (click)="refreshLine()">
+                                                    <mat-icon>autorenew</mat-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="example-table-container">
+                                <section class="example-container mat-elevation-z8" tabindex="0"
+                                    style="border-radius: 5px;">
+                                    <table mat-table [dataSource]="DataSource" class="mat-elevation-z8">
+                                        <ng-container matColumnDef="Id">
+                                            <th mat-header-cell *matHeaderCellDef> Sr No </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="attrib">
+                                            <th mat-header-cell *matHeaderCellDef
+                                                style="background-image: linear-gradient(to bottom, rgb(210, 220, 228), rgb(115, 136, 143));">
+                                                Attribute </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.attribute}} </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="attribValues">
+                                            <th mat-header-cell *matHeaderCellDef
+                                                style="background-image: linear-gradient(to bottom, rgb(210, 220, 228), rgb(115, 136, 143));">
+                                                Value </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.attributeValue}}
+                                            </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="actions" stickyEnd="true">
+                                            <th mat-header-cell *matHeaderCellDef
+                                                style="background-image: linear-gradient(to bottom, rgb(210, 220, 228), rgb(115, 136, 143));">
+                                                <p style="font-size: 14px;text-align: center;">Action</p>
+                                            </th>
+                                            <td mat-cell *matCellDef="let row">
+                                                <div style="text-align: center;">
+                                                    <!-- <button mat-button style="color: rgb(3, 28, 99);"
+                                                        (click)="ConfigureProduct(row.id)">
+                                                        <P style="font-weight: bold;">CONFIGURE</P>
+                                                    </button> -->
+                                                    <button mat-icon-button mat-sm-button color="warn"
+                                                        cTooltip="Delete Product Attribute"
+                                                        (click)="DeleteProductAttrib(row.id)">
+                                                        <mat-icon>delete</mat-icon>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </ng-container>
+                                        <tr mat-header-row *matHeaderRowDef="DisplayedColumns"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: DisplayedColumns;"></tr>
+                                    </table>
+                                </section>
+                            </div>
+                            <div fxLayoutAlign="end end" style="margin-top: 10px;">
+                                <button cButton class="me-1" style="background-color:#1e293b ;" type="submit"
+                                    (click)="generateVariants();">
+                                    Generate Variants
+                                </button>
+                            </div>
+                            <p style="font-size: 22px; color: rgb(3, 49, 102);margin-top: 20px;font-weight: bold;">Item
+                                Variants({{itemVariants.length}})
+                            </p>
+                            <div class="example-table-container">
+                                <section class="example-container mat-elevation-z8" tabindex="0"
+                                    style="border-radius: 5px;">
+                                    <table mat-table [dataSource]="iVarDataSource" class="mat-elevation-z8">
+                                        <ng-container matColumnDef="id">
+                                            <th mat-header-cell *matHeaderCellDef> Id </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="stockValue">
+                                            <th mat-header-cell *matHeaderCellDef style="min-width: 150px;"> Stock Value
+                                            </th>
+                                            <td mat-cell *matCellDef="let element" style="min-width: 150px;">
+                                                {{element.stockValue?element.stockValue:0}} </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="attributeValuesIds">
+                                            <th mat-header-cell *matHeaderCellDef style="min-width: 200px;"> Attrtibute
+                                                Values Ids </th>
+                                            <td mat-cell *matCellDef="let element" style="min-width: 200px;">
+                                                {{element.attributeValuesIds}}
+                                            </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="saleExtraRate">
+                                            <th mat-header-cell *matHeaderCellDef style="min-width: 150px;"> Sale Extra
+                                                Rate </th>
+                                            <td mat-cell *matCellDef="let element" style="min-width: 150px;">
+                                                {{element.saleExtraRate?element.saleExtraRate:0}} </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="purchaseExtraRate">
+                                            <th mat-header-cell *matHeaderCellDef style="min-width: 170px;"> Purch
+                                                Extra Rate </th>
+                                            <td mat-cell *matCellDef="let element" style="min-width: 170px;">
+                                                {{element.purchaseExtraRate?element.purchaseExtraRate:0}} </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="barCode">
+                                            <th mat-header-cell *matHeaderCellDef style="min-width: 150px;"> Bar Code
+                                            </th>
+                                            <td mat-cell *matCellDef="let element" style="min-width: 150px;">
+                                                {{element.barCode}} </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="itemId">
+                                            <th mat-header-cell *matHeaderCellDef style="min-width: 100px;"> Item Id
+                                            </th>
+                                            <td mat-cell *matCellDef="let element" style="min-width: 100px;">
+                                                {{element.itemId}} </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="item">
+                                            <th mat-header-cell *matHeaderCellDef
+                                                style="min-width: 150px;background-image: linear-gradient(to bottom, rgb(210, 220, 228), rgb(115, 136, 143));">
+                                                Item </th>
+                                            <td mat-cell *matCellDef="let element" style="min-width: 150px;">
+                                                {{element.item}} </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="possibleValues">
+                                            <th mat-header-cell *matHeaderCellDef
+                                                style="min-width: 200px;background-image: linear-gradient(to bottom, rgb(210, 220, 228), rgb(115, 136, 143));">
+                                                Possible Values </th>
+                                            <td mat-cell *matCellDef="let element" style="min-width: 200px;">
+                                                {{element.possibleValues}}
+                                            </td>
+                                        </ng-container>
+                                        <ng-container matColumnDef="actions" stickyEnd="true">
+                                            <th mat-header-cell *matHeaderCellDef>
+                                                <p style="font-size: 14px;text-align: center;">Configure </p>
+                                            </th>
+                                            <td mat-cell *matCellDef="let row">
+                                                <div style="text-align: center;" fxLayout="row">
+                                                    <mat-icon (click)="ConfigureSaleRate(row.id)"
+                                                        cTooltip="Configure Sale Rate" class="configureText">
+                                                        point_of_sale</mat-icon>
+                                                    <mat-icon (click)="ConfigurePurRate(row.id)"
+                                                        cTooltip="Configure Purchase Rate" class="configureText">
+                                                        shopping_cart
+                                                    </mat-icon>
+                                                    <mat-icon (click)="ConfigureBarCode(row.id)"
+                                                        cTooltip="Configure BarCode" class="configureText">qr_code_2
+                                                    </mat-icon>
+                                                    <!-- <button mat-icon-button mat-sm-button style="color: rgb(3, 28, 99);"
+                                                        cTooltip="Configure Sale Rate"
+                                                        (click)="ConfigureSaleRate(row.id)">
+                                                        <mat-icon>point_of_sale</mat-icon>
+                                                    </button>
+                                                    <button mat-icon-button mat-sm-button style="color: rgb(3, 28, 99);"
+                                                        cTooltip="Configure Purchase Rate"
+                                                        (click)="ConfigurePurRate(row.id)">
+                                                        <mat-icon>shopping_cart</mat-icon>
+                                                    </button>
+                                                    <button mat-icon-button mat-sm-button style="color: rgb(3, 28, 99);"
+                                                        cTooltip="Configure BarCode" (click)="ConfigureBarCode(row.id)">
+                                                        <mat-icon>qr_code_2</mat-icon>
+                                                    </button> -->
+                                                    <!-- <button mat-button style="color: rgb(3, 28, 99);"> -->
+                                                    <!-- <p class="configureText" (click)="ConfigureSaleRate(row.id)">Sale
+                                                        Price</p>/
+                                                    <p class="configureText" (click)="ConfigurePurRate(row.id)">Purchase
+                                                        Price</p>/
+                                                    <p class="configureText" (click)="ConfigureBarCode(row.id)">BarCode
+                                                    </p> -->
+
+                                                    <!-- 
+                                                    </button> -->
+                                                    <!-- <button mat-button style="color: rgb(3, 28, 99);"
+                                                        (click)="ConfigureSaleRate(row.id)">
+                                                        <P style="font-weight: bold;"> Sale Price</P>
+                                                    </button>
+                                                    <button mat-button style="color: rgb(3, 28, 99);"
+                                                        (click)="ConfigurePurRate(row.id)">
+                                                        <P style="font-weight: bold;"> Purchase Price</P>
+                                                    </button>
+                                                    <button mat-button style="color: rgb(3, 28, 99);"
+                                                        (click)="ConfigureBarCode(row.id)">
+                                                        <P style="font-weight: bold;">BarCode</P>
+                                                    </button> -->
+                                                </div>
+                                            </td>
+                                        </ng-container>
+                                        <tr mat-header-row *matHeaderRowDef="itemVariantsColumns"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: itemVariantsColumns;"></tr>
+                                    </table>
+                                </section>
+                            </div>
+                        </c-card>
+                    </mat-tab>
+                    <!-- <mat-tab label="Taxes">
+                        <c-card style="padding: 10px; margin-top: 30px;" class="mat-elevation-z8">
+                      
+                            <c-card-body
+                                style="padding: 10px;background-color: rgb(2, 42, 75);margin: 5px;border-radius: 10px;">
+                                <div class="example-table-container">
+                                    <section class="example-container mat-elevation-z8" tabindex="0"
+                                        style="border-radius: 5px;">
+                                        <table mat-table [dataSource]="taxesSource" class="mat-elevation-z8">
+                                            <ng-container matColumnDef="Id">
+                                                <th mat-header-cell *matHeaderCellDef> Sr No </th>
+                                                <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                                            </ng-container>
+                                            <div>
+                                                <ng-container matColumnDef="taxes">
+                                                    <th mat-header-cell *matHeaderCellDef="let element"
+                                                        style="min-width:20000px">
+                                                        <div *ngFor="let tax of taxes "
+                                                            style="display:inline-block;width: 200px; text-align: center;">
+                                                            <div>{{tax?.name}}</div>
+                                                        </div>
+                                                    </th>
+                                                    <td mat-cell *matCellDef="let element" style="min-width:20000px">
+                                                        <div *ngFor="let tax of element?.productTaxes "
+                                                            style="display:inline-block;width: 200px;text-align: center;">
+                                                            <mat-form-field appearance="fill"
+                                                                style="margin-bottom: -12px; margin-top: 10px; margin-right:10px; min-width: 200px;">
+                                                                <mat-label>{{tax.tax}}</mat-label>
+                                                                <input matInput [(ngModel)]="tax.amount"
+                                                                    (blur)="onBlur(tax)">
+                                                            </mat-form-field>
+                                                      
+                                                        </div>
+                                                    </td>
+                                                </ng-container>
+                                            </div>
+                                            <ng-container matColumnDef="isActive">
+                                                <th mat-header-cell *matHeaderCellDef> IsActive </th>
+                                                <td mat-cell *matCellDef="let element"> {{element.isActive?'Yes':'No'}}
+                                                </td>
+                                            </ng-container>
+                                            <ng-container matColumnDef="product">
+                                                <th mat-header-cell *matHeaderCellDef style="min-width: 200px;">Product
+                                                </th>
+                                                <td mat-cell *matCellDef="let element" style="min-width: 200px;">
+                                                    {{element.prodName}}
+                                                </td>
+                                            </ng-container>
+                                          
+                                            <tr mat-header-row *matHeaderRowDef="taxesColumns"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: taxesColumns;"></tr>
+                                        </table>
+                                    </section>
+                                </div>
+                            </c-card-body>
+                        </c-card>
+                    </mat-tab>
+                    <mat-tab label="Discount">Discount</mat-tab> -->
+                </mat-tab-group>
+            </div>
+        </form>
+    </div>
+</div>

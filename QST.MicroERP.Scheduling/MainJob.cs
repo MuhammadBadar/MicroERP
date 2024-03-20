@@ -19,11 +19,11 @@ namespace QST.Scheduling
         }
 
         public async Task Execute(IJobExecutionContext context)
-        {
+       {
             // Write Service Methods to be called 
             //throw new NotImplementedException();
 
-            _ntfSvc.SendNotifications();
+           await _ntfSvc.SendNotificationsAsync();
 
             await Task.CompletedTask;
         }

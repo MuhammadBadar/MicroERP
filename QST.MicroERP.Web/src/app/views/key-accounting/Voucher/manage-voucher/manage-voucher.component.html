@@ -1,0 +1,298 @@
+<div class="container-fluid page">
+    <div class="d-flex page_box p-3 mt-2  header-sticky" position="sticky">
+        <div *ngIf="Add && !selectedVoucher.isPosted">Manage Voucher
+        </div>
+        <div *ngIf="Edit && !selectedVoucher.isPosted">Update Voucher
+        </div>
+        <div *ngIf="selectedVoucher.isPosted"> Voucher view
+        </div>
+    </div>
+    <div class="page_content shadow p-3 position-relative">
+        <form #voucherForm="ngForm" (keydown.enter)="$event.preventDefault()">
+            <div [inert]="selectedVoucher.isPosted">
+                <c-card style="padding: 10px; margin-top: 30px; background:  rgb(209, 238, 243);padding: 20px;"
+                    class="mat-elevation-z8">
+                    <Row>
+                        <div fxLayout="row" fxFlex="100%">
+                            <mat-form-field fxFlex="35%" appearance="outline" class="form-group">
+                                <mat-label>Vch Date</mat-label>
+                                <input matInput [matDatepicker]="pickerFrom" name="vchDate" readonly="true"
+                                    #vchDate="ngModel" [(ngModel)]="selectedVoucher.vchDate" />
+                                <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerFrom (closed)="onBlur()"></mat-datepicker>
+                            </mat-form-field>
+                            <mat-form-field [inert]="Edit" fxFlex="30%" appearance="outline" class="form-group">
+                                <mat-label> Select Voucher Type</mat-label>
+                                <mat-select name="vchTypeId" #vchTypeId="ngModel"
+                                    [(ngModel)]="selectedVoucher.vchTypeId" required="true">
+                                    <mat-option [value]="0">--Please Select--</mat-option>
+                                    <mat-option *ngFor="let pt of VoucherTypes" [value]=" pt.id"
+                                        (click)="OnSelectVchType(pt)">
+                                        {{ pt.name}}
+                                    </mat-option>
+                                </mat-select>
+                                <div matSuffix *ngIf="!Edit">
+                                    <button mat-icon-button style="color:#940540;"
+                                        (click)="VchTypeDialog(); $event.stopPropagation()"
+                                        cTooltip="Explore Voucher Type">
+                                        <mat-icon>add</mat-icon>
+                                    </button>
+                                </div>
+                            </mat-form-field>
+                            <mat-form-field fxFlex="35%" appearance="outline" class="form-group">
+                                <mat-label>Voucher No</mat-label>
+                                <input matInput #vchNo="ngModel" (blur)="onBlur()" name="vchNo"
+                                    [(ngModel)]="selectedVoucher.vchNo" required="true" />
+                            </mat-form-field>
+                        </div>
+                    </Row>
+                    <Row>
+                        <div fxLayout="row" fxFlex="100%">
+                            <mat-form-field appearance="outline" fxFlex="100%">
+                                <mat-label>Description</mat-label>
+                                <textarea matInput #description="ngModel" (blur)="onBlur()" name="description"
+                                    [(ngModel)]="selectedVoucher.description"></textarea>
+                            </mat-form-field>
+                        </div>
+                    </Row>
+                </c-card>
+                <Row fxLayoutAlign="end end" style="margin: 20px;">
+                    <mat-checkbox *ngIf="Edit && selectedVoucher.statusId!=1014001" (change)="IsPostedCheck($event)"
+                        name="isPosted" #isPosted="ngModel" [(ngModel)]="selectedVoucher.isPosted">
+                        <mat-label><strong>Post</strong></mat-label>
+                    </mat-checkbox>
+                    <mat-checkbox name="isActive" [(ngModel)]="selectedVoucher.isActive" (change)="onBlur()">
+                        IsActive
+                    </mat-checkbox>
+                </Row>
+                <p style="font-size:20px; font-weight: bolder; color: #04415e;margin-top: 30px;">Voucher Line</p>
+                <c-card style="padding: 10px; margin-top: 10px; background:  rgb(209, 238, 243);padding: 20px;"
+                    class="mat-elevation-z8">
+                    <form #voucherDetailForm="ngForm" (keydown.enter)="$event.preventDefault()">
+                        <Row>
+                            <div fxLayout="row" fxFlex="100%">
+                                <mat-form-field fxFlex="25%" appearance="outline" class="form-group">
+                                    <mat-label> Select Account Name</mat-label>
+                                    <mat-select name="acId" #acId="ngModel" required="true"
+                                        [(ngModel)]="selectedVoucherDetail.acId">
+                                        <mat-option [value]="0">--Please Select--</mat-option>
+                                        <mat-option *ngFor="let pt of Accounts" [value]=" pt.id"
+                                            (click)=" onAccountSelect(pt)">
+                                            {{ pt.name}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field fxFlex="25%" appearance="outline" class="form-group">
+                                    <mat-label> Select Account Id</mat-label>
+                                    <mat-select name="acId" #acId="ngModel" required="true"
+                                        [(ngModel)]="selectedVoucherDetail.acId">
+                                        <mat-option [value]="0">--Please Select--</mat-option>
+                                        <mat-option *ngFor="let pt of Accounts" [value]=" pt.id"
+                                            (click)=" onAccountSelect(pt)">
+                                            {{ pt.id}}
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field fxFlex="25%" appearance="outline">
+                                    <mat-label>Debit</mat-label>
+                                    <input matInput #debit="ngModel" name="debit"
+                                        [(ngModel)]="selectedVoucherDetail.debit" id="debit"
+                                        [required]="isDebitRequired" type="number" oninput="validity.valid||(value='')"
+                                        min="1" (input)="TextChangeEvent($event);" />
+                                </mat-form-field>
+                                <mat-form-field fxFlex="25%" appearance="outline">
+                                    <mat-label>Credit</mat-label>
+                                    <input matInput #credit="ngModel" name="credit" type="number" min="1"
+                                        oninput="validity.valid||(value='')" [required]="isCreditRequired" id="credit"
+                                        class="invalid-feedback" [(ngModel)]="selectedVoucherDetail.credit"
+                                        (input)="TextChangeEvent($event);" />
+                                </mat-form-field>
+                                <!-- <mat-form-field fxFlex="20%" appearance="outline" class="form-group">
+                                    <mat-label>Bill Id</mat-label>
+                                    <input matInput #billId="ngModel" name="billId" type="number"
+                                        [(ngModel)]="selectedVoucherDetail.billId" />
+                                </mat-form-field> -->
+                            </div>
+                        </Row>
+                        <Row>
+                            <div fxLayout="row" fxFlex="100%">
+                                <mat-form-field appearance="outline" fxFlex="100%">
+                                    <mat-label>Description</mat-label>
+                                    <textarea matInput #description="ngModel" name="description"
+                                        [(ngModel)]="selectedVoucherDetail.description"></textarea>
+                                </mat-form-field>
+                            </div>
+                        </Row>
+                        <!-- <div fxLayout="row" fxLayoutAlign="space-between">
+                        <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="49%">
+                            <mat-form-field fxFlex="50%" appearance="outline" class="form-group">
+                                <mat-label>Qty</mat-label>
+                                <input matInput #qty="ngModel" name="qty" type="number" min="0" required="true"
+                                    oninput="validity.valid||(value='')" [(ngModel)]="selectedVoucherDetail.qty" />
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="space-between">
+                        <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="49%">
+                            <mat-form-field fxFlex="50%" appearance="outline" class="form-group">
+                                <mat-label> Select Product</mat-label>
+                                <mat-select name="productId" #productId="ngModel"
+                                    [(ngModel)]="selectedVoucherDetail.productId">
+                                    <mat-option [value]="0">--Please Select--</mat-option>
+                                    <mat-option *ngFor="let pt of Products" [value]=" pt.id"
+                                        (click)=" onSelectProduct(pt)">
+                                        {{ pt.name}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline" fxFlex="50%">
+                                <mat-label>Rate</mat-label>
+                                <input matInput #rate="ngModel" name="rate" type="number" min="0" required="true"
+                                    oninput="validity.valid||(value='')" [(ngModel)]="selectedVoucherDetail.rate" />
+                            </mat-form-field>
+                        </div>
+                    </div> -->
+                        <div fxLayoutAlign="end end">
+                            <div style="margin-top: -20px;">
+                                <button *ngIf="addButton" cButton class="me-1"
+                                    style="background-color:#1e293b ;width: 150px;" type="submit"
+                                    (click)="AddVoucherDetailtoList();">
+                                    Add to List
+                                </button>
+                                <button *ngIf="lineEditMode" cButton class="me-1" style="background-color:#1e293b ;"
+                                    type="submit" (click)="AddVoucherDetailtoList();">
+                                    Update Vch Detail
+                                </button>
+                            </div>
+                            <div>
+                                <button mat-icon-button mat-sm-button color="primary" cTooltip="Refresh"
+                                    cTooltipPlacement="top" (click)="RefreshDetail()">
+                                    <mat-icon>autorenew</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </c-card>
+                <c-card style="padding: 10px; margin-top: 30px;" class="mat-elevation-z8">
+                    <h5 style="font-size:20px;  color: #04415e;margin: 20px;"> Voucher Detail </h5>
+                    <c-card-body
+                        style="padding: 10px;background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));margin: 5px;border-radius: 10px;">
+                        <div class="example-table-container">
+                            <section class="example-container mat-elevation-z8" tabindex="0"
+                                style="border-radius: 5px;">
+                                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                                    <ng-container matColumnDef="Id" [style.background-color]="color">
+                                        <th mat-header-cell *matHeaderCellDef> Sr No </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="acName">
+                                        <th mat-header-cell *matHeaderCellDef> Ac Name </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.acName}} </td>
+                                        <td mat-footer-cell *matFooterCellDef>Total </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="acId">
+                                        <th mat-header-cell *matHeaderCellDef> Ac Id </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.acId}} </td>
+                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="debit">
+                                        <th mat-header-cell *matHeaderCellDef>
+                                            <div> Debit</div>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <div> {{element.debit}} </div>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef> {{GetDebitTotal()}} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="credit">
+                                        <th mat-header-cell *matHeaderCellDef> Credit </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.credit}} </td>
+                                        <td mat-footer-cell *matFooterCellDef> {{GetCreditTotal()}} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="billId">
+                                        <th mat-header-cell *matHeaderCellDef> Bill Id </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.billId}} </td>
+                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="product">
+                                        <th mat-header-cell *matHeaderCellDef>Product</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.product}} </td>
+                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="qty">
+                                        <th mat-header-cell *matHeaderCellDef> Qty </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.qty}} </td>
+                                        <td mat-footer-cell *matFooterCellDef> {{GetQtyTotal()}} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="descr">
+                                        <th mat-header-cell *matHeaderCellDef> Description </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="rate">
+                                        <th mat-header-cell *matHeaderCellDef>
+                                            <div>Rate</div>
+                                        </th>
+                                        <td mat-cell *matCellDef="let element">
+                                            <div>{{element.rate}}</div>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="actions" stickyEnd style="z-index: 0;">
+                                        <th mat-header-cell *matHeaderCellDef>
+                                            <div style="width: 100px; text-align: center;">Actions</div>
+                                        </th>
+                                        <td mat-cell *matCellDef="let row">
+                                            <div style="width: 100px;text-align: center;" *ngIf="!row.isDefaultDrCr">
+                                                <button mat-icon-button mat-sm-button style="color:#1e293b ; "
+                                                    (click)="edit(row)" cTooltip="Edit Settings ">
+                                                    <mat-icon>edit</mat-icon>
+                                                </button>
+                                                <button mat-icon-button mat-sm-button color="warn"
+                                                    cTooltip="Delete Settings " (click)="delete(row)"
+                                                    [disabled]="row.isSystemDefined">
+                                                    <mat-icon>delete</mat-icon>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                    </ng-container>
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumns sticky: true"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+                                    </tr>
+
+                                    <tr mat-footer-row *matFooterRowDef="displayedColumns"
+                                        style=" border-top:1px solid rgb(176, 179, 179)">
+                                    </tr>
+                                </table>
+                            </section>
+                        </div>
+                    </c-card-body>
+                </c-card>
+            </div>
+            <div fxLayoutAlign="end end">
+                <c-spinner [inert]="selectedVoucher.isPosted" *ngIf="proccessing"
+                    style="height: 50px;width: 50px;color: rgb(3, 71, 102);"></c-spinner>
+                <div style="margin-top: 10px;" *ngIf="!proccessing">
+                    <button [inert]="selectedVoucher.isPosted" *ngIf="Add" cButton class="me-1"
+                        style="background-color:#1e293b ;width: 100px;" type="submit" (click)="Submit();">
+                        Submit
+                    </button>
+                    <button [inert]="selectedVoucher.isPosted" *ngIf="Edit" cButton class="me-1"
+                        style="background-color:#1e293b ;width: 100px;" type="submit" (click)="Submit()">
+                        Update
+                    </button>
+                    <button cButton class="me-1" style="background-color:#7b7c7e ;width: 100px;" (click)="Back()">
+                        Go Back
+                    </button>
+                </div>
+                <div [inert]="selectedVoucher.isPosted">
+                    <button mat-icon-button mat-sm-button color="primary" cTooltip="Refresh" cTooltipPlacement="top"
+                        (click)="ngOnInit()" *ngIf="Add">
+                        <mat-icon>autorenew</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -27,7 +27,6 @@ namespace QST.MicroERP.Core.Entities.SEC
         public string? ModuleIds { get; set; }
         public int ModuleId { get; set; }
         public string? Module { get; set; }
-        public int CLTId { get; set; }
         public string? CLTModuleIds { get; set; }
         public string? SupervisorId { get; set; }
         public string? Supervisor { get; set; }
@@ -35,6 +34,9 @@ namespace QST.MicroERP.Core.Entities.SEC
         public int DoctorId { get; set; }
         public bool IsActive { get; set; }
         public List<PermissionDE> Permissions { get; set; }
+        public bool IncludeSubordinatesData { get; set; }
+        public int CltId { get; set; }
+        public string? CtlName { get; set; }
 
     }
 }

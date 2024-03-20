@@ -21,8 +21,6 @@ namespace QST.MicroERP.WebAPI.Controllers.TMS
     public class TaskCommentController : ControllerBase
     {
 
-
-
         #region Class Variables
         private TaskCommentService _taskCommentSVC;
         private UserManager<User> userManager;
@@ -56,7 +54,7 @@ namespace QST.MicroERP.WebAPI.Controllers.TMS
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post(TaskCommentDE taskComment)
+        public ActionResult Post(TaskCommentDE taskComment)
         {
             //User user =await userManager.FindByNameAsync(taskComment.User);
             //taskComment.UserId=user.Id;

@@ -1,0 +1,132 @@
+<div class="container-fluid page">
+    <div class="d-flex page_box p-3 mt-2 header-sticky" position="sticky">
+        <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+            <div *ngIf="Add">Add Staff
+            </div>
+            <div *ngIf="Edit">Update Staff
+            </div>
+            <div fxFlex="7%">
+                <button mat-icon-button fxLayoutAlign="end end" (click)="dialogRef.close()" style="color: white">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="page_content shadow p-3 position-relative">
+        <form #StaffForm="ngForm">
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Staff Name</mat-label>
+                        <input  maxlength="100"  matInput required #StaffName="ngModel" name="name" [(ngModel)]="selectedStaff.name" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" fxFlex="49%" class="form-group">
+                        <mat-label>Date of Birth</mat-label>
+                        <input [matDatepicker]="picker" readonly matInput class="form-control" [max]="currDate"
+                            placeholder="Date of Birth" name="dateOfBirth" #dateOfBirth="ngModel"
+                            [(ngModel)]="selectedStaff.dateOfBirth" required />
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </div>
+            </Row>
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-radio-group required="true" genderId name="genderId" fxFlex="49%"
+                        [(ngModel)]="selectedStaff.genderId" #Gender="ngModel">
+                        <mat-label>Gender <span class="required-asterisk"
+                                *ngIf="StaffForm.controls['genderId']?.errors?.['required']">*</span> : </mat-label>
+                        <mat-radio-button *ngFor="let val of genders" [value]="val.id">
+                            {{val.name}}
+                        </mat-radio-button>
+                    </mat-radio-group>
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Contact No</mat-label>
+                         <input  maxlength="45"  type="tel" pattern="^[0-9]+$"  maxlength="45" #contactNo="ngModel" matInput required  name="ContactNo"
+                            [(ngModel)]="selectedStaff.contactNo" />
+                              <mat-error *ngIf="StaffForm.controls['ContactNo']?.errors?.['pattern']">
+                         Phone number should contain only digits.
+                     </mat-error>
+                    </mat-form-field>
+                </div>
+            </Row>
+            <div fxLayout="row" fxLayoutAlign="space-between">
+                <div fxLayout="row" fxFlex="49%">
+                    <mat-form-field appearance="outline" fxFlex="50%">
+                        <mat-label>Select Country</mat-label>
+                        <mat-select name="countryId" [(ngModel)]="selectedStaff.countryId">
+                            <mat-option [value]="0" (click)="GetSettings(1016)">--Please Select--</mat-option>
+                            <mat-option *ngFor="let val of countries" [value]="val.id" (click)="SearchCities()">
+                                {{val.name}}
+                            </mat-option>
+                        </mat-select>
+                        <div matSuffix>
+                            <button mat-icon-button style="color:#940540;"
+                                (click)="OpenCountryDialog(); $event.stopPropagation()">
+                                <mat-icon cTooltip="Explore Country">add</mat-icon>
+                            </button>
+                        </div>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" fxFlex="50%">
+                        <mat-label>Select City</mat-label>
+                        <mat-select name="cityId" [(ngModel)]="selectedStaff.cityId">
+                            <mat-option [value]="0" (click)="GetSettings(1036)">--Please Select--</mat-option>
+                            <mat-option *ngFor="let val of cities" [value]="val.id" (click)="SearchArea();
+                                                        selectedStaff.countryId=val.parentId">
+                                {{val.name}}
+                            </mat-option>
+                        </mat-select>
+                        <div matSuffix>
+                            <button mat-icon-button style="color:#940540;"
+                                (click)="OpenCityDialog(); $event.stopPropagation()">
+                                <mat-icon cTooltip="Explore City">add</mat-icon>
+                            </button>
+                        </div>
+                    </mat-form-field>
+                </div>
+                <mat-form-field appearance="outline" fxFlex="49%">
+                    <mat-label>--Please Select Area--</mat-label>
+                    <mat-select    name="areaId" [(ngModel)]="selectedStaff.areaId">
+                        <mat-option [value]="0">--Please Select--</mat-option>
+                        <mat-option *ngFor="let val of areas" [value]="val.id" (click)=" selectedStaff.cityId=val.parentId;
+                                                     selectedStaff.countryId=val.pParentId">
+                            {{val.name}}
+                        </mat-option>
+                    </mat-select>
+                    <div matSuffix>
+                        <button mat-icon-button style="color:#940540;"
+                            (click)="OpenAreaDialog(); $event.stopPropagation()">
+                            <mat-icon cTooltip="Explore Area">add</mat-icon>
+                        </button>
+                    </div>
+                </mat-form-field>
+            </div>
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>HouseNo</mat-label>
+                        <input maxlength="65535" matInput #address="ngModel" name="Address" [(ngModel)]="selectedStaff.address" />
+                    </mat-form-field>
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Address</mat-label>
+                        <textarea maxlength="65535" rows="1" matInput #houseNo="ngModel" name="HouseNo"
+                            [(ngModel)]="selectedStaff.houseNo"></textarea>
+                    </mat-form-field>
+                </div>
+            </Row>
+            <mat-checkbox name="isActive" [(ngModel)]="selectedStaff.isActive" checked>Is Active</mat-checkbox>
+            <div fxLayoutAlign="end end">
+                <button mat-raised-button *ngIf="Add" style="background-color: rgb(3, 37, 68);color: white;"
+                    (click)="SaveStaff()">Submit</button>
+                <button mat-raised-button *ngIf="Edit" style="background-color: rgb(3, 37, 68);color: white;"
+                    (click)="SaveStaff()">Update</button>
+                <div>
+                    <button mat-icon-button mat-sm-button color="primary" cTooltip="Refresh" cTooltipPlacement="top"
+                        (click)="Refresh()">
+                        <mat-icon>autorenew</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

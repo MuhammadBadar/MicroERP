@@ -2,6 +2,7 @@
 using QST.MicroERP.Core.Entities.CTL;
 using MySql.Data.MySqlClient;
 using System.Data;
+using QST.MicroERP.Core.Constants;
 
 namespace QST.MicroERP.DAL.CTL
 {
@@ -22,26 +23,26 @@ namespace QST.MicroERP.DAL.CTL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                cmd.CommandText = "ManageSettings";
-                cmd.Parameters.AddWithValue ("@id", stng.Id);
-                cmd.Parameters.AddWithValue ("@clientId", stng.ClientId);
-                cmd.Parameters.AddWithValue ("@moduleId", stng.ModuleId);
-                cmd.Parameters.AddWithValue ("@name", stng.Name);
-                cmd.Parameters.AddWithValue ("@value", stng.Value);
-                cmd.Parameters.AddWithValue ("@accountCode", stng.AccountCode);
-                cmd.Parameters.AddWithValue ("@levelId", stng.LevelId);
-                cmd.Parameters.AddWithValue ("@description", stng.Description);
-                cmd.Parameters.AddWithValue ("@keyCode", stng.KeyCode);
-                cmd.Parameters.AddWithValue ("@isSystemDefined", stng.IsSystemDefined);
-                cmd.Parameters.AddWithValue ("@istAccountLevel", stng.IstAccountLevel);
-                cmd.Parameters.AddWithValue ("@parentId", stng.ParentId);
-                cmd.Parameters.AddWithValue ("@enumTypeId", stng.EnumTypeId);
-                cmd.Parameters.AddWithValue ("@createdOn", stng.CreatedOn);
-                cmd.Parameters.AddWithValue ("@createdById", stng.CreatedById);
-                cmd.Parameters.AddWithValue ("@modifiedOn", stng.ModifiedOn);
-                cmd.Parameters.AddWithValue ("@modifiedById", stng.ModifiedById);
-                cmd.Parameters.AddWithValue ("@isActive", stng.IsActive);
-                cmd.Parameters.AddWithValue ("@DBoperation", stng.DBoperation.ToString ());
+                cmd.CommandText = SPNames.CTL_Manage_Settings.ToString ();
+                cmd.Parameters.AddWithValue ("@prm_id", stng.Id);
+                cmd.Parameters.AddWithValue ("@prm_clientId", stng.ClientId);
+                cmd.Parameters.AddWithValue ("@prm_moduleId", stng.ModuleId);
+                cmd.Parameters.AddWithValue ("@prm_name", stng.Name);
+                cmd.Parameters.AddWithValue ("@prm_value", stng.Value);
+                cmd.Parameters.AddWithValue ("@prm_accountCode", stng.AccountCode);
+                cmd.Parameters.AddWithValue ("@prm_levelId", stng.LevelId);
+                cmd.Parameters.AddWithValue ("@prm_description", stng.Description);
+                cmd.Parameters.AddWithValue ("@prm_keyCode", stng.KeyCode);
+                cmd.Parameters.AddWithValue ("@prm_isSystemDefined", stng.IsSystemDefined);
+                cmd.Parameters.AddWithValue ("@prm_istAccountLevel", stng.IstAccountLevel);
+                cmd.Parameters.AddWithValue ("@prm_parentId", stng.ParentId);
+                cmd.Parameters.AddWithValue ("@prm_enumTypeId", stng.EnumTypeId);
+                cmd.Parameters.AddWithValue ("@prm_createdOn", stng.CreatedOn);
+                cmd.Parameters.AddWithValue ("@prm_createdById", stng.CreatedById);
+                cmd.Parameters.AddWithValue ("@prm_modifiedOn", stng.ModifiedOn);
+                cmd.Parameters.AddWithValue ("@prm_modifiedById", stng.ModifiedById);
+                cmd.Parameters.AddWithValue ("@prm_isActive", stng.IsActive);
+                cmd.Parameters.AddWithValue ("@prm_DBoperation", stng.DBoperation.ToString ());
 
                 cmd.ExecuteNonQuery ();
                 return true;
@@ -72,7 +73,7 @@ namespace QST.MicroERP.DAL.CTL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                top = cmd.Connection.Query<SettingsDE> ("call SearchSettings( '" + whereClause + "')").ToList ();
+                top = cmd.Connection.Query<SettingsDE> ("call "+SPNames.CTL_Search_Settings.ToString () + "( '" + whereClause + "')").ToList ();
                 return top;
             }
             catch (Exception)
@@ -83,7 +84,6 @@ namespace QST.MicroERP.DAL.CTL
             {
                 if (closeConnectionFlag)
                     MicroERPDataContext.CloseMySqlConnection (cmd);
-                cmd.Parameters.Clear ();
             }
         }
         #endregion

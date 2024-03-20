@@ -22,7 +22,7 @@
         public string? Name { get; set; }
         public string? ParentName { get; set; }
         public string? PParentName { get; set; }
-        public int PParentId { get; set; }
+        public int? PParentId { get; set; }
         public string? Description { get; set; }
         public string? SettingType { get; set; }
         public string? TypeKeyCode { get; set; }

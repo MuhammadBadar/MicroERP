@@ -1,0 +1,175 @@
+.page {
+    color: white;
+    padding: 0 1rem;
+    background: #f1f5f9;
+    width: 100%;
+
+
+}
+.add-event{
+    width: 40px !important;
+    padding: 0px;
+    background-color: white !important;
+    color: black;
+}
+
+.page_content {
+    padding: 20px;
+    min-height: calc(100vh - 178px);
+    border-radius: 15px;
+    margin-top: -2rem;
+    background: white;
+    color: black;
+}
+
+.page_box {
+    min-height: 100px;
+
+    background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));
+    border-radius: 10px;
+    font-size: 25px;
+    padding: 10px;
+
+}
+
+.example-container {
+
+    width: 100;
+    max-width: 100%;
+    overflow: auto;
+}
+
+table {
+    width: 100;
+    z-index: 1;
+}
+
+
+td.mat-column-star {
+    width: 20%;
+    padding-right: 8px;
+}
+
+th.mat-column-position,
+td.mat-column-position {
+    padding-left: 8px;
+}
+
+.mat-mdc-table-sticky-border-elem-right {
+    border-left: 1px solid #e0e0e0;
+}
+
+.mat-mdc-table-sticky-border-elem-left {
+    border-right: 1px solid #e0e0e0;
+}
+
+td {
+    min-width: 150px;
+
+}
+
+th {
+    min-width: 150px;
+
+}
+
+
+th {
+    background-color: aqua;
+    color: white;
+    font-weight: normal
+}
+
+.gallery-img img {
+    cursor: zoom-in;
+    box-shadow: 0 1px 5px gray;
+
+}
+
+.lightbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, .85);
+}
+
+.close-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0;
+    width: 7%;
+    height: 10%;
+    z-index: 2;
+    background: 0 0;
+    border: 0;
+    cursor: pointer;
+    margin-top: 60px;
+
+}
+.spinnerBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, .85);
+  }
+  .days-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .day-item {
+    display: flex;
+    align-items: center; 
+    font-size: 16px; 
+    background-color: #f4f4f4; 
+    padding: 10px; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: background-color 0.3s;
+  }
+
+  .day-item:hover {
+    background-color: #e0e0e0; }
+
+  .day-item input[type="checkbox"] {
+    margin-right: 10px; 
+  }
+
+  .day-label {
+    font-weight: bold;
+  }
+.icon-button:hover {
+  background-color: #0077b3;
+  transform: scale(1.05);
+}
+
+.icon-button {
+  background-color: #033650;
+  color: white;
+  margin: 10px;
+  margin-bottom: 30px;
+}
+.disIconBtn {
+  pointer-events: none;
+  background-color: #929191; 
+  color: white;
+  margin: 10px;
+  margin-bottom: 30px;
+}
+tr:nth-child(even) {
+  background-color: #daebfa
+}

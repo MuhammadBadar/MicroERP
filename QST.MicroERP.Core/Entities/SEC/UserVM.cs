@@ -11,6 +11,7 @@
         public string? UserPhone { get; set; }
         public int? EmployeeId { get; set; }
         public string? Id { get; set; }
+        public int ClientId { get; set; }
         public string? UserName { get; set; }
         public int RoleId { get; set; }
         public string? FatherName { get; set; }
@@ -22,6 +23,8 @@
         public int? DiscountLimit { get; set; }
         public int? BranchId { get; set; }
         public string? Branch { get; set; }
+        public int CtlId { get; set; }
+        public string? CtlName { get; set; }
 
     }
 }

@@ -1,0 +1,97 @@
+<div class="container-fluid page">
+  <div class="d-flex page_box p-3 mt-2 header-sticky" position="sticky">
+    <div>Vocabulary List</div>
+  </div>
+  <div class="page_content shadow p-3 position-relative">
+    <div class="pull-right" style="text-align: end; margin-top: 20px">
+      <button class="bttn" (click)="OpenDialog()"   [ngClass]="{disabledBtn:isReadOnly}">
+        Add New Word
+      </button>
+    </div>
+    <div class="search-box" style="margin-top: 20px">
+      <i class="material-icons">search</i>
+      <input type="text" (keyup)="updateFilter($event)" class="search-input" placeholder="Search..." />
+    </div>
+     <div style="display: inline-block; margin-left: 10px">
+      <p style="font-weight: bold; font-size: large; color: rgb(4, 67, 94)">
+        {{ this.vocLength }} Number of Rows Appeared
+      </p>
+    </div>
+    <div style="display: inline-block">
+      <button
+        mat-icon-button
+        (click)="GetVocabulary()"
+        matTooltip="Refresh Task"
+      >
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+    <div class="example-container mat-elevation-z8" style="padding: 20px">
+      <section class="example-container mat-elevation-z8" tabindex="0" style="border-radius: 5px; margin-top: 30px">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+          <ng-container matColumnDef="word">
+            <th mat-header-cell *matHeaderCellDef>Word</th>
+            <td mat-cell *matCellDef="let element">{{ element.word }}</td>
+          </ng-container>
+          <ng-container matColumnDef="englishmeaning">
+            <th mat-header-cell *matHeaderCellDef>English Meaning</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.englishMeaning }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="urduMeaning">
+            <th mat-header-cell *matHeaderCellDef>Urdu Meaning</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.urduMeaning }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="sentence">
+            <th mat-header-cell *matHeaderCellDef>Sentence</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.userVocab?.sentence }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="pronunciation">
+            <th mat-header-cell *matHeaderCellDef>Pronunciation</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.userVocab?.pronunciation }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="novel">
+            <th mat-header-cell *matHeaderCellDef>Novel</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.userVocab?.novel }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="chapter">
+            <th mat-header-cell *matHeaderCellDef>Chapter</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.userVocab?.chapters }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="difficultyLevel">
+            <th mat-header-cell *matHeaderCellDef>DifficultyLevel</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.userVocab?.difficultyLevel }}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="actions" stickyEnd="true">
+            <th mat-header-cell *matHeaderCellDef style="width: 70px; text-align: center">
+              <p style="font-size: 14px">Action(s)</p>
+            </th>
+            <td mat-cell *matCellDef="let row" style="width: 70px; text-align: center">
+              <div [ngClass]="{disabledDiv:isReadOnly}">
+                <i class="material-icons" style="cursor: pointer" cTooltip=" Edit Vocabulary" (click)="GetvocabForEdit(row)">edit</i>
+                <i class=" material-icons redIcon" style="cursor: pointer" cTooltip=" Delete Vocabulary"
+                  (click)="DeleteVocabulary(row.id)">delete
+                </i>
+                </div>
+                </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="vocabColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: vocabColumns"></tr>
+        </table>
+        </section>
+    </div>
+  </div>
+</div>

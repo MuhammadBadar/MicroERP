@@ -19,7 +19,6 @@ namespace QST.MicroERP.WebAPI.Controllers.TMS
     [ApiController]
     public class TaskController : ControllerBase
     {
-
         #region Class Variables
 
         private TaskService _taskSVC;
@@ -52,10 +51,10 @@ namespace QST.MicroERP.WebAPI.Controllers.TMS
             return Ok(retVal);
         }
 
-        [HttpGet("GetTasksByUserId/{userId}")]
-        public ActionResult GetTasksByUserId(string userId)
+        [HttpPost("GetTasksByUserId")]
+        public ActionResult GetTasksByUserId(UserTaskDE uTask)
         {
-            TaskSearchCriteria taskSearchCriteria = new TaskSearchCriteria { UserId = userId, IsActive = true };
+            TaskSearchCriteria taskSearchCriteria = new TaskSearchCriteria { UserId = uTask.UserId,ClientId=uTask.ClientId, IsActive = true };
             List<UserTaskVM> retVal = _taskSVC.SearchUserTasks(taskSearchCriteria);
             retVal = retVal.Where(x => x.ApprovedClaimId > 0 ? x.ApprovedClaimId != (int)ClaimPer.Claim_100Per : x.ClaimId != (int)ClaimPer.Claim_100Per).ToList();
             retVal = retVal.OrderBy(x => x.PriorityId).ToList();
@@ -91,7 +90,6 @@ namespace QST.MicroERP.WebAPI.Controllers.TMS
         [HttpPut]
         public void Put(TaskDE task)
         {
-
             task.DBoperation = DBoperations.Update;
             _taskSVC.ManagementTask(task);
         }

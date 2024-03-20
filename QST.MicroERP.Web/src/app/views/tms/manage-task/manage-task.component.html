@@ -1,0 +1,309 @@
+<div class="container-fluid page">
+  <div class="d-flex page_box p-3 mt-2 header-sticky" position="sticky">
+    <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+      <div *ngIf="Add">Manage Task</div>
+      <div *ngIf="Edit">Update Task</div>
+      <div fxFlex="7%">
+        <button
+          *ngIf="isDialog"
+          mat-icon-button
+          fxLayoutAlign="end end"
+          (click)="dialogRef.close()"
+          style="color: white"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="page_content shadow p-3 position-relative">
+    <form #taskForm="ngForm">
+      <div fxLayoutAlign="end end" style="margin: 10px">
+        <button
+          class="bttn"
+          *ngIf="Add"
+          [type]="'submit'"
+          [ngClass]="{ diabledBtn: taskForm.invalid,disabledBtn:isReadOnly}"
+          (click)="SaveTask()"
+          style="margin-top: 20px"
+        >
+          Submit
+        </button>
+        <button
+          class="bttn"
+          *ngIf="Edit"
+          [type]="'submit'"
+          [ngClass]="{ diabledBtn: taskForm.invalid,disabledBtn:isReadOnly }"
+          (click)="SaveTask()"
+          style="margin-top: 20px"
+        >
+          Update
+        </button>
+        <button
+          *ngIf="!isDialog"
+          class="darkBttn"
+          [routerLink]="['/task/task/taskList']"
+          style="margin-left: 5px; margin-top: 20x"
+        >
+          Back
+        </button>
+      </div>
+      <div *ngIf="Edit" fxLayout="row" fxLayoutAlign="space-between">
+        <mat-form-field fxFlex="49%" appearance="outline">
+          <mat-label>Task Id</mat-label>
+          <input
+            matInput
+            name="id"
+            type="number"
+            [ngModel]="selectedTask.id"
+            placeholder="Task Id"
+            readonly
+          />
+        </mat-form-field>
+        <mat-form-field fxFlex="49%" appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select [(ngModel)]="selectedTask.statusId" name="statusId">
+            <mat-option
+              *ngFor="let st of Status"
+              [value]="st.id"
+              (click)="PutTask()"
+            >
+              {{ st.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="space-between">
+        <mat-form-field fxFlex="100%" appearance="outline">
+          <mat-label>Title</mat-label>
+          <input
+            matInput
+            name="title"
+            [(ngModel)]="selectedTask.title"
+            required
+            placeholder="Title*"
+            maxlength="300"
+          />
+        </mat-form-field>
+      </div>
+      <!-- <mat-form-field fxFlex="45%" fxFill>
+                <mat-label>Module</mat-label>
+                <mat-select name="moduleId" [(ngModel)]="selectedTask.moduleId" required>
+                    <mat-option *ngFor="let mod of modules" [value]="mod.id">
+                        {{mod.value}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field> -->
+      <div fxLayout="row" fxLayoutAlign="space-between">
+        <mat-form-field fxFlex="32% " appearance="outline">
+          <mat-label>Time (Hr)</mat-label>
+          <input
+            name="SP"
+            type="number"
+            step=".01"
+            [(ngModel)]="selectedTask.sp"
+            matInput
+            required
+            placeholder=" Time"
+          />
+        </mat-form-field>
+        <mat-form-field fxFlex="32%" appearance="outline">
+          <mat-label>Assigned to</mat-label>
+          <mat-select name="userId" [(ngModel)]="selectedTask.userId" >
+              <mat-option style="background-color: rgb(207, 237, 250);">
+                  <ngx-mat-select-search
+                    (ngModelChange)="secSvc.UserAutoCompleteSearch($event)"
+                    [(ngModel)]="secSvc.userSearchValue"
+                    name="secSvc.userSearchValue"
+                    [noEntriesFoundLabel]="'No Matching Found'"
+                    [hideClearSearchButton]="true"
+                    placeholderLabel="Search User..."
+                    [clearSearchInput]="false"
+                  >
+                  </ngx-mat-select-search>
+                </mat-option>
+            <mat-option  *ngFor="let us of secSvc.userFilterData" [value]="us.id">
+              {{ us.userName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="32%" appearance="outline">
+          <mat-label>Priority</mat-label>
+          <mat-select
+            [(ngModel)]="selectedTask.priorityId"
+            required
+            name="priorityId"
+          >
+            <mat-option *ngFor="let st of Priority" [value]="st.id">
+              {{ st.name }}&nbsp;(<b>{{ st.description }}</b>)
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <quill-editor
+          matInput
+          name="description"
+          [(ngModel)]="selectedTask.description"
+          placeholder="Description"
+        ></quill-editor>
+      </div>
+      <div *ngIf="!isDialog">
+        <p
+          style="
+            font-size: large;
+            font-weight: bold;
+            color: rgb(1, 51, 82);
+            margin: 10px, 10px, 0, 0;
+          "
+        >
+          Image Attachments
+        </p>
+        <div style="border: 1px solid rgb(216, 215, 215); min-height: 200px" [inert]="isReadOnly">
+          <div>
+            <div style="margin-top: 15px">
+              <a
+                (click)="fileSelector.click()"
+                style="
+                  text-decoration: underline;
+                  color: rgb(23, 8, 110);
+                  margin-left: 480px;
+                  margin-top: 500px;
+                "
+                ><strong>Browse Images</strong></a
+              >
+              <mat-form-feild>
+                <input
+                  matinput
+                  #fileSelector
+                  style="margin-left: 5px"
+                  multiple
+                  type="file"
+                  accept=".png, .jpg, .jpeg"
+                  (change)="handleFileInput($event)"
+                  hidden
+                />
+              </mat-form-feild>
+            </div>
+          </div>
+          <div class="gallery-lightbox-container">
+            <div
+              class="gallery"
+              class="inline-block"
+              *ngFor="let data of FileDetails; let i = index"
+            >
+              <div class="gallery-img" style="margin-left: 8px; padding: 10px">
+                <img
+                  [src]="data.base64File"
+                  (click)="onPreviewImage(i)"
+                  width="350px"
+                  style="padding: 9px"
+                />
+              </div>
+              <div style="margin-left: 15px">
+                <div>
+                  <p class="inline-block">{{ data.name }}</p>
+                  <p
+                    style="float: right; margin-right: 15px"
+                    class="inline-block"
+                  >
+                    {{ data.createdOn | date }}
+                  </p>
+                </div>
+                <p style="margin-top: -10px">
+                  {{ data.size / 1024 / 1024 | number : ".2" }} MB
+                </p>
+              </div>
+            </div>
+            <div *ngIf="showMask" class="lightbox">
+              <span
+                class="count"
+                *ngIf="showCount"
+                style="width: 200px; height: 200px"
+                >{{ currentIndex + 1 }}/{{ totalImageCount }}</span
+              >
+              <button
+                mat-icon-button
+                *ngIf="previewImage"
+                (click)="onClosePreview()"
+                class="close-button"
+                style="color: white; margin-right: 15px"
+              >
+                <mat-icon>close</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                *ngIf="previewImage"
+                (click)="Delete()"
+                class="close-button"
+                style="color: white; margin-right: 80px"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                *ngIf="controls"
+                (click)="prev()"
+                class="close-button"
+                style="color: white; left: 50px; margin-top: 300px"
+              >
+                <mat-icon>chevron_left</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                *ngIf="controls"
+                (click)="next()"
+                class="close-button"
+                style="color: white; right: 30px; margin-top: 300px"
+              >
+                <mat-icon>chevron_right</mat-icon>
+              </button>
+              <div *ngIf="previewImage" class="lightbox-img">
+                <img
+                  [src]="currentLightBoxImage"
+                  style=" height: 450px"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="Edit && !isDialog">
+        <div class="comment-box">
+          <textarea
+            rows="3"
+            placeholder="Write a comment...
+                                                                                                    "
+            name="comment"
+            [(ngModel)]="selectedTaskComment.comment"
+          ></textarea>
+          <div class="actions">
+            <mat-icon
+              (click)="SaveTaskComment()"
+              [ngClass]="{
+                disabled:
+                  selectedTaskComment.comment == null ||
+                  selectedTaskComment.comment == ''|| isReadOnly
+              }"
+              >send</mat-icon
+            >
+          </div>
+          <div class="comment-list">
+            <div *ngFor="let comment of comments" class="comment">
+              <p>{{ comment.comment }}</p>
+              <span class="comment-date">{{
+                comment.time | date : "medium"
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div>
+  <div *ngIf="isLoading" class="spinnerBox">
+    <c-spinner style="height: 100px; width: 100px; color: white"></c-spinner>
+  </div>
+</div>

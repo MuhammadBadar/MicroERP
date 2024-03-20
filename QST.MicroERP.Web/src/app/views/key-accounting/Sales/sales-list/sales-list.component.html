@@ -1,0 +1,475 @@
+<div class="container-fluid page">
+    <div class="d-flex page_box p-3 mt-2">Sale List</div>
+    <div class="page_content shadow p-3 position-relative">
+        <div class="pull-right" style="text-align:end; margin-top: 20px;">
+            <button mat-raised-button style="background-color: rgb(2, 57, 102); color: white;"
+                [routerLink]="['/keyAccounting/mngSale']">Add New</button>
+        </div>
+        <c-card style="padding: 10px; margin-top: 30px;" class="mat-elevation-z8">
+            <c-card-body
+                style="padding: 10px;background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));margin: 5px;border-radius: 10px;">
+                <div class="example-table-container">
+                    <section class="example-container mat-elevation-z8" tabindex="0" style="border-radius: 5px;">
+                        <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+                            <ng-container matColumnDef="expand" sticky="true">
+                                <th mat-header-cell *matHeaderCellDef aria-label="row actions"
+                                    style="color: white;background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));">
+                                    <div>&nbsp;</div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div>
+                                        <button mat-icon-button aria-label="expand row"
+                                            (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation();highlight(element)">
+                                            <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+                                            <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+                                        </button>
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="Id">
+                                <th mat-header-cell *matHeaderCellDef> Sr No </th>
+                                <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="invNo">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 150px;  "> Inv No </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;"> {{element.invNo}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="salesman">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 150px;  "> Salesman </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;"> {{element.salesman}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="cust">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 150px;  "> Customer </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;"> {{element.customer}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="isPosted">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 100px;"> Posted</div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 100px;">{{element.isPosted?'Yes':'No'}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="status">
+                                <th mat-header-cell class="mat-cell" *matHeaderCellDef>
+                                    <div style="min-width: 90px;"> Status </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 90px;"> {{element.status}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="post" stickyEnd="true">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 60px;font-size: 14px;">Is Posted</div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 60px;">
+                                        <mat-checkbox *ngIf="element.statusId==UnPosted || element.isPosted"
+                                            [disabled]="element.isPosted || !element.isActive"
+                                            [checked]="element.isPosted" (change)="IsPostedCheck($event, element)">
+                                        </mat-checkbox>
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="isActive">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 150px;  ">IsActive </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;">{{element.isActive?'Yes':'No'}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="supplier">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 150px; "> Supplier </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;"> {{element.supplier}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="gross">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 150px; "> Gross </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;"> {{element.gross}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="discount">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 150px; "> Discount </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;"> {{element.discount}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="gst">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 150px; "> Gst </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;"> {{element.gst}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="credit">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 150px; "> Credit </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;"> {{element.credit}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="debit">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 150px; "> Debit </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;"> {{element.debit}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="date">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 150px;  ">Date</div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;"> {{element.date|date:"dd/MM/yyyy"}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="accName">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 150px;  ">Account </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;">{{element.accName}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="freightChrgs">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 150px;  ">Freight Charges </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;">{{element.freightChrgs}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="packChrgs">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 150px;  ">Packing Charges </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;">{{element.packChrgs}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="netPayable">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 150px;  ">NetPayable </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;">{{element.netPayable}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="description">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div style="min-width: 150px;  ">Description </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;">{{element.description}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="Action" stickyEnd="true">
+                                <th mat-header-cell *matHeaderCellDef
+                                    style="width: 100px; text-align: center;font-weight: normal;color: white;background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));">
+                                    Action
+                                </th>
+                                <td mat-cell *matCellDef="let row" style="width: 100px;text-align: center;">
+                                    <div>
+                                        <button mat-icon-button mat-sm-button color="primary" (click)="EditSale(row)"
+                                            matTooltip="Edit" style="cursor: pointer;">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                        <!-- <button mat-icon-button mat-sm-button color="warn" matTooltip="Delete"
+                                            (click)="DeleteSale(row.id)"><mat-icon>delete</mat-icon></button> -->
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="expandedDetail">
+                                <td mat-cell *matCellDef="let element"
+                                    [attr.colspan]="columnsToDisplayWithExpand.length">
+                                    <div class="example-element-detail" *ngIf="element.saleLines"
+                                        style="width: 100%;border-radius: 30px;"
+                                        [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                                        <div *ngIf="expandedElement">
+                                            <section class="example-container mat-elevation-z8" tabindex="0"
+                                                style="margin: 50px;border-radius: 30px;max-width: 46%;">
+                                                <table #innerTables mat-table [dataSource]="element.saleLines"
+                                                    class="mat-elevation-z8">
+                                                    <ng-container matColumnDef="Id">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            Sr No </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;"> {{element.id}}
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="product">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            Product </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            {{element.product}} </td>
+                                                        <td mat-footer-cell *matFooterCellDef>Total </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="saleUnit">
+                                                        <th mat-header-cell *matHeaderCellDef> SaleUnit </th>
+                                                        <td mat-cell *matCellDef="let element"> {{element.saleUnit}}
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="retailRate">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            Retail Rate
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            {{element.retailRate}} </td>
+                                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="godown">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            Godown </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            {{element.godown}}
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="productUnits">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            Product Units
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            {{element.productUnits}} </td>
+                                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="saleRate">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div>Sale Rate</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div>{{element.saleRate}}</div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="gstRate">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div>Gst Rate</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div>{{element.gstRate}}</div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="discRate">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div> Discount Rate</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div>{{element.discRate}}</div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="gstRetailRate">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div> Gst Retail Rate</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div>{{element.gstRetailRate}}</div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="amount">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div> Amount</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div>{{element.amount}}</div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef>{{GetAmount()}} </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="saleQty">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div>Sale Qty</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div> {{element.saleQty}} </div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef>{{GetQtyTotal()}} </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="description">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 300px;">
+                                                            Description
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 300px;">
+                                                            {{element.description}} </td>
+                                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="fTaxRate">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div> F.TaxRate</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div>{{element.fTaxRate}}</div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="whtRate">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div> WhtRate</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div>{{element.whtRate}}</div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef> </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="disc">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div> Discount</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div>{{element.disc}}</div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef> {{GetDiscount()}}</td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="bulkDisc">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div> BulkDiscount</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div>{{element.bulkDisc}}</div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef>{{GetBulkDisc()}} </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="qtyDisc">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div> QtyDiscount</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div>{{element.qtyDisc}}</div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef>{{GetQtyDisc()}} </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="gst">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div> GST</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div>{{element.gst}}</div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef>{{GetGST()}} </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="gstRet">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div> GSTRet</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div>{{element.gstRet}}</div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef> {{GetGSTRet()}}</td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="fTax">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div> F.Tax</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div>{{element.fTax}}</div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef>{{GetFTax()}} </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="wht">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div> Wht</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div>{{element.wht}}</div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef>{{GetWht()}} </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="chrgsAdd">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div> ChargesAdd</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div>{{element.chrgsAdd}}</div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef> {{GetChrgsAdd()}}</td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="chrgsLess">
+                                                        <th mat-header-cell *matHeaderCellDef style="min-width: 150px;">
+                                                            <div> ChargesLess</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element"
+                                                            style="min-width: 150px;">
+                                                            <div>{{element.chrgsLess}}</div>
+                                                        </td>
+                                                        <td mat-footer-cell *matFooterCellDef> {{GetChrgsLess()}}</td>
+                                                    </ng-container>
+                                                    <tr mat-header-row *matHeaderRowDef="innerDisplayedColumns"></tr>
+                                                    <tr mat-row *matRowDef="let row; columns: innerDisplayedColumns;">
+                                                    </tr>
+                                                    <tr mat-footer-row *matFooterRowDef="innerDisplayedColumns"
+                                                        style=" border-top:1px solid rgb(176, 179, 179)">
+                                                    </tr>
+                                                </table>
+                                            </section>
+                                        </div>
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+                            <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
+                                class="example-element-row" [class.example-expanded-row]="expandedElement === element"
+                                [ngClass]="{'highlight': selectedRowIndex == element.id}" (click)="highlight(element)">
+                            </tr>
+                            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row">
+                            </tr>
+                        </table>
+                    </section>
+                </div>
+            </c-card-body>
+        </c-card>
+    </div>
+</div>
+<div class="gallery-lightbox-container">
+    <div *ngIf="isLoading" class="lightbox">
+        <c-spinner style="height: 100px;width: 100px;color: white;"></c-spinner>
+    </div>
+</div>

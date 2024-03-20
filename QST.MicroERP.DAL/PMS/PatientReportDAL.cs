@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MySql.Data.MySqlClient;
+using QST.MicroERP.Core.Constants;
 using QST.MicroERP.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -27,20 +28,20 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                cmd.CommandText = "ManagePatientReport";
-                cmd.Parameters.AddWithValue ("@id", patRpt.Id);
-                cmd.Parameters.AddWithValue ("@rxId", patRpt.RxId);
-                cmd.Parameters.AddWithValue ("@clientId", patRpt.ClientId);
-                cmd.Parameters.AddWithValue ("@date", patRpt.Date);
-                cmd.Parameters.AddWithValue ("@categoryId", patRpt.CategoryId);
-                cmd.Parameters.AddWithValue ("@name", patRpt.Name);
-                cmd.Parameters.AddWithValue ("@reportBase64Path", patRpt.ReportBase64Path);
-                cmd.Parameters.AddWithValue ("@createdOn", patRpt.CreatedOn);
-                cmd.Parameters.AddWithValue ("@createdById", patRpt.CreatedById);
-                cmd.Parameters.AddWithValue ("@modifiedOn", patRpt.ModifiedOn);
-                cmd.Parameters.AddWithValue ("@modifiedById", patRpt.ModifiedById);
-                cmd.Parameters.AddWithValue ("@isActive", patRpt.IsActive);
-                cmd.Parameters.AddWithValue ("@DBoperation", patRpt.DBoperation.ToString ());
+                cmd.CommandText = SPNames.PMS_Manage_PatientReport.ToString();
+                cmd.Parameters.AddWithValue ("@prm_id", patRpt.Id);
+                cmd.Parameters.AddWithValue ("@prm_rxId", patRpt.RxId);
+                cmd.Parameters.AddWithValue ("@prm_clientId", patRpt.ClientId);
+                cmd.Parameters.AddWithValue ("@prm_date", patRpt.Date);
+                cmd.Parameters.AddWithValue ("@prm_categoryId", patRpt.CategoryId);
+                cmd.Parameters.AddWithValue ("@prm_name", patRpt.Name);
+                cmd.Parameters.AddWithValue ("@prm_reportBase64Path", patRpt.ReportBase64Path);
+                cmd.Parameters.AddWithValue ("@prm_createdOn", patRpt.CreatedOn);
+                cmd.Parameters.AddWithValue ("@prm_createdById", patRpt.CreatedById);
+                cmd.Parameters.AddWithValue ("@prm_modifiedOn", patRpt.ModifiedOn);
+                cmd.Parameters.AddWithValue ("@prm_modifiedById", patRpt.ModifiedById);
+                cmd.Parameters.AddWithValue ("@prm_isActive", patRpt.IsActive);
+                cmd.Parameters.AddWithValue ("@prm_DBoperation", patRpt.DBoperation.ToString ());
 
                 cmd.ExecuteNonQuery ();
                 return true;
@@ -71,7 +72,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                top = cmd.Connection.Query<PatientReportDE> ("call SearchPatientReport( '" + whereClause + "')").ToList ();
+                top = cmd.Connection.Query<PatientReportDE> ("call "+SPNames.PMS_Search_PatientReport.ToString()+"( '" + whereClause + "')").ToList ();
                 return top;
             }
             catch (Exception)

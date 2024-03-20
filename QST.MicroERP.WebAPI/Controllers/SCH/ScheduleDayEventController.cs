@@ -65,13 +65,11 @@ namespace QST.MicroERP.WebAPI.Controllers.SCH
             ScheduleDayEventDE sch = _schSVC.ManageScheduleDayEvent(Schedule);
             return Ok(sch);
         }
-        [HttpDelete("{id}")]
-        public IActionResult DeleteScheduleDayEvents(int id)
+        [HttpPost("DeleteSchDayEvt")]
+        public IActionResult DeleteScheduleDayEvents( ScheduleDayEventDE  evt)
         {
-            ScheduleDayEventDE Schedule = new ScheduleDayEventDE();
-            Schedule.DBoperation = DBoperations.Delete;
-            Schedule.Id = id;
-            ScheduleDayEventDE sch = _schSVC.ManageScheduleDayEvent(Schedule);
+            evt.DBoperation = DBoperations.Delete;
+            ScheduleDayEventDE sch = _schSVC.ManageScheduleDayEvent(evt);
             return Ok(sch);
         }
     }

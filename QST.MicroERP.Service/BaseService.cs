@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using NLog;
+using QST.MicroERP.DAL.CTL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,13 @@ namespace QST.MicroERP.Service
     {
         public Logger _logger;
         public String? _entity { get; set; }
+        internal MySqlCommand? cmd;
+        public CoreDAL _coreDAL;
         public BaseService ( )
         {
+            _coreDAL = new CoreDAL ();
             _logger = LogManager.GetLogger ("fileLogger");
+
         }
     }
 

@@ -10,7 +10,8 @@ namespace QST.MicroERP.Core.Enums
     {
         None = 0,
         ATT_NotificationToSupervisor_OnDayStart = 1,
-        ATT_NotificationToSupersor_OnDayEnd = 2,
-        ATT_TaskDetail = 3
+        ATT_NotificationToSupervisor_OnDayEnd = 2,
+        ATT_TaskDetail = 3,
+        ATT_DayEndTaskDetail=4
     }
 }

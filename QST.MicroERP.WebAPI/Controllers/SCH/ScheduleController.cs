@@ -32,16 +32,23 @@ namespace QST.MicroERP.WebAPI.Controllers.SCH
             List<ScheduleDE> list = _schSVC.SearchSchedule(schedule);
             return Ok(list);
         }
-        [HttpGet("GetScheduleByUserId")]
-        public ActionResult GetScheduleByUserId(string userId)
+        [HttpPut ("UpdateScheduleDay")]
+        public IActionResult PutScheduleDay ( ScheduleDayDE Schedule )
         {
-            var schedule = _schSVC.GetScheduleByUserId(userId);
+            Schedule.DBoperation = DBoperations.Update;
+            _schSVC.ManageScheduleDay (Schedule);
+            return Ok ();
+        }
+        [HttpPost("GetScheduleByUserId")]
+        public ActionResult GetScheduleByUserId(ScheduleDE sch)
+        {
+            var schedule = _schSVC.GetScheduleByUserId(sch.UserId, sch.ClientId);
             return Ok(schedule);
         }
-        [HttpGet("GetDueSps")]
-        public ActionResult GetDueSps(string userId)
+        [HttpPost("GetDueSps")]
+        public ActionResult GetDueSps( ScheduleDE sch )
         {
-            var sps = _attSvc.GetDueSPs(userId, DateTime.Now);
+            var sps = _schSVC.GetDueSPs(sch.UserId, sch.ClientId, DateTime.Now);
             return Ok(sps);
         }
         [HttpGet]
@@ -75,12 +82,10 @@ namespace QST.MicroERP.WebAPI.Controllers.SCH
             ScheduleDE sch = _schSVC.ManageSchedule(Schedule);
             return Ok(sch);
         }
-        [HttpDelete("DeleteScheduleDay")]
-        public IActionResult DeleteScheduleDay(int id)
+        [HttpPost("DeleteScheduleDay")]
+        public IActionResult DeleteScheduleDay(ScheduleDayDE schDay)
         {
-            ScheduleDayDE schDay = new ScheduleDayDE();
             schDay.DBoperation = DBoperations.Delete;
-            schDay.Id = id;
             _schSVC.ManageScheduleDay(schDay);
             return Ok();
         }

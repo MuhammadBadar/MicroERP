@@ -9,6 +9,7 @@ namespace QST.MicroERP.Core.Constants
     public class MailConstants
     {
         public const string SENDER = @"tech@qamsoft.com";
+        public const string SENDER_NAME = @"QamSoft";
         public const string HOST = @"mail.qamsoft.com";
         public const string USER_NAME = @"tech@qamsoft.com";
         public const string PASSWORD = @"Qamsoft#123";

@@ -23,8 +23,14 @@ namespace QST.MicroERP.Core.Translators.NTF
                 dict.Add(NotificationDictionaryKeywords.Date, mod.Date.Value.ToShortDateString());
             if (!dict.ContainsKey(NotificationDictionaryKeywords.Time))
                 dict.Add(NotificationDictionaryKeywords.Time, mod.Date.Value.ToShortTimeString());
-            if (!dict.ContainsKey(NotificationDictionaryKeywords.User))
-                dict.Add(NotificationDictionaryKeywords.User, mod.User);
+            if (!dict.ContainsKey (NotificationDictionaryKeywords.User))
+                dict.Add (NotificationDictionaryKeywords.User, mod.User);
+            if (!dict.ContainsKey (NotificationDictionaryKeywords.CompanyName))
+                dict.Add (NotificationDictionaryKeywords.CompanyName, CompanyConstants.COMPANY_NAME);
+            if (!dict.ContainsKey (NotificationDictionaryKeywords.SiteUrl))
+                dict.Add (NotificationDictionaryKeywords.SiteUrl, CompanyConstants.SITE_URL);
+            if (!dict.ContainsKey (NotificationDictionaryKeywords.WebMasterDisplayName))
+                dict.Add (NotificationDictionaryKeywords.WebMasterDisplayName, CompanyConstants.WEB_MASTER_DISPLAY_NAME);
 
             return dict;
         }
@@ -34,14 +40,22 @@ namespace QST.MicroERP.Core.Translators.NTF
             //_keys = configurations;
             if (!dict.ContainsKey(NotificationDictionaryKeywords.TMS_Title))
                 dict.Add(NotificationDictionaryKeywords.TMS_Title, mod.Title);
+            if (!dict.ContainsKey (NotificationDictionaryKeywords.TMS_WorkTime))
+                dict.Add (NotificationDictionaryKeywords.TMS_WorkTime, mod.WorkTime.ToString());
             if (!dict.ContainsKey(NotificationDictionaryKeywords.TMS_Description))
-                dict.Add(NotificationDictionaryKeywords.TMS_Description, "Test Descrition ...");
+                dict.Add(NotificationDictionaryKeywords.TMS_Description, mod.Description??"---");
             if (!dict.ContainsKey(NotificationDictionaryKeywords.TMS_DueTime))
                 dict.Add(NotificationDictionaryKeywords.TMS_DueTime, mod.Sp.ToString());
+            if (!dict.ContainsKey (NotificationDictionaryKeywords.TMS_Comment))
+                dict.Add (NotificationDictionaryKeywords.TMS_Comment, mod.Comments);
+            if (!dict.ContainsKey (NotificationDictionaryKeywords.TMS_ClaimPercent))
+                dict.Add (NotificationDictionaryKeywords.TMS_ClaimPercent, ((mod.ApprovedClaim ?? mod.ClaimPercent) ?? "0") + "%");
+            if (!dict.ContainsKey (NotificationDictionaryKeywords.TMS_Formatted_Title))
+                dict.Add (NotificationDictionaryKeywords.TMS_Formatted_Title, mod.Title.ToString ());
             if (!dict.ContainsKey(NotificationDictionaryKeywords.TMS_Priority))
                 dict.Add(NotificationDictionaryKeywords.TMS_Priority, mod.Priority);
             if (!dict.ContainsKey(NotificationDictionaryKeywords.TMS_Status))
-                dict.Add(NotificationDictionaryKeywords.TMS_Status, mod.StatusId.ToString());
+                dict.Add(NotificationDictionaryKeywords.TMS_Status, mod.Status);
             return dict;
         }
 

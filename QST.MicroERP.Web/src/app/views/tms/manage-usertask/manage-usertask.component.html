@@ -1,0 +1,454 @@
+<div class="container-fluid page">
+  <div class="d-flex page_box p-3 mt-2 header-sticky" position="sticky">
+    <div *ngIf="!openedToReAssign">Day Start</div>
+    <div *ngIf="openedToReAssign">ReAssign Tasks</div>
+    <div
+      fxFlex
+      fxLayout="row"
+      fxLayoutAlign="end center"
+      style="margin-top: 0; padding-top: 0"
+    >
+      <button
+        mat-icon-button
+        style="color: white; margin-top: 0; padding-top: 0"
+        (click)="dialogRefe.close()"
+        aria-label="Close dialog"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="page_content shadow p-3 position-relative">
+            <div style="margin-bottom: 20px;"><b>{{ fomattedDate }}</b></div>
+    <div>
+      <Row fxLayout="row" fxFlex="100%">
+        <div fxFlex="60%">
+          <button
+            class="bttn"
+            color="primary"
+            *ngIf="!openedToReAssign"
+            (click)="Savetask()"
+            [ngClass]="{ disabledBtn: disableSubmitButton }"
+          >
+            Mark Day Start
+          </button>
+          <button
+            class="bttn"
+            *ngIf="openedToReAssign && showData"
+            color="primary"
+            (click)="Savetask()"
+            [ngClass]="{ disabledBtn: disableSubmitButton }"
+          >
+            Re Assign
+          </button>
+          <button class="secBttn" (click)="openTaskDilaog()">
+            Create Task
+          </button>
+        </div>
+        <div fxFlex="40%" *ngIf="openedToReAssign" fxLayoutAlign="end end">
+          <mat-form-field appearance="outline">
+            <mat-label>Select User</mat-label>
+            <mat-select name="userId" [(ngModel)]="selectedTask.userId">
+               <mat-option style="background-color: #eaf3fc">
+                  <ngx-mat-select-search
+                    (ngModelChange)="secSvc.UserAutoCompleteSearch($event)"
+                    [(ngModel)]="secSvc.userSearchValue"
+                    name="secSvc.userSearchValue"
+                    [noEntriesFoundLabel]="'No Matching Found'"
+                    [hideClearSearchButton]="true"
+                    placeholderLabel="Search User..."
+                    [clearSearchInput]="false"
+                  >
+                  </ngx-mat-select-search>
+                </mat-option>
+            <mat-option *ngFor="let us of secSvc.userFilterData" 
+                [value]="us.id"
+                (click)="
+                  GetTaskByUserId(selectedTask.userId); hasTodaysTargets()
+                "
+              >
+                {{ us.userName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div fxFlex="40%" *ngIf="!openedToReAssign" fxLayoutAlign="end end">
+          <button (click)="withoutDayStart()" class="darkBttn">
+            Continue without Day Start
+          </button>
+        </div>
+      </Row>
+    </div>
+    <div *ngIf="showData">
+      <div>
+        <p class="total-sp-message">
+          Due Time:{{ dueSps }} , Picked Tasks Time: {{ totalSP }}
+        </p>
+      </div>
+      <section
+        class="example-container mat-elevation-z8"
+        tabindex="0"
+        style="border-radius: 5px; margin-top: 5px"
+      >
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+          <!-- UserName Column -->
+          <ng-container matColumnDef="userName">
+            <th mat-header-cell *matHeaderCellDef>UserName</th>
+            <td mat-cell *matCellDef="let element">{{ element.user }}</td>
+          </ng-container>
+
+          <!-- tasktitle in Column -->
+          <ng-container matColumnDef="Task Title">
+            <th mat-header-cell *matHeaderCellDef>Task Title</th>
+            <td mat-cell *matCellDef="let element">
+              <div fxLayout="row">
+                <p
+                  [ngClass]="{
+                    stalledTaskText: tmsSvc.isStalled(element.statusId)
+                  }"
+                  [innerHTML]="tmsSvc.getFormattedDayTask(element)"
+                ></p>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- SPs in Column -->
+          <ng-container matColumnDef="sP">
+            <th mat-header-cell *matHeaderCellDef>Time</th>
+            <td mat-cell *matCellDef="let element">
+              <p
+                [ngClass]="{
+                  stalledTaskText: tmsSvc.isStalled(element.statusId)
+                }"
+              >
+                {{ element.sp }}
+              </p>
+            </td>
+          </ng-container>
+
+          <!-- ClaimPercent in Column -->
+          <ng-container matColumnDef="ClaimPercent">
+            <th mat-header-cell *matHeaderCellDef>ClaimPercent</th>
+            <td mat-cell *matCellDef="let element">
+              <p
+                [ngClass]="{
+                  stalledTaskText: tmsSvc.isStalled(element.statusId)
+                }"
+              >
+                {{ element.claimPercent }} %
+              </p>
+            </td>
+          </ng-container>
+
+          <!-- RemainingSPs in Column -->
+          <ng-container matColumnDef="RemainingSPs">
+            <th mat-header-cell *matHeaderCellDef>RemainingTime</th>
+            <td mat-cell *matCellDef="let element">
+              <p
+                [ngClass]="{
+                  stalledTaskText: tmsSvc.isStalled(element.statusId)
+                }"
+              >
+                {{ element.remainingSPs }}
+              </p>
+            </td>
+          </ng-container>
+
+          <!-- Priority Column -->
+          <ng-container matColumnDef="Priority">
+            <th mat-header-cell *matHeaderCellDef>Priority</th>
+            <td mat-cell *matCellDef="let element">
+              <p
+                [ngClass]="{
+                  stalledTaskText: tmsSvc.isStalled(element.statusId)
+                }"
+              >
+                {{ element.priority }}
+              </p>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>Date</th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.date | date : "dd/MM/yyyy" }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="Assign" stickyEnd="true">
+            <th mat-header-cell *matHeaderCellDef>
+              <p style="font-size: 14px; text-align: center">Assign</p>
+            </th>
+            <td mat-cell *matCellDef="let row" style="text-align: center">
+              <mat-checkbox
+                [disabled]="row.isDisabled"
+                [(ngModel)]="row.ischecked"
+                (change)="toggleRow(row, $event.checked)"
+              ></mat-checkbox>
+              <mat-icon
+                style="color: #830510; vertical-align: middle"
+                *ngIf="row.isDisabled"
+                (click)="openStalledTaskDilaog(row)"
+                cTooltip="Marks Task as Stalled"
+                >error_outline</mat-icon
+              >
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr
+            mat-row
+            [ngClass]="{ stalledTask: tmsSvc.isStalled(row.statusId) }"
+            *matRowDef="let row; columns: displayedColumns"
+          ></tr>
+        </table>
+      </section>
+    </div>
+    <div *ngIf="!showData" style="vertical-align: middle">
+      <hr />
+      <p
+        style="
+          margin-top: 20px;
+          text-align: center;
+          align-items: center;
+          justify-content: center;
+          font-size: 25px;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          font-weight: bold;
+        "
+      >
+        No goals have been chosen for today.
+      </p>
+    </div>
+  </div>
+</div>
+<ng-template #stalledTaskDialog>
+  <h2
+    mat-dialog-title
+    style="
+      font-size: large;
+      font-weight: bold;
+      background-color: #095175;
+      color: white;
+      padding: 6px;
+    "
+  >
+    <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+      <p
+        style="vertical-align: middle"
+        style="margin-top: 15px; margin-left: 10px"
+      >
+        Mark Task as Stalled
+      </p>
+      <div fxFlex="7%">
+        <button
+          mat-icon-button
+          fxLayoutAlign="end end"
+          (click)="stalledTaskDialogRef.close()"
+          style="color: white"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </h2>
+  <mat-dialog-content>
+    <form #stalledForm="ngForm" style="margin-top: 25px">
+      <div fxLayout="column">
+        <div fxLayout="row">
+          <p>
+            You are about to mark the task titled '<strong>{{
+              selectedUsertask.title
+            }}</strong
+            >' as stalled. Please specify whatever reason(s) specifically
+            prevent this task from being finished at this time.
+          </p>
+        </div>
+        <div>
+          <mat-form-field
+            fxFill
+            appearance="outline"
+            class="form-group"
+            fxFlex="100%"
+          >
+            <mat-label>Reason</mat-label>
+            <textarea
+              [matAutocomplete]="auto"
+              matInput
+              [(ngModel)]="selectedUsertask.reason"
+              name="stalledTaskId"
+              required
+              rows="2"
+              (input)="filterReason()"
+              (focus)="filterReason()"
+            >
+            </textarea>
+            <mat-autocomplete
+              (optionSelected)="onSelectReason($event)"
+              requireSelection
+              #auto="matAutocomplete"
+            >
+              <mat-option
+                [value]="option"
+                (click)="onClickReason(option)"
+                *ngFor="let option of filteredOptions"
+                >{{ option.name }}</mat-option
+              >
+            </mat-autocomplete>
+            <div matSuffix>
+                            <button mat-icon-button style="color:#940540;"
+                                (click)="OpenReasonDialog(); $event.stopPropagation()">
+                                <mat-icon cTooltip="Explore Reasons">add</mat-icon>
+                            </button>
+                        </div>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions style="justify-content: flex-end">
+    <button
+      *ngIf="!showLoadBtn"
+      class="secBttn"
+      [ngClass]="{
+        disabledBtn:
+          selectedUsertask.reason == null || selectedUsertask.reason == ''
+      }"
+      (click)="markTaskStatus()"
+    >
+      Save
+    </button>
+    <c-spinner
+      *ngIf="showLoadBtn"
+      style="height: 50px; width: 50px; color: rgb(3, 71, 102)"
+    ></c-spinner>
+    <button class="darkBttn" (click)="stalledTaskDialogRef.close()">
+      Cancel
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+<ng-template #taskDialog>
+  <h2
+    mat-dialog-title
+    style="
+      font-size: large;
+      font-weight: bold;
+      background-color: #095175;
+      color: white;
+      padding: 6px;
+    "
+  >
+    <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+      <p *ngIf="!openedToReAssign" style="margin-top: 15px; margin-left: 10px">
+        Add New Task to Kickstart Your Day
+      </p>
+      <p *ngIf="openedToReAssign" style="margin-top: 15px; margin-left: 10px">
+        Add New Task 
+      </p>
+      <div fxFlex="7%">
+        <button
+          mat-icon-button
+          fxLayoutAlign="end end"
+          (click)="taskDialogRef.close()"
+          style="color: white"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </h2>
+  <mat-dialog-content>
+    <form #taskForm="ngForm" style="margin-top: 25px">
+      <div fxLayout="row" fxLayoutAlign="space-between">
+        <mat-form-field fxFlex="100%" appearance="outline">
+          <input
+            matInput
+            name="title"
+            [(ngModel)]="selectedTask.title"
+            required
+            placeholder="Title*"
+            maxlength="300"
+          />
+        </mat-form-field>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="space-between">
+        <mat-form-field fxFlex="50% " appearance="outline">
+          <input
+            name="SP"
+            type="number"
+            step=".01"
+            [(ngModel)]="selectedTask.sp"
+            matInput
+            required
+            placeholder=" SP*"
+          />
+        </mat-form-field>
+        <mat-form-field fxFlex="32%" appearance="outline" [inert]="true">
+          <mat-label>Assigned to</mat-label>
+          <mat-select name="userId" [(ngModel)]="selectedTask.userId">
+                <mat-option style="background-color: #eaf3fc">
+                  <ngx-mat-select-search
+                    (ngModelChange)="secSvc.UserAutoCompleteSearch($event)"
+                    [(ngModel)]="secSvc.userSearchValue"
+                    name="secSvc.userSearchValue"
+                    [noEntriesFoundLabel]="'No Matching Found'"
+                    [hideClearSearchButton]="true"
+                    placeholderLabel="Search User..."
+                    [clearSearchInput]="false"
+                  >
+                  </ngx-mat-select-search>
+                </mat-option>
+            <mat-option *ngFor="let us of secSvc.userFilterData" [value]="us.id">
+              {{ us.userName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field fxFlex="50%" appearance="outline">
+          <mat-label>Priority</mat-label>
+          <mat-select
+            [(ngModel)]="selectedTask.priorityId"
+            required
+            name="priorityId"
+          >
+            <mat-option *ngFor="let st of priorities" [value]="st.id">
+             {{ st.name }}&nbsp;(<b>{{ st.description }}</b>)
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="space-between">
+        <mat-form-field fxFlex="100% " appearance="outline">
+          <textarea
+            name="Description"
+            type="text"
+            rows="4"
+            [(ngModel)]="selectedTask.description"
+            matInput
+            placeholder=" Description"
+          >
+          </textarea>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions style="justify-content: flex-end">
+    <button
+      *ngIf="!showLoadBtn"
+      class="secBttn"
+      [ngClass]="{ disabledBtn: taskForm.invalid }"
+      (click)="submitTask()"
+    >
+      Save
+    </button>
+    <c-spinner
+      *ngIf="showLoadBtn"
+      style="height: 50px; width: 50px; color: rgb(3, 71, 102)"
+    ></c-spinner>
+    <button class="darkBttn" (click)="taskDialogRef.close()">Cancel</button>
+  </mat-dialog-actions>
+</ng-template>
+<div>
+  <div *ngIf="isLoading" class="spinnerBox">
+    <c-spinner style="height: 100px; width: 100px; color: white"></c-spinner>
+  </div>
+</div>

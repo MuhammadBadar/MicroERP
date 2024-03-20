@@ -8,7 +8,7 @@ namespace QST.MicroERP.Core.Enums
 {
     public enum Roles
     {
-        SuperAdmin=1014001,
+        SuperAdmin= 1054001,
         ClientAdmin,
         Employee,
         Student

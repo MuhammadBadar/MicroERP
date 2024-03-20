@@ -16,5 +16,6 @@ namespace QST.MicroERP.Core.Models
         public DateTime From { get; set; }
         public DateTime To { get; set; }
         public bool IsActive { get; set; }
+        public int ClientId { get; set; }
     }
 }

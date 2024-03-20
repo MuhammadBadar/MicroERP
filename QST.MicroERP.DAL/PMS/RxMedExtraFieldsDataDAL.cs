@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using QST.MicroERP.Core.Constants;
 
 namespace QST.MicroERP.DAL
 {
@@ -27,18 +28,18 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                cmd.CommandText = "ManageRxMedExtraFieldsData";
+                cmd.CommandText = SPNames.PMS_Manage_RxExtraFieldsData.ToString();
                 //cmd.Parameters.AddWithValue ("@id", _rxmefData.Id);
-                cmd.Parameters.AddWithValue ("@rxId", _rxmefData.RxId);
-                cmd.Parameters.AddWithValue ("@clientId", _rxmefData.ClientId);
-                cmd.Parameters.AddWithValue ("@fieldId", _rxmefData.FieldId);
-                cmd.Parameters.AddWithValue ("@fieldValue", _rxmefData.FieldValue);
-                cmd.Parameters.AddWithValue ("@createdOn", _rxmefData.CreatedOn);
-                cmd.Parameters.AddWithValue ("@createdById", _rxmefData.CreatedById);
-                cmd.Parameters.AddWithValue ("@modifiedOn", _rxmefData.ModifiedOn);
-                cmd.Parameters.AddWithValue ("@modifiedById", _rxmefData.ModifiedById);
-                cmd.Parameters.AddWithValue ("@isActive", _rxmefData.IsActive);
-                cmd.Parameters.AddWithValue ("@DBoperation", _rxmefData.DBoperation.ToString ());
+                cmd.Parameters.AddWithValue ("@prm_rxId", _rxmefData.RxId);
+                cmd.Parameters.AddWithValue ("@prm_clientId", _rxmefData.ClientId);
+                cmd.Parameters.AddWithValue ("@prm_fieldId", _rxmefData.FieldId);
+                cmd.Parameters.AddWithValue ("@prm_fieldValue", _rxmefData.FieldValue);
+                cmd.Parameters.AddWithValue ("@prm_createdOn", _rxmefData.CreatedOn);
+                cmd.Parameters.AddWithValue ("@prm_createdById", _rxmefData.CreatedById);
+                cmd.Parameters.AddWithValue ("@prm_modifiedOn", _rxmefData.ModifiedOn);
+                cmd.Parameters.AddWithValue ("@prm_modifiedById", _rxmefData.ModifiedById);
+                cmd.Parameters.AddWithValue ("@prm_isActive", _rxmefData.IsActive);
+                cmd.Parameters.AddWithValue ("@prm_DBoperation", _rxmefData.DBoperation.ToString ());
 
                 cmd.ExecuteNonQuery ();
                 return true;
@@ -69,7 +70,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                top = cmd.Connection.Query<RxMedExtraFieldsDataDE> ("call SearchRxMedExtraFieldsData( '" + whereClause + "')").ToList ();
+                top = cmd.Connection.Query<RxMedExtraFieldsDataDE> ("call "+SPNames.PMS_Search_RxExtraFieldsData.ToString()+"( '" + whereClause + "')").ToList ();
                 return top;
             }
             catch (Exception)

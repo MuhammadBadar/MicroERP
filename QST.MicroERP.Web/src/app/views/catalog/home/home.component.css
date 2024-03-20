@@ -1,0 +1,247 @@
+/* styles.css */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.home-container {
+  background-color: #f7f7f7;
+}
+
+
+.logo img {
+  height: 40px;
+}
+
+
+
+/* Hero section styles */
+.hero {
+ background: linear-gradient(to bottom,#012a46, #6f7a94); background-repeat: repeat;
+  background-size: auto;
+  color: white;
+  text-align: center;
+  padding: 100px 0;
+}
+
+.hero-content h1 {
+  font-size: 36px;
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 1s ease forwards;
+  animation-delay: 0.5s;
+}
+
+.hero-content p {
+  font-size: 18px;
+  margin-bottom: 40px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 1s ease forwards;
+  animation-delay: 1s;
+}
+
+.cta-button {
+  background-color: #f67307;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease;
+  animation: fadeInUp 1s ease forwards;
+  animation-delay: 1.5s;
+}
+
+.cta-button:hover {
+  background-color: #e88d42;
+  transform: scale(1.05);
+}
+
+/* About section styles */
+.about {
+  background-color: #ffffff;
+  padding: 60px 0;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.about-content {
+  text-align: center;
+}
+
+.about-content h2 {
+  font-size: 30px;
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 1s ease forwards;
+  animation-delay: 0.5s;
+}
+
+.about-content p {
+  font-size: 18px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 1s ease forwards;
+  animation-delay: 1s;
+}
+
+/* Features section styles */
+.features {
+  background: linear-gradient(to bottom, #ffffff, #f7f7f7);
+  padding: 60px 0;
+  background-size: auto;
+}
+
+.features-content {
+  text-align: center;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  margin: 20px;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  animation: fadeIn 1s ease;
+}
+
+.feature:hover {
+  transform: translateY(-5px);
+}
+
+.feature i {
+  font-size: 36px;
+  color: #f67307;
+  margin-right: 20px;
+}
+
+.feature p {
+  font-size: 18px;
+  margin: 0;
+}
+
+/* Testimonials section styles */
+.testimonials {
+  background-color: #f7f7f7;
+  padding: 60px 0;
+  text-align: center;
+}
+
+.testimonials h2 {
+  font-size: 30px;
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 1s ease forwards;
+  animation-delay: 0.5s;
+}
+
+.testimonial {
+  background-color: #fff;
+  padding: 20px;
+  margin: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+  animation: fadeIn 1s ease;
+}
+
+.testimonial:hover {
+  transform: translateY(-5px);
+}
+
+.testimonial p {
+  font-size: 18px;
+  margin: 0;
+}
+
+/* Decorative elements styles */
+.decorative-line {
+  width: 100px;
+  height: 3px;
+  background-color: #0076d1;
+  margin: 20px auto;
+}
+
+.decorative-circle {
+  width: 100px;
+  height: 100px;
+  background-color: #f67307;
+  border-radius: 50%;
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  color: white;
+  text-align: center;
+}
+
+
+
+/* Responsive styles (adjust as needed) */
+@media (max-width: 768px) {
+  .nav-links li {
+    margin-right: 10px;
+  }
+
+  .hero-content h1 {
+    font-size: 28px;
+  }
+
+  .hero-content p {
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+
+  .cta-button {
+    font-size: 16px;
+    padding: 8px 16px;
+  }
+
+  .about-content h2 {
+    font-size: 24px;
+  }
+
+  .about-content p {
+    font-size: 16px;
+  }
+
+  .feature i {
+    font-size: 24px;
+    margin-right: 16px;
+  }
+
+  .feature p {
+    font-size: 16px;
+  }
+
+  .testimonial p {
+    font-size: 16px;
+  }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

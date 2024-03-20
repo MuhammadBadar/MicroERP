@@ -8,7 +8,7 @@ namespace QST.MicroERP.Core.Enums
 {
     public enum ClaimPer
     {
-        Claim_100Per=1013001,
+        Claim_100Per= 1110001,
         Claim_90Per,
         Claim_80Per,
         Claim_70Per,

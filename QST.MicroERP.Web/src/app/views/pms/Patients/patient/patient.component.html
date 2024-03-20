@@ -1,0 +1,321 @@
+<div class="container-fluid page height">
+    <div class="d-flex page_box p-3 mt-2 header-sticky" position="sticky">
+        <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+            <div *ngIf="AddMode">Add Patient
+            </div>
+            <div *ngIf="EditMode">Update Patient
+            </div>
+            <div fxFlex="7%">
+                <button mat-icon-button fxLayoutAlign="end end" (click)="dialogRef.close()" style="color: white">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="page_content shadow p-3 position-relative">
+        <form #PatientForm="ngForm">
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" style="margin-left: 12px; margin-right: 12px;">
+                    <mat-form-field appearance="outline" fxFlex="100%" class="form-group">
+                        <mat-label>Patient Name</mat-label>
+                        <input  maxlength="100"  matInput class="form-control" placeholder="Patient Name"
+                            type="text" name="PatientName"  #patientName="ngModel" [(ngModel)]="selectedPatient.patientName" required
+                            maxlength="200" minlength="3" />
+                            <mat-error *ngIf="PatientForm.controls['PatientName']?.errors?.['minlength']">
+                          MinLength of the Name Should be 3.
+                     </mat-error>
+                    </mat-form-field>
+                </div>
+            </Row>
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" style="margin-left: 12px; margin-right: 12px;">
+                    <mat-form-field appearance="outline" fxFlex="49%" class="form-group">
+                        <mat-label>Date of Birth</mat-label>
+                        <input [matDatepicker]="picker" readonly matInput class="form-control" [max]="currDate"
+                            placeholder="Date of Birth" name="DateOfBirth" #dateOfBirth="ngModel"
+                            [(ngModel)]="selectedPatient.dateOfBirth" required />
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker (closed)="getAge()"></mat-datepicker>
+                    </mat-form-field>
+                    <div fxFlex="10%" fxLayout="row" fxLayoutAlign="space-between">
+                        <!-- <p style="font-size: 40px;">/</p> -->
+                    </div>
+                    <div fxFlex="39%">
+                        <span style="font-size: 20px;margin: 16px;">Age:</span>
+                        <mat-form-field fxFlex="40%" appearance="outline" class="form-group" style="margin-top: 3px;">
+                            <mat-label>Year(s)</mat-label>
+                            <input matInput name="years" [(ngModel)]="age.years" (input)="calculateDOB();" maxlength="3"
+                                (keypress)="validateNo($event)" />
+                        </mat-form-field>
+                        <mat-form-field fxFlex="30%" appearance="outline" class="form-group" style="margin-top: 3px;">
+                            <mat-label>Month(s)</mat-label>
+                            <input matInput name="months" [(ngModel)]="age.months" (input)="calculateDOB()"
+                                maxlength="2" (keypress)="validateNo($event)" />
+                        </mat-form-field>
+                        <mat-form-field fxFlex="30%" appearance="outline" class="form-group" style="margin-top: 3px;">
+                            <mat-label>Day(s)</mat-label>
+                            <input matInput name="days" [(ngModel)]="age.days" (input)="calculateDOB()" maxlength="2"
+                                (keypress)="validateNo($event)" />
+                        </mat-form-field>
+                    </div>
+                </div>
+            </Row>
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" style="margin-left: 12px; margin-right: 12px;">
+                    <mat-radio-group required="true" genderId name="Gender" fxFlex="49%"
+                        [(ngModel)]="selectedPatient.genderId" #Gender="ngModel">
+                        <mat-label>Gender
+                            <span class="required-asterisk"
+                                *ngIf="PatientForm.controls['Gender']?.errors?.['required']">*
+                            </span> :
+                        </mat-label>
+                        <mat-radio-button *ngFor="let val of genders" [value]="val.id">
+                            {{val.name}}
+                        </mat-radio-button>
+                    </mat-radio-group>
+                    <mat-form-field appearance="outline" fxFlex="49%" class="form-group">
+                        <mat-label>Contact Number</mat-label>
+                        <input  maxlength="45"  type="tel" pattern="^[0-9]+$"  maxlength="45" #contactNo="ngModel" matInput required  name="ContactNo"
+                            [(ngModel)]="selectedPatient.contactNo" />
+                              <mat-error *ngIf="PatientForm.controls['ContactNo']?.errors?.['pattern']">
+                         Phone number should contain only digits.
+                     </mat-error> </mat-form-field>
+                </div>
+            </Row>
+            <div fxLayout="row" fxLayoutAlign="space-between" style="margin-left: 12px; margin-right: 12px;">
+                <div fxLayout="row" fxFlex="49%">
+                    <mat-form-field appearance="outline" fxFlex="50%">
+                        <mat-label>Select Country</mat-label>
+                        <mat-select name="countryId" [(ngModel)]="selectedPatient.countryId">
+                            <mat-option [value]="0" (click)="GetSettings(1016)">--Please Select--</mat-option>
+                            <mat-option *ngFor="let val of countries" [value]="val.id" (click)="SearchCities()">
+                                {{val.name}}
+                            </mat-option>
+                        </mat-select>
+                        <div matSuffix [ngClass]="{disabledDiv:isReadOnly}">
+                            <button mat-icon-button style="color:#940540;"
+                                (click)="OpenCountryDialog(); $event.stopPropagation()">
+                                <mat-icon cTooltip="Explore Country">add</mat-icon>
+                            </button>
+                        </div>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" fxFlex="50%">
+                        <mat-label>Select City</mat-label>
+                        <mat-select name="cityId" [(ngModel)]="selectedPatient.cityId">
+                            <mat-option [value]="0" (click)="GetSettings(1036)">--Please Select--</mat-option>
+                            <mat-option *ngFor="let val of cities" [value]="val.id" (click)="SearchArea();
+                            selectedPatient.countryId=val.parentId">
+                                {{val.name}}
+                            </mat-option>
+                        </mat-select>
+                        <div matSuffix [ngClass]="{disabledDiv:isReadOnly}">
+                            <button mat-icon-button style="color:#940540;"
+                                (click)="OpenCityDialog(); $event.stopPropagation()">
+                                <mat-icon cTooltip="Explore City">add</mat-icon>
+                            </button>
+                        </div>
+                    </mat-form-field>
+                </div>
+                <mat-form-field fxFlex="49%" appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input  maxlength="100"  class="form-control" matInput name="Email" #email="ngModel" [(ngModel)]="selectedPatient.email" required
+                      email>
+                    <mat-error *ngIf="PatientForm.controls['Email']?.errors?.['email']">
+                      Email is not valid.
+                    </mat-error>
+                  </mat-form-field>
+            </div>
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" style="margin-left: 12px; margin-right: 12px;">
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label> House No</mat-label>
+                        <input  maxlength="65,535"  matInput #houseNo="ngModel" name="houseNo" [(ngModel)]="selectedPatient.houseNo" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" fxFlex="49%">
+                        <mat-label>--Please Select Area--</mat-label>
+                        <mat-select name="areaId" [(ngModel)]="selectedPatient.areaId">
+                            <mat-option [value]="0">--Please Select--</mat-option>
+                            <mat-option *ngFor="let val of areas" [value]="val.id" (click)=" selectedPatient.cityId=val.parentId;
+                             selectedPatient.countryId=val.pParentId">
+                                {{val.name}}
+                            </mat-option>
+                        </mat-select>
+                        <div matSuffix [ngClass]="{disabledDiv:isReadOnly}">
+                            <button mat-icon-button style="color:#940540;"
+                                (click)="OpenAreaDialog(); $event.stopPropagation()">
+                                <mat-icon cTooltip="Explore Area">add</mat-icon>
+                            </button>
+                        </div>
+                    </mat-form-field>
+                </div>
+            </Row>
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" style="margin-left: 12px; margin-right: 12px;">
+                    <mat-form-field fxFlex="100%" appearance="outline" class="form-group">
+                        <mat-label>Address</mat-label>
+                        <textarea maxlength="65,535" rows="1" matInput #address="ngModel" name="address"
+                            [(ngModel)]="selectedPatient.address"></textarea>
+                    </mat-form-field>
+                </div>
+            </Row>
+            <div class="container">
+                <div class="row courses-row">
+                    <div class="col-lg-12" *ngFor="let formData of fields" [formGroup]="group" [ngSwitch]="true">
+                        <div *ngSwitchCase="formData.keyCode === 'Drop Down'">
+                            <mat-form-field class="demo-full-width margin-top" appearance="outline" fxFlex="100%">
+                                <mat-label>{{formData.name}}</mat-label>
+                                <mat-select [placeholder]="formData.name" name="formData.name" class="form-control"
+                                    matInput [required]="formData.isRequired" [formControlName]="formData.id">
+                                    <mat-option *ngFor="let item of formData.settingList" [value]="item.name">{{
+                                        item.name
+                                        }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div *ngSwitchCase="formData.keyCode === 'DatePicker'">
+                            <mat-form-field class="demo-full-width margin-top" fxFlex="100%" appearance="outline">
+                                <input matInput name="formData.name" [matDatepicker]="picker" class="form-control"
+                                    matInput [required]="formData.isRequired" [formControlName]="formData.id"
+                                    [placeholder]="formData.name" />
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                                <mat-hint></mat-hint>
+                            </mat-form-field>
+                        </div>
+                        <div *ngSwitchCase="formData.keyCode === 'Text Area'">
+                            <mat-form-field class="demo-full-width" fxFlex="100%" appearance="outline">
+                                <mat-label>{{formData.name}}</mat-label>
+                                <textarea maxlength="65,535" name="formData.name" rows="1" matInput [formControlName]="formData.id"
+                                    class="form-control" matInput [required]="formData.isRequired"
+                                    [placeholder]="formData.name"></textarea>
+                            </mat-form-field>
+                        </div>
+                        <div *ngSwitchCase="formData.keyCode === 'Text Box'" class="form-group">
+                            <mat-form-field class="demo-full-width" fxFlex="100%" appearance="outline">
+                                <mat-label>{{formData.name}}</mat-label>
+                                <input [type]="formData.description" maxlength="65,535" name="formData.name" class="form-control" matInput
+                                    [formControlName]="formData.id" [required]="formData.isRequired"
+                                    [placeholder]="formData.name" />
+                                <!-- <div
+                                    *ngIf="PatientForm.submitted || group.get(formData.name)?.invalid && (group.get(formData.name)?.dirty || group.get(formData.name)?.touched)">
+                                    its required
+                                </div> -->
+                            </mat-form-field>
+                        </div>
+
+                        <div *ngSwitchCase="formData.keyCode === 'Check Box'">
+                            <mat-checkbox name="formData.name" [formControlName]="formData.id">{{formData.name}}
+                            </mat-checkbox>
+                        </div>
+                        <div *ngSwitchCase="formData.keyCode === 'Radio Button'">
+                            <mat-radio-group [required]="formData.isRequired" [formControlName]="formData.id"
+                                class="form-control" matInput fxFlex="100%" appearance="outline">
+                                <mat-label>{{formData.name}}
+                                    <span class="required-asterisk" *ngIf="formData.isRequired">*
+                                    </span> :</mat-label>
+                                <!-- <mat-radio-label>{{formData.name}}:</mat-radio-label> -->
+                                <mat-radio-button style="margin-left:30px" *ngFor="let item of formData.settingList"
+                                    [value]="item.name">{{
+                                    item.name }}</mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div fxLayoutAlign="end end">
+                <mat-checkbox name="isActive" [(ngModel)]="selectedPatient.isActive" checked>Is Active
+                </mat-checkbox>
+            </div>
+            <div fxLayoutAlign="end end">
+                <button  type="submit" *ngIf="AddMode"
+                   [ngClass]="{disabledBtn:isReadOnly}" class="bttn"  (click)="SavePatient()">Submit</button>
+                <button  type="submit" *ngIf="EditMode"
+                   [ngClass]="{disabledBtn:isReadOnly}" class="bttn"  (click)="SavePatient()">Update</button>
+                <div>
+                    <button mat-icon-button mat-sm-button color="primary" cTooltip="Refresh" cTooltipPlacement="top"
+                        (click)="Refresh()">
+                        <mat-icon>autorenew</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <!-- <section class="example-container mat-elevation-z8" tabindex="0" style="border-radius: 5px; margin-top: 20px">
+            <table mat-table [dataSource]="patDataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="patientName">
+                    <th mat-header-cell *matHeaderCellDef>Patient Name</th>
+                    <td mat-cell *matCellDef="let pat">{{ pat.patientName }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="dateOfBirth">
+                    <th mat-header-cell *matHeaderCellDef>Date Of Birth</th>
+                    <td mat-cell *matCellDef="let pat">{{ pat.dateOfBirth | date:"dd/MM/yyyy"}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="gender">
+                    <th mat-header-cell *matHeaderCellDef>Gender</th>
+                    <td mat-cell *matCellDef="let element">{{ element.gender }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="contactNo">
+                    <th mat-header-cell *matHeaderCellDef>Contact No</th>
+                    <td mat-cell *matCellDef="let pat">{{ pat.contactNo }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="houseNo">
+                    <th mat-header-cell *matHeaderCellDef>House No</th>
+                    <td mat-cell *matCellDef="let element">{{ element.houseNo }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="address">
+                    <th mat-header-cell *matHeaderCellDef>Address</th>
+                    <td mat-cell *matCellDef="let element">{{ element.address }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="city">
+                    <th mat-header-cell *matHeaderCellDef>City</th>
+                    <td mat-cell *matCellDef="let element">{{ element.city }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="area">
+                    <th mat-header-cell *matHeaderCellDef>Area</th>
+                    <td mat-cell *matCellDef="let element">{{ element.area }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="remarks">
+                    <th mat-header-cell *matHeaderCellDef>Remarks</th>
+                    <td mat-cell *matCellDef="let element">{{ element.remarks }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="isActive">
+                    <th mat-header-cell *matHeaderCellDef>Is Active</th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.isActive ? "Yes" : "No" }}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions" stickyEnd="true">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <p style="margin-top: 15px; font-size: 16px; text-align: center">
+                            Actions
+                        </p>
+                    </th>
+                    <td mat-cell *matCellDef="let row">
+                        <div style="text-align: center">
+                            <button mat-icon-button mat-sm-button (click)="EditPatient(row)" style="color: #1e293b"
+                                cTooltip=" Edit Patient">
+                                <mat-icon>edit</mat-icon>
+                            </button>
+
+                            <button mat-icon-button mat-sm-button color="warn" (click)="DeletePatient(row.id)"
+                                cTooltip="Delete Patient">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="patColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: patColumns"></tr>
+            </table>
+        </section> -->
+    </div>
+</div>

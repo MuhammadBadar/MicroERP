@@ -1,4 +1,5 @@
 ﻿using QST.MicroERP.Core.Entities.TMS;
+using QST.MicroERP.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,18 +20,16 @@ namespace QST.MicroERP.Core.ViewModel
         public int ModuleId { get; set; }
         public string? Title { get; set; }
         public string? UserPhoneNumber { get; set; }
-        public string? DirectSupervisorPhoneNumber { get; set; }
-        public float SP { get; set; }
+        public double SP { get; set; }
+        public string SPStr
+        {
+            get { return SP.ToHHMM (); }
+        }
         public string? Description { get; set; }
-        public string? DirectSupervisorId { get; set; }
         public string? UserMail { get; set; }
-        public string? DirectSupervisorEmail { get; set; }
-        public string? DirectSupervisorName { get; set; }
-        public List<AttachmentsDE> Attachments { get; set; }
         public int ClaimPercent { get; set; }
         public int? ClaimId { get; set; }
-        public float RemainingSPs { get; set; }
-        public string? ActualSP { get; set; }
+        public double RemainingSPs { get; set; }
         public int UserTaskId { get; set; }
         public int ApprovedClaimId { get; set; }
         public int ApprovedClaim { get; set; }
@@ -40,9 +39,5 @@ namespace QST.MicroERP.Core.ViewModel
         public int LastClaimId { get; set; }
         public int LastClaim { get; set; }
         public float? WorkTime { get; set; }
-        public UserTaskVM()
-        {
-            this.Attachments = new List<AttachmentsDE>();
-        }
     }
 }

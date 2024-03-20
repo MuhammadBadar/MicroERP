@@ -23,6 +23,8 @@ namespace QST.MicroERP.Core.Entities.SCH
         public string? EventType { get; set; }
         public string? Day { get; set; }
         public string? SchDayEvents { get; set; }
+        public string? WorkTime { get; set; }
+        public int SchDayType { get; set; }
         public List<ScheduleDayEventDE> ScheduleDayEvents { get; set; }
 
         #endregion

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using QST.MicroERP.Core.Constants;
 
 namespace QST.MicroERP.DAL.TMS
 {
@@ -23,10 +24,10 @@ namespace QST.MicroERP.DAL.TMS
                     cmd = MicroERPDataContext.OpenMySqlConnection();
                     closeConnection = true;
                 }
-                cmd.CommandText = "TMS_Manage_UserTask";
+                cmd.CommandText = SPNames.TMS_Manage_UserTask.ToString ();
                 cmd.Parameters.AddWithValue("prm_id", _tsk.Id);
-                cmd.Parameters.AddWithValue("prm_ClientId", _tsk.ClientId);
-
+                cmd.Parameters.AddWithValue("prm_clientId", _tsk.ClientId);
+                cmd.Parameters.AddWithValue("prm_stalledReason", _tsk.StalledReason);
                 cmd.Parameters.AddWithValue("prm_userId", _tsk.UserId);
                 cmd.Parameters.AddWithValue("prm_taskId", _tsk.TaskId);
                 cmd.Parameters.AddWithValue("prm_lastClaimId", _tsk.LastClaimId);
@@ -74,7 +75,7 @@ namespace QST.MicroERP.DAL.TMS
                     cmd = MicroERPDataContext.OpenMySqlConnection();
                     closeConnection = true;
                 }
-                lec = cmd.Connection.Query<UserTaskDE>("call TMS_Search_UserTask('" + WhereClause + "')").ToList();
+                lec = cmd.Connection.Query<UserTaskDE>("call "+SPNames.TMS_Search_UserTask.ToString () + "('" + WhereClause + "')").ToList();
                 return lec;
             }
             catch (Exception)
@@ -87,33 +88,6 @@ namespace QST.MicroERP.DAL.TMS
                     MicroERPDataContext.CloseMySqlConnection(cmd);
             }
         }
-        #region GetTodaysTasks
-        public List<UserTaskDE> GetTodaysTasks(string UserId, MySqlCommand cmd = null)
-        {
-            bool closeConnection = false;
-            //WhereClause = string.Empty;
-            List<UserTaskDE> lec = new List<UserTaskDE>();
-            try
-            {
-                if (cmd == null)
-                {
-                    cmd = MicroERPDataContext.OpenMySqlConnection();
-                    closeConnection = true;
-                }
-                lec = cmd.Connection.Query<UserTaskDE>("call GetTodaysTasks('" + UserId + "')").ToList();
-                return lec;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                if (closeConnection)
-                    MicroERPDataContext.CloseMySqlConnection(cmd);
-            }
-        }
-        #endregion
         #endregion
     }
 }

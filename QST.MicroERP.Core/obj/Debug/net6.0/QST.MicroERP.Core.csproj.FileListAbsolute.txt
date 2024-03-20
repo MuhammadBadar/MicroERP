@@ -26,3 +26,17 @@ C:\QST\Git\MicroERP\QST.MicroERP.Core\obj\Debug\net6.0\refint\QST.MicroERP.Core.
 C:\QST\Git\MicroERP\QST.MicroERP.Core\obj\Debug\net6.0\QST.MicroERP.Core.pdb
 C:\QST\Git\MicroERP\QST.MicroERP.Core\obj\Debug\net6.0\QST.MicroERP.Core.genruntimeconfig.cache
 C:\QST\Git\MicroERP\QST.MicroERP.Core\obj\Debug\net6.0\ref\QST.MicroERP.Core.dll
+D:\QST\Projects\MicroERP\QST.MicroERP.Core\bin\Debug\net6.0\QST.MicroERP.Core.deps.json
+D:\QST\Projects\MicroERP\QST.MicroERP.Core\bin\Debug\net6.0\QST.MicroERP.Core.runtimeconfig.json
+D:\QST\Projects\MicroERP\QST.MicroERP.Core\bin\Debug\net6.0\QST.MicroERP.Core.dll
+D:\QST\Projects\MicroERP\QST.MicroERP.Core\bin\Debug\net6.0\QST.MicroERP.Core.pdb
+D:\QST\Projects\MicroERP\QST.MicroERP.Core\obj\Debug\net6.0\QST.MicroERP.Core.csproj.AssemblyReference.cache
+D:\QST\Projects\MicroERP\QST.MicroERP.Core\obj\Debug\net6.0\QST.MicroERP.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\QST\Projects\MicroERP\QST.MicroERP.Core\obj\Debug\net6.0\QST.MicroERP.Core.AssemblyInfoInputs.cache
+D:\QST\Projects\MicroERP\QST.MicroERP.Core\obj\Debug\net6.0\QST.MicroERP.Core.AssemblyInfo.cs
+D:\QST\Projects\MicroERP\QST.MicroERP.Core\obj\Debug\net6.0\QST.MicroERP.Core.csproj.CoreCompileInputs.cache
+D:\QST\Projects\MicroERP\QST.MicroERP.Core\obj\Debug\net6.0\QST.MicroERP.Core.dll
+D:\QST\Projects\MicroERP\QST.MicroERP.Core\obj\Debug\net6.0\refint\QST.MicroERP.Core.dll
+D:\QST\Projects\MicroERP\QST.MicroERP.Core\obj\Debug\net6.0\QST.MicroERP.Core.pdb
+D:\QST\Projects\MicroERP\QST.MicroERP.Core\obj\Debug\net6.0\QST.MicroERP.Core.genruntimeconfig.cache
+D:\QST\Projects\MicroERP\QST.MicroERP.Core\obj\Debug\net6.0\ref\QST.MicroERP.Core.dll

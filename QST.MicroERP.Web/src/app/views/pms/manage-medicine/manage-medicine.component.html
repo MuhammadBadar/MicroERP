@@ -1,0 +1,131 @@
+<div class="container-fluid page">
+    <div class="d-flex page_box p-3 mt-2  header-sticky" position="sticky">
+        <div *ngIf="Add">Manage Medicine
+        </div>
+        <div *ngIf="Edit">Edit Medicine
+        </div>
+    </div>
+    <div class="page_content shadow p-3 position-relative">
+        <form #medicineForm="ngForm">
+            <div class="row">
+                <mat-form-field fxFlex="50%" appearance="outline" class="form-group">
+                    <mat-label>Name</mat-label>
+                    <input  maxlength="100"  required matInput #name="ngModel" name="name" [(ngModel)]="selectedMedicine.name" />
+                </mat-form-field>
+                <mat-form-field fxFlex="50%" appearance="outline" class="form-group">
+                    <mat-label>Select Manufacturer</mat-label>
+                    <mat-select required name="manufacturersId" matNativeControl #manufacturersId="ngModel"
+                        [(ngModel)]="selectedMedicine.manufacturersId">
+                        <mat-option *ngFor="let pt of manufacturers" [value]=" pt.id">
+                            {{ pt.name}}
+                        </mat-option>
+                    </mat-select>
+                    <div matSuffix [ngClass]="{disabledDiv:isReadOnly}">
+                        <button mat-icon-button style="color:#940540;"
+                            (click)="OpenManufacturersDialog(); $event.stopPropagation()"
+                            cTooltip="Explore Manufacturers">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </div>
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field fxFlex="50%" appearance="outline" class="form-group">
+                    <mat-label>Formula</mat-label>
+                    <input  maxlength="65535"  required matInput #formula="ngModel" name="formula" [(ngModel)]="selectedMedicine.formula" />
+                </mat-form-field>
+                <mat-form-field fxFlex="50%" appearance="outline" class="form-group">
+                    <mat-label>Select Category</mat-label>
+                    <mat-select required name="categoryId" matNativeControl #categoryId="ngModel"
+                        [(ngModel)]="selectedMedicine.categoryId">
+                        <mat-option *ngFor="let pt of categories" [value]=" pt.id">
+                            {{ pt.name}}
+                        </mat-option>
+                    </mat-select>
+                    <div matSuffix [ngClass]="{disabledDiv:isReadOnly}">
+                        <button mat-icon-button style="color:#940540;"
+                            (click)="OpenCategoriesDialog(); $event.stopPropagation()" cTooltip="Explore Category">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </div>
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field fxFlex="100%" appearance="outline" class="form-group">
+                    <mat-label>Remarks</mat-label>
+                    <textarea   maxlength="65535"  matInput #remarks="ngModel" name="remarks" rows="1"
+                        [(ngModel)]="selectedMedicine.remarks"></textarea>
+                </mat-form-field>
+            </div>
+            <div fxLayoutAlign="end end">
+                <c-spinner *ngIf="proccessing" style="height: 50px;width: 50px;color: rgb(3, 71, 102);"></c-spinner>
+                <div style="margin-top: 10px;" *ngIf="!proccessing">
+                    <button *ngIf="Add" [ngClass]="{disabledBtn:isReadOnly}" class="bttn" type="submit"
+                        (click)="SaveMedicine();">
+                        Save
+                    </button>
+                    <button *ngIf="Edit"  [ngClass]="{disabledBtn:isReadOnly}" class="bttn" type="submit"
+                        (click)="SaveMedicine()">
+                        Update
+                    </button>
+                </div>
+                <div>
+                    <button mat-icon-button mat-sm-button color="primary" cTooltip="Refresh" cTooltipPlacement="top"
+                        (click)="ngOnInit()">
+                        <mat-icon>autorenew</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <c-card style="padding: 10px; margin-top: 30px;" class="mat-elevation-z8">
+            <h5 cCardTitle>Medicine List</h5>
+            <c-card-body style="padding: 10px;background-color: rgb(2, 42, 75);margin: 5px;border-radius: 10px;">
+                <div class="example-table-container">
+                    <section class="example-container mat-elevation-z8" tabindex="0" style="border-radius: 5px;">
+                        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                            <ng-container matColumnDef="Id">
+                                <th mat-header-cell *matHeaderCellDef> Sr No </th>
+                                <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="name">
+                                <th mat-header-cell *matHeaderCellDef> Name</th>
+                                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="formula">
+                                <th mat-header-cell *matHeaderCellDef> Formula </th>
+                                <td mat-cell *matCellDef="let element"> {{element.formula}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="category">
+                                <th mat-header-cell *matHeaderCellDef> Category </th>
+                                <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="isActive">
+                                <th mat-header-cell *matHeaderCellDef> IsActive </th>
+                                <td mat-cell *matCellDef="let element"> {{element.isActive?'Yes':'No'}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="manufacturer">
+                                <th mat-header-cell *matHeaderCellDef>Manufacturer</th>
+                                <td mat-cell *matCellDef="let element"> {{element.manufacturer}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="actions" stickyEnd="true">
+                                <th mat-header-cell *matHeaderCellDef style="width: 100px;text-align: center;">
+                                    Action
+                                </th>
+                                <td mat-cell *matCellDef="let row" style="width: 100px;text-align: center;">
+                                    <div [ngClass]="{disabledDiv:isReadOnly}">
+                                        <button mat-icon-button mat-sm-button style="color:#1e293b ; "
+                                            (click)="GetMedicineForEdit(row.id)">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </section>
+                </div>
+            </c-card-body>
+        </c-card>
+    </div>
+</div>

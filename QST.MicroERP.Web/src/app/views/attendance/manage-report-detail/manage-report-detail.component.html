@@ -1,0 +1,72 @@
+<div class="container-fluid page">
+  <div class="d-flex page_box p-3 mt-2 header-sticky" position="sticky">
+    <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+      <div>Attendance Detail</div>
+      <div fxFlex="7%">
+        <button mat-icon-button fxLayoutAlign="end end" (click)="dialogRef.close()" style="color: white">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="page_content shadow p-3 position-relative" [inert]="true">
+    <form #doctorForm="ngForm">
+      <Row>
+        <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+          <div fxLayout="column" fxFlex="49%">
+            <strong>In Time/Out Time</strong>
+            <ul style="margin-left: -23px">
+              <li *ngFor="
+                  let item of convertToList(selectedAttendance.inandOutTime)
+                ">
+                {{ item }}
+              </li>
+            </ul>
+          </div>
+          <div fxLayout="column" fxFlex="49%">
+            <strong>Schedule Time</strong>
+            <ul style="margin-left: -23px">
+              <li *ngFor="let item of convertToList(selectedAttendance.schTime)">
+                {{ item }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </Row>
+      <hr />
+      <Row>
+        <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+          <div fxLayout="column" fxFlex="49%">
+            <strong>Late Time</strong>
+            <p>{{ selectedAttendance.late }}</p>
+          </div>
+
+          <div fxLayout="column" fxFlex="49%">
+            <strong>Due Hours</strong>
+            <p>{{ selectedAttendance.dueSPs }}</p>
+          </div>
+        </div>
+      </Row>
+      <hr />
+      <Row>
+        <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+          <div fxLayout="column" fxFlex="49%">
+            <strong>Claimed Hours</strong>
+            <ul style="margin-left: -23px">
+              <li *ngFor="let task of selectedAttendance.userTasks" [ngClass]="{
+                  redText: task.hasErrors,
+                  greenText: task.isEarlyFinshed
+                }" [innerHTML]="getFormattedClaimedHours(task)"></li>
+            </ul>
+          </div>
+          <div fxLayout="column" fxFlex="49%">
+            <strong>Day Status</strong>
+            <ul style="margin-left: -23px">
+              <li *ngFor="let task of selectedAttendance.userTasks" [innerHTML]="getFormattedTaskScore(task)"></li>
+            </ul>
+          </div>
+        </div>
+      </Row>
+    </form>
+  </div>
+</div>

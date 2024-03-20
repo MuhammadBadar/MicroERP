@@ -1,0 +1,245 @@
+.page {
+    color: white;
+    padding: 0 1rem;
+    background: #f1f5f9;
+    width: 100%;
+
+
+}
+
+.page_content {
+    padding: 20px;
+    min-height: calc(100vh - 178px);
+    border-radius: 15px;
+    margin-top: -2rem;
+    background: white;
+    color: black;
+}
+
+.page_box {
+    min-height: 100px;
+    background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));
+
+    border-radius: 10px;
+    font-size: 25px;
+    padding: 10px;
+
+}
+
+.example-container {
+
+    width: 100;
+    max-width: 100%;
+    overflow: auto;
+}
+.inline-block {
+    display: inline-block;
+ }
+ .modal-dialog{
+    overflow-y: initial !important
+}
+.modal-body{
+    height: 75vh;
+    overflow-y: auto;
+}
+
+.hello {
+    border: 2px solid lightblue;
+    border-radius: 5px;
+    background-color:lightblue;
+  }
+  .chats-wrap .conversations-hold .single-conversation .toolbar-avatar {
+    vertical-align: bottom;
+    margin-right: 1rem;
+  }
+  .chats-wrap .conversations-hold .single-conversation .chat-username {
+    margin: 0 0 .625rem;
+    font-size: .875rem;
+  }
+  .chats-wrap .conversations-hold .single-conversation .conversation-msg {
+    padding: .48rem .94rem;
+    display: inline-block;
+    border-radius: 4px;
+  }
+  .chats-wrap .conversations-hold .single-conversation.sender .conversation-msg {
+    background: primary;
+  }
+  
+  .chats-wrap .conversations-hold .single-conversation .chat-date {
+    font-size: 11px;
+    padding: 2px;
+    margin: 0;
+    clear: both;
+  }
+  .chats-wrap .chat-input-actions {
+    padding: .6rem;
+  }
+  
+  .chat-loader {
+    display: flex;
+    height: 100%;
+    align-items: center;
+  }
+  .gallery{
+      column-count: 3;
+  }
+  .gallery-img img{
+    cursor: zoom-in;
+    box-shadow: 0 1px 5px gray ;
+
+  }
+  .lightbox{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      top:0;
+      left: 0;
+      height: 100%;
+      width:100%;
+      z-index:1000;
+      background-color: rgba(0, 0, 0, .85);
+  }
+  .lightbox-img{
+    overflow: auto;
+  }
+  .gallery-lightbox-container{
+    overflow: hidden;
+  }
+    .count{
+        position: absolute;
+        top: 0;
+        opacity: 0.7;
+        left: 0;
+        width: 7%;
+        height: 10%;
+        color: rgb(248, 248, 248);      
+        font-size: 18px;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+    
+    }
+    .close-button{
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0;
+        width: 7%;
+        height: 10%;
+        z-index: 2;
+        background: 0 0;  
+        border: 0;
+        cursor: pointer;  
+        margin-top: 60px;
+   
+    }
+    .fa-times{
+        font-size: 25px;
+    }
+    .comment-box {
+    display: flex;
+    flex-direction: column;
+    margin: 30px auto;
+    padding: 30px;
+    max-width: 90%;
+    border-radius: 18px;
+    background: #f2f5f8;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+    border: 1px solid #e2e2e2;
+}
+
+.comment-box textarea {
+    width: 100%;
+    padding: 18px;
+    border: 2px solid #e2e2e2;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    resize: none;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.comment-box textarea:focus {
+    outline: none;
+    border-color: #a2d5f2;
+}
+
+.comment-box .actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.comment-box mat-icon {
+    font-size: 32px;
+    color: #023c68;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.comment-box mat-icon:hover {
+    color: #023c68;
+    transform: scale(1.1);
+}
+
+.comment-box mat-icon.disabled {
+    color: #e1e1e1;
+    cursor: default;
+}
+
+.comment-list {
+    margin-top: 30px;
+}
+
+.comment {
+    background-color: #f7f7f7;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border-left: 5px solid #004169;
+}
+
+.comment:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.comment p {
+    margin: 0;
+    color: #333;
+    line-height: 1.5;
+}
+
+.comment-date {
+    font-size: 14px;
+    color: #999;
+    text-align: right;
+    margin-top: 12px;
+}
+.quill-editor-container {
+  font-size: 16px; /* Example font size */
+  line-height: 1.5; /* Example line height */
+}
+
+.quill-editor-min-rows {
+  height: calc(5 * 1.5 * 16px); /* Adjust 5 to your desired number of rows */
+}
+.spinnerBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, .85);
+  }
+
+      
+  

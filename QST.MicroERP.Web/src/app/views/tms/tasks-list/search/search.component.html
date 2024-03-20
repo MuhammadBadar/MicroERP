@@ -1,0 +1,118 @@
+<div class="container-fluid page">
+  <div class="d-flex page_box p-3 mt-2 header-sticky" position="sticky">
+    <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+      <div>Search Task</div>
+      <div fxFlex="7%">
+        <button
+          mat-icon-button
+          fxLayoutAlign="end end"
+          (click)="dialogref.close()"
+          style="color: white"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="page_content shadow p-3">
+    <mat-card>
+      <form #taskForm="ngForm">
+        <div fxLayout="row" fxLayoutAlign="space-between">
+          <mat-form-field fxFlex="49%">
+            <input
+              matInput
+              [(ngModel)]="task.title"
+              placeholder="Title"
+              maxlength="100"
+              name="title"
+            />
+          </mat-form-field>
+          <mat-form-field fxFlex="49%">
+            <input
+              matInput
+              [(ngModel)]="task.id"
+              placeholder="Task No"
+              name="id"
+            />
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between">
+          <mat-form-field fxFlex="49%" fxFill>
+            <mat-label>User</mat-label>
+
+            <mat-select [(ngModel)]="task.userId" name="User" #userId="ngModel">
+                <mat-option style="background-color: #eaf3fc">
+                  <ngx-mat-select-search
+                    (ngModelChange)="secSvc.UserAutoCompleteSearch($event)"
+                    [(ngModel)]="secSvc.userSearchValue"
+                    name="secSvc.userSearchValue"
+                    [noEntriesFoundLabel]="'No Matching Found'"
+                    [hideClearSearchButton]="true"
+                    placeholderLabel="Search User..."
+                    [clearSearchInput]="false"
+                  >
+                  </ngx-mat-select-search>
+                </mat-option>
+              <mat-option>---Please Select---</mat-option>
+              <mat-option *ngFor="let us of secSvc.userFilterData" [value]="us.id">
+                {{ us.userName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field fxFlex="49% ">
+            <input
+              type="number"
+              [(ngModel)]="task.sp"
+              name="SP"
+              matInput
+              placeholder=" Time"
+            />
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between">
+          <mat-form-field fxFlex="49%" fxFill>
+            <mat-label>Status</mat-label>
+            <mat-select
+              [(ngModel)]="task.statusId"
+              name="status"
+              #statusId="ngModel"
+            >
+              <mat-option>---Please Select---</mat-option>
+              <mat-option *ngFor="let st of Status" [value]="st.id">
+                {{ st.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field fxFlex="49%" fxFill>
+            <mat-label>Priority</mat-label>
+            <mat-select [(ngModel)]="task.priorityId" name="priorityId">
+              <mat-option>---Please Select---</mat-option>
+              <mat-option *ngFor="let st of Priority" [value]="st.id">
+                  {{ st.name }}&nbsp;(<b>{{ st.description }}</b>)
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div fxLayoutAlign="end end">
+          <button
+            class="bttn"
+            [type]="'submit'"
+            (click)="SearchTask()"
+            style="margin-top: 20px"
+          >
+            Search
+          </button>
+          <button
+            class="darkBttn"
+            style="margin-left: 10px"
+            (click)="dialogref.close()"
+            type="button"
+            aria-label="CANCEL"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </mat-card>
+  </div>
+</div>

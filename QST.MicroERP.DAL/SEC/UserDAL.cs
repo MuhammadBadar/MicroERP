@@ -2,7 +2,7 @@
 using QST.MicroERP.Core.Entities.SEC;
 using MySql.Data.MySqlClient;
 using System.Data;
-
+using QST.MicroERP.Core.Constants;
 
 namespace QST.MicroERP.DAL.SEC
 {
@@ -23,7 +23,7 @@ namespace QST.MicroERP.DAL.SEC
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                top = cmd.Connection.Query<UserDE> ("call SearchUser( '" + whereClause + "')").ToList ();
+                top = cmd.Connection.Query<UserDE> ("call "+SPNames.SEC_Search_User.ToString () + "( '" + whereClause + "')").ToList ();
                 return top;
             }
             catch (Exception)

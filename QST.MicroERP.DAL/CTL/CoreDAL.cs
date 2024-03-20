@@ -4,6 +4,7 @@ using QST.MicroERP.Core.Enums;
 using MySql.Data.MySqlClient;
 using System.Data;
 using System.Text.RegularExpressions;
+using QST.MicroERP.Core.Constants;
 
 namespace QST.MicroERP.DAL.CTL
 {
@@ -15,7 +16,7 @@ namespace QST.MicroERP.DAL.CTL
             MySqlCommand cmd = MicroERPDataContext.OpenMySqlConnection ();
             try
             {
-                cmd = MicroERPDataContext.SetStoredProcedure (cmd, "CTL_GetMaxId");
+                cmd = MicroERPDataContext.SetStoredProcedure (cmd, SPNames.CTL_GetMaxId);
                 retVal = MicroERPDataContext.ExecuteScalar (MicroERPDataContext.AddParameters (cmd
                     , "@prm_TableName", mod.ToString ()
                     ));
@@ -40,7 +41,7 @@ namespace QST.MicroERP.DAL.CTL
             MySqlCommand cmd = MicroERPDataContext.OpenMySqlConnection ();
             try
             {
-                cmd = MicroERPDataContext.SetStoredProcedure (cmd, "GetMaxTokenNo");
+                cmd = MicroERPDataContext.SetStoredProcedure (cmd, SPNames.PMS_GET_MaxTokenNo);
                 retVal = MicroERPDataContext.ExecuteScalar (MicroERPDataContext.AddParameters (cmd
                     , "@prm_Date", Date.ToString ("yyMMdd"), "@prm_clientId", clientId
                     ));
@@ -102,7 +103,7 @@ namespace QST.MicroERP.DAL.CTL
             MySqlCommand cmd = MicroERPDataContext.OpenMySqlConnection ();
             try
             {
-                cmd = MicroERPDataContext.SetStoredProcedure (cmd, "GetMaxId");
+                cmd = MicroERPDataContext.SetStoredProcedure (cmd, SPNames.CTL_GetMaxId);
                 retVal = MicroERPDataContext.ExecuteScalar (MicroERPDataContext.AddParameters (cmd
                     , "@prm_TableName", mod.ToString ()
                     ));
@@ -131,7 +132,7 @@ namespace QST.MicroERP.DAL.CTL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                cmd.CommandText = "GetNextVchNo";
+                cmd.CommandText = SPNames.ACC_GetNextVchNo;
                 cmd.Parameters.AddWithValue ("@VchKeyCode", mod);
                 cmd.Parameters.AddWithValue ("@clientId", clientId);
                 cmd.Parameters.Add (new MySqlParameter ("@MaxVchNo", MySqlDbType.VarChar, 200));
@@ -170,7 +171,7 @@ namespace QST.MicroERP.DAL.CTL
             MySqlCommand cmd = MicroERPDataContext.OpenMySqlConnection ();
             try
             {
-                cmd = MicroERPDataContext.SetStoredProcedure (cmd, "GetMaxLineId");
+                cmd = MicroERPDataContext.SetStoredProcedure (cmd, SPNames.CTL_GetMaxLineId);
                 retVal = MicroERPDataContext.ExecuteScalar (MicroERPDataContext.AddParameters (cmd
                     , "@prm_TableName", mod.ToString (),
                                 "@prm_HeaderId", headerId,
@@ -197,7 +198,7 @@ namespace QST.MicroERP.DAL.CTL
             MySqlCommand cmd = MicroERPDataContext.OpenMySqlConnection ();
             try
             {
-                cmd = MicroERPDataContext.SetStoredProcedure (cmd, "GetMaxIdByClient");
+                cmd = MicroERPDataContext.SetStoredProcedure (cmd, SPNames.CTL_GetMaxIdByClient);
                 retVal = MicroERPDataContext.ExecuteScalar (MicroERPDataContext.AddParameters (cmd
                     , "@prm_TableName", tblname.ToString (),
                                 "@prm_HeaderId", headerId,
@@ -221,7 +222,7 @@ namespace QST.MicroERP.DAL.CTL
             MySqlCommand cmd = MicroERPDataContext.OpenMySqlConnection ();
             try
             {
-                cmd = MicroERPDataContext.SetStoredProcedure (cmd, "GetMaxLineIdByClt");
+                cmd = MicroERPDataContext.SetStoredProcedure (cmd, SPNames.CTL_GetMaxLineIdByClt);
                 retVal = MicroERPDataContext.ExecuteScalar (MicroERPDataContext.AddParameters (cmd
                     , "@prm_TableName", tblname.ToString (),
                                 "@prm_HeaderId", headerId,
@@ -246,7 +247,7 @@ namespace QST.MicroERP.DAL.CTL
             MySqlCommand cmd = MicroERPDataContext.OpenMySqlConnection ();
             try
             {
-                cmd = MicroERPDataContext.SetStoredProcedure (cmd, "GetMaxIdByClient");
+                cmd = MicroERPDataContext.SetStoredProcedure (cmd, SPNames.CTL_GetMaxIdByClient);
                 retVal = MicroERPDataContext.ExecuteScalar (MicroERPDataContext.AddParameters (cmd
                     , "@prm_TableName", tblname.ToString (),
                                 "@prm_HeaderId", headerId,
@@ -269,7 +270,7 @@ namespace QST.MicroERP.DAL.CTL
             MySqlCommand cmd = MicroERPDataContext.OpenMySqlConnection ();
             try
             {
-                cmd = MicroERPDataContext.SetStoredProcedure (cmd, "GetMaxLineIdByClt");
+                cmd = MicroERPDataContext.SetStoredProcedure (cmd, SPNames.CTL_GetMaxLineIdByClt);
                 retVal = MicroERPDataContext.ExecuteScalar (MicroERPDataContext.AddParameters (cmd
                     , "@prm_TableName", tblname.ToString (),
                                 "@prm_HeaderId", headerId,
@@ -287,14 +288,13 @@ namespace QST.MicroERP.DAL.CTL
             }
             return retVal;
         }
-
         public int GetMaxLineId ( string mod, int headerId, string columnName )
         {
             int retVal = 0;
             MySqlCommand cmd = MicroERPDataContext.OpenMySqlConnection ();
             try
             {
-                cmd = MicroERPDataContext.SetStoredProcedure (cmd, "GetMaxLineId");
+                cmd = MicroERPDataContext.SetStoredProcedure (cmd, SPNames.CTL_GetMaxLineId);
                 retVal = MicroERPDataContext.ExecuteScalar (MicroERPDataContext.AddParameters (cmd
                     , "@prm_TableName", mod.ToString (),
                                 "@prm_HeaderId", headerId,
@@ -317,7 +317,7 @@ namespace QST.MicroERP.DAL.CTL
             MySqlCommand cmd = MicroERPDataContext.OpenMySqlConnection ();
             try
             {
-                cmd = MicroERPDataContext.SetStoredProcedure (cmd, "GetMaxLineIdByClt");
+                cmd = MicroERPDataContext.SetStoredProcedure (cmd, SPNames.GetMaxVariantId);
                 retVal = MicroERPDataContext.ExecuteScalar (MicroERPDataContext.AddParameters (cmd
                     , "@prm_TableName", tblname.ToString (),
                                 "@prm_HeaderId", headerId,

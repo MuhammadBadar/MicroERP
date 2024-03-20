@@ -1,0 +1,121 @@
+<div class="container-fluid page">
+    <div class="d-flex page_box p-3 mt-2  header-sticky" position="sticky">
+        <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+            <div *ngIf="Add">Manage Client
+            </div>
+            <div *ngIf="Edit">Update Client
+            </div>
+            <div fxFlex="7%">
+                <button mat-icon-button fxLayoutAlign="end end" (click)="dialogRef.close()" style="color: white">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="page_content shadow p-3 position-relative">
+        <form #clientsForm="ngForm">
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Client's Name</mat-label>
+                        <input matInput required #clientName="ngModel" name="clientName"
+                            [(ngModel)]="selectedClients.clientName" />
+                    </mat-form-field>
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Select Category</mat-label>
+                        <mat-select required name="categoryId" matNativeControl #categoryId="ngModel"
+                            [(ngModel)]="selectedClients.categoryId">
+                            <mat-option [value]="0">--Please Select--</mat-option>
+                            <mat-option *ngFor="let pt of categories" [value]=" pt.id">
+                                {{ pt.name}}
+                            </mat-option>
+                        </mat-select>
+                        <div matSuffix>
+                            <button mat-icon-button style="color:#940540;"
+                                (click)="OpenCatDialog(); $event.stopPropagation()">
+                                <mat-icon cTooltip="Explore Category">add</mat-icon>
+                            </button>
+                        </div>
+                    </mat-form-field>
+                </div>
+            </Row>
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Contact</mat-label>
+                        <input matInput required #contact="ngModel" name="contact"
+                            [(ngModel)]="selectedClients.contact" />
+                    </mat-form-field>
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Owner</mat-label>
+                        <input matInput required #owner="ngModel" name="owner" [(ngModel)]="selectedClients.owner" />
+                    </mat-form-field>
+                </div>
+            </Row>
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Relevant Person</mat-label>
+                        <input matInput #releventPerson="ngModel" name="releventPerson"
+                            [(ngModel)]="selectedClients.relevantPerson" />
+                    </mat-form-field>
+                    <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                        <mat-label>Address</mat-label>
+                        <textarea rows="1" matInput #address="ngModel" name="address" required
+                            [(ngModel)]="selectedClients.address"></textarea>
+                    </mat-form-field>
+                </div>
+            </Row>
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-form-field fxFlex="100%" appearance="outline" class="form-group">
+                        <mat-label>Select Country</mat-label>
+                        <mat-select name="countryId" matNativeControl #countryId="ngModel"
+                            [(ngModel)]="selectedClients.countryId">
+                            <mat-option [value]="0" (click)="GetCity()">--Please Select--</mat-option>
+                            <mat-option *ngFor="let pt of countries" [value]=" pt.id" (click)="SearchCities()">
+                                {{ pt.name}}
+                            </mat-option>
+                        </mat-select>
+                        <div matSuffix>
+                            <button mat-icon-button style="color:#940540;"
+                                (click)="OpenCountryDialog(); $event.stopPropagation()">
+                                <mat-icon cTooltip="Explore Contries">add</mat-icon>
+                            </button>
+                        </div>
+                    </mat-form-field>
+                    <mat-form-field fxFlex="100%" appearance="outline" class="form-group" *ngIf="selectedClients.countryId>0">
+                        <mat-label>Select City</mat-label>
+                        <mat-select name="cityId" matNativeControl #cityId="ngModel"
+                            [(ngModel)]="selectedClients.cityId">
+                            <mat-option [value]="0">--Please Select--</mat-option>
+                            <mat-option *ngFor="let pt of cities" [value]=" pt.id"
+                                (click)="selectedClients.countryId=pt.parentId">
+                                {{ pt.name}}
+                            </mat-option>
+                        </mat-select>
+                        <div matSuffix>
+                            <button mat-icon-button style="color:#940540;"
+                                (click)="OpenCityDialog(); $event.stopPropagation()">
+                                <mat-icon cTooltip="Explore Cities">add</mat-icon>
+                            </button>
+                        </div>
+                    </mat-form-field>
+                </div>
+            </Row>
+            <mat-checkbox name="isActive" [(ngModel)]="selectedClients.isActive" checked>Is Active</mat-checkbox>
+            <div fxLayoutAlign="end end">
+                <button mat-raised-button *ngIf="Add" style="background-color: rgb(5, 46, 97);color: white;"
+                    (click)="SaveClients()">Create</button>
+                <button mat-raised-button *ngIf="Edit" style="background-color: rgb(5, 46, 97);color: white;"
+                    (click)="SaveClients()">Update</button>
+                <div>
+                    <button mat-icon-button mat-sm-button color="primary" cTooltip="Refresh" cTooltipPlacement="top"
+                        (click)="Refresh()">
+                        <mat-icon>autorenew</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

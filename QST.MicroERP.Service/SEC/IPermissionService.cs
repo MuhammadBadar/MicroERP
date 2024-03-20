@@ -12,8 +12,8 @@ namespace QST.MicroERP.Service.IServices
     public interface IPermissionService
     {
         List<PermissionDE> SearchPermissions ( PermissionDE mod );
-        List<PermissionDE> GetPermsByUserOrRole ( string UserId, int RoleId );
+        List<PermissionDE> GetPermsByUserOrRole ( string UserId, int RoleId, int ClientId );
         bool SavePermissions ( List<PermissionDE> perms );
-        List<SettingsDE> GetRoutes ( );
+        List<SettingsDE> GetRoutes (int? ClientId=null );
     }
 }

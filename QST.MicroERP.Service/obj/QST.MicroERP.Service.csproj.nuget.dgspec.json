@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Service\\QST.MicroERP.Service.csproj": {}
+    "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Service\\QST.MicroERP.Service.csproj": {}
   },
   "projects": {
-    "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj": {
+    "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj",
+        "projectUniqueName": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj",
         "projectName": "QST.MicroERP.Core",
-        "projectPath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj",
-        "packagesPath": "C:\\Users\\IBM\\.nuget\\packages\\",
-        "outputPath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Core\\obj\\",
+        "projectPath": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj",
+        "packagesPath": "C:\\Users\\AU TRADERS\\.nuget\\packages\\",
+        "outputPath": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Core\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\IBM\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\AU TRADERS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -107,17 +111,21 @@
         }
       }
     },
-    "C:\\QST\\Git\\MicroERP\\QST.MicroERP.DAL\\QST.MicroERP.DAL.csproj": {
+    "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.DAL\\QST.MicroERP.DAL.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.DAL\\QST.MicroERP.DAL.csproj",
+        "projectUniqueName": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.DAL\\QST.MicroERP.DAL.csproj",
         "projectName": "QST.MicroERP.DAL",
-        "projectPath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.DAL\\QST.MicroERP.DAL.csproj",
-        "packagesPath": "C:\\Users\\IBM\\.nuget\\packages\\",
-        "outputPath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.DAL\\obj\\",
+        "projectPath": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.DAL\\QST.MicroERP.DAL.csproj",
+        "packagesPath": "C:\\Users\\AU TRADERS\\.nuget\\packages\\",
+        "outputPath": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.DAL\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\IBM\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\AU TRADERS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -131,8 +139,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj": {
-                "projectPath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj"
+              "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj": {
+                "projectPath": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj"
               }
             }
           }
@@ -192,17 +200,21 @@
         }
       }
     },
-    "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Service\\QST.MicroERP.Service.csproj": {
+    "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Service\\QST.MicroERP.Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Service\\QST.MicroERP.Service.csproj",
+        "projectUniqueName": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Service\\QST.MicroERP.Service.csproj",
         "projectName": "QST.MicroERP.Service",
-        "projectPath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Service\\QST.MicroERP.Service.csproj",
-        "packagesPath": "C:\\Users\\IBM\\.nuget\\packages\\",
-        "outputPath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Service\\obj\\",
+        "projectPath": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Service\\QST.MicroERP.Service.csproj",
+        "packagesPath": "C:\\Users\\AU TRADERS\\.nuget\\packages\\",
+        "outputPath": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Service\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\IBM\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\AU TRADERS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -216,11 +228,11 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj": {
-                "projectPath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj"
+              "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj": {
+                "projectPath": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.Core\\QST.MicroERP.Core.csproj"
               },
-              "C:\\QST\\Git\\MicroERP\\QST.MicroERP.DAL\\QST.MicroERP.DAL.csproj": {
-                "projectPath": "C:\\QST\\Git\\MicroERP\\QST.MicroERP.DAL\\QST.MicroERP.DAL.csproj"
+              "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.DAL\\QST.MicroERP.DAL.csproj": {
+                "projectPath": "D:\\QST\\Projects\\MicroERP\\QST.MicroERP.DAL\\QST.MicroERP.DAL.csproj"
               }
             }
           }

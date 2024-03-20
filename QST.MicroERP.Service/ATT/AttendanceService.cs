@@ -23,73 +23,81 @@ using QST.MicroERP.Core.Entities.ATT;
 using QST.MicroERP.Core.Entities.SCH;
 using QST.MicroERP.DAL.CTL;
 using QST.MicroERP.Core.Entities.CTL;
+using QST.MicroERP.Core.Entities.SEC;
+using QST.MicroERP.Service.SEC;
 
 namespace QST.MicroERP.Service.ATT
 {
-    public class AttendanceService
+    public class AttendanceService:BaseService
     {
         #region Class Members/Class Variables
 
-        private AttendanceDAL attDAL;
-        private CoreDAL _corDAL;
-        private Logger _logger;
+        private AttendanceDAL _attDAL;
         private ScheduleService _schSvc;
         private LogEventService _logEventSvc;
         private UserTaskDAL _uTaskDAL;
+        private UserService _userSvc;
 
         #endregion
         #region Constructors
         public AttendanceService()
         {
             _logEventSvc = new LogEventService();
-            attDAL = new AttendanceDAL();
-            _corDAL = new CoreDAL();
-            _logger = LogManager.GetLogger("fileLogger");
+            _attDAL = new AttendanceDAL();
             _schSvc = new ScheduleService();
             _uTaskDAL = new UserTaskDAL();
+            _userSvc = new UserService ();
         }
         #endregion
-        public bool ManageAttendance(AttendanceDE Attendance)
+        public AttendanceDE ManageAttendance(AttendanceDE mod, MySqlCommand? cmd =null)
         {
-            bool retVal = false;
-            bool closeConnectionFlag = false;
-            MySqlCommand? cmd = null;
             try
             {
                 cmd = MicroERPDataContext.OpenMySqlConnection();
-                closeConnectionFlag = true;
-                if (Attendance.DBoperation == DBoperations.Insert)
-                    Attendance.Id = _corDAL.GetnextId(TableNames.ATT_Attendance.ToString());
-                retVal = attDAL.ManageAttendance(Attendance, cmd);
-                return retVal;
+                _entity = TableNames.ATT_Attendance.ToString ();
+
+                if (mod.DBoperation == DBoperations.Insert)
+                    mod.Id = _coreDAL.GetNextIdByClient (_entity, mod.ClientId, "ClientId");
+
+                _logger.Info ($"Going to Call:_attDAL.ManageAttendance(mod, cmd)");
+                if (_attDAL.ManageAttendance (mod, cmd))
+                {
+                    mod.AddSuccessMessage (string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                    _logger.Info ($"Success: " + string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                }
+                else
+                {
+                    mod.AddErrorMessage (string.Format (AppConstants.CRUD_ERROR, _entity));
+                    _logger.Info ($"Error: " + string.Format (AppConstants.CRUD_ERROR, _entity));
+                }
+                return mod;
             }
              catch (Exception ex)
             {
+                mod.Id = 0;
                 _logger.Error(ex);
                 throw;
             }
             finally
             {
-                if (closeConnectionFlag)
+                if (cmd!=null)
                     MicroERPDataContext.CloseMySqlConnection(cmd);
             }
         }
         public List<AttendanceDE> SearchAttendance(AttendanceDE mod)
         {
             List<AttendanceDE> att = new List<AttendanceDE>();
-            bool closeConnectionFlag = false;
-            MySqlCommand cmd = null;
             try
             {
                 cmd = MicroERPDataContext.OpenMySqlConnection();
-                closeConnectionFlag = true;
+
                 #region Search
 
                 string whereClause = " Where 1=1";
                 if (mod.Id != default && mod.Id != 0)
                     whereClause += $" AND Id={mod.Id}";
-                if (mod.UserId != default && mod.UserId != "")
-                    whereClause += $" and UserId like ''" + mod.UserId + "''";
+                if (mod.ClientId != default && mod.ClientId != 0)
+                    whereClause += $" AND ClientId={mod.ClientId}";
                 if (mod.Date.HasValue)
                     whereClause += $" AND DATE(Date) = ''{mod.Date.Value.ToString("yyyy-MM-dd")}''";
                 if (mod.FromDate.HasValue)
@@ -98,7 +106,29 @@ namespace QST.MicroERP.Service.ATT
                     whereClause += $" and Date <= ''{mod.ToDate.Value:yyyy-MM-dd} 23:59:59''";
                 if (mod.IsActive != default)
                     whereClause += $" AND IsActive ={mod.IsActive}";
-                att = attDAL.SearchAttendance(whereClause, cmd);
+                if (mod.IncludeSubordinatesData && mod.UserId != default)
+                {
+                    var user = new UserDE ();
+                    user.Id = mod.UserId;
+                    user.ClientId = mod.ClientId;
+                    var subordinateUsers = _userSvc.GetSubordinates (user);
+                    if (subordinateUsers.Count > 0)
+                    {
+                        string subordinateIds = string.Join ("'',''", subordinateUsers.Select (x => x.Id));
+                        whereClause += $" and (UserId like ''" + mod.UserId + "'' or UserId IN (''" + subordinateIds + "''))";
+                    }
+                    else
+                    {
+                        if (mod.UserId != default && mod.UserId != "")
+                            whereClause += $" and UserId like ''" + mod.UserId + "''";
+                    }
+                }
+                else
+                {
+                    if (mod.UserId != default && mod.UserId != "")
+                        whereClause += $" and UserId like ''" + mod.UserId + "''";
+                }
+                att = _attDAL.SearchAttendance(whereClause, cmd);
                 return att;
                 #endregion
             }
@@ -109,312 +139,126 @@ namespace QST.MicroERP.Service.ATT
             }
             finally
             {
-                if (closeConnectionFlag)
-                    MicroERPDataContext.CloseMySqlConnection(cmd);
-            }
-
-        }
-        public AttendanceDE GetLastAttendanceByInTime(string userId)
-        {
-            bool closeConnectionFlag = false;
-            MySqlCommand cmd = null;
-
-            try
-            {
-                cmd = MicroERPDataContext.OpenMySqlConnection();
-                closeConnectionFlag = true;
-
-                // Construct the query to get the last attendance record for the user based on 'InTime'
-                string query = "SELECT * FROM Attendance WHERE UserId = @UserId ORDER BY InTime DESC LIMIT 1";
-                cmd.CommandText = query;
-                cmd.CommandType = CommandType.Text;
-                cmd.Parameters.AddWithValue("@UserId", userId);
-
-                // Execute the query
-                using (MySqlDataReader reader = cmd.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        // Check if 'InTime' column is DBNull
-                        DateTime inTime = reader["InTime"] != DBNull.Value ? Convert.ToDateTime(reader["InTime"]) : default;
-
-                        // Map the data from the database to the AttendanceDE model
-                        AttendanceDE lastAttendance = new AttendanceDE
-                        {
-                            Id = Convert.ToInt32(reader["Id"]),
-                            UserId = reader["UserId"].ToString(),
-                            //InTime = inTime,
-                            //OutTime = reader["OutTime"] != DBNull.Value ? Convert.ToDateTime (reader["OutTime"]) : default (DateTime),
-                            //// Add other properties as needed
-                        };
-
-                        return lastAttendance;
-                    }
-                }
-
-                // If no records found, return a default AttendanceDE object or null
-                return new AttendanceDE(); // Or return null, depending on your requirements
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-                throw;
-            }
-            finally
-            {
-                if (closeConnectionFlag)
+                if (cmd!=null)
                     MicroERPDataContext.CloseMySqlConnection(cmd);
             }
         }
-        public void MarkAttendance(string userId, DateTime loginTime)
+        public List<AttendanceDE> GetAttendanceReport ( AttendanceDE mod )
         {
-            try
-            {
-                // Create an instance of the AttendanceDE and set the necessary properties
-                AttendanceDE attendance = new AttendanceDE
-                {
-                    UserId = userId,
-                    //InTime = loginTime,
-                    DBoperation = DBoperations.Insert
-                };
-
-                // Call the ManageAttendance method to insert the record
-                bool success = ManageAttendance(attendance);
-
-                if (!success)
-                {
-                    // Handle the case where marking attendance fails
-                    // You can log an error, throw an exception, or take other appropriate actions
-                    _logger.Error("Failed to mark attendance for user ID: " + userId);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the exception and handle it as needed
-                _logger.Error(ex);
-            }
-        }
-        public double GetDueSPs(string user, DateTime inputDate)
-        {
-            double dueSPs = 0.00;
-            string schTimes = GetScheduleTime(user, inputDate);
-            //if (schTimes.Contains (','))
-            //{
-            var timeIntervals = schTimes.Split(',');
-            foreach (var timeInterval in timeIntervals)
-            {
-                var times = timeInterval.Split("-");
-                if (times.Length > 1)
-                {
-                    //foreach(var time in times)
-                    {
-                        var timeParts = times[0].Split(':');
-                        TimeSpan startTime = new TimeSpan(Convert.ToInt32(timeParts[0]), Convert.ToInt32(timeParts[1]), 0);
-
-                        timeParts = times[1].Split(':');
-                        TimeSpan endTime = new TimeSpan(Convert.ToInt32(timeParts[0]), Convert.ToInt32(timeParts[1]), 0);
-
-                        dueSPs += (endTime - startTime).TotalHours;
-                    }
-                    // var timeParts = times
-                    //TimeSpan startTime = new TimeSpan((times[0].Split(':'))[0])
-                }
-            }
-            //}
-
-            return dueSPs;
-        }
-        public string GetScheduleTime(string userId, DateTime inputDate)
-        {
-            // Initialize an empty string to store the schedule events
-            string dayEvents = string.Empty;
-
-            // Get the user's schedule based on the provided user ID
-            var userSchedule = _schSvc.GetScheduleByUserId(userId);
-
-            // Determine the day of the week from the provided date
-            int dayOfWeekId = (int)inputDate.DayOfWeek;
-
-            // Map the day of the week to a corresponding ID
-            int dayId = -1;
-            switch (dayOfWeekId)
-            {
-                // Map days of the week to specific IDs
-                case 0: dayId = 1003007; break; // Sunday
-                case 1: dayId = 1003001; break; // Monday
-                case 2: dayId = 1003002; break; // Tuesday
-                case 3: dayId = 1003003; break; // Wednesday
-                case 4: dayId = 1003004; break; // Thursday
-                case 5: dayId = 1003005; break; // Friday
-                case 6: dayId = 1003006; break; // Saturday
-            }
-
-            // Retrieve the schedule for the specified day
-            var daySchedule = userSchedule.ScheduleDays.Where(m => m.DayId == dayId).FirstOrDefault();
-
-            // Check if the schedule for the specified day is not null
-            if (daySchedule != null)
-            {
-                // Iterate through the schedule events for the specified day
-                foreach (var eventDetail in daySchedule.ScheduleDayEvents)
-                {
-                    // Concatenate the start and end times into the dayEvents string
-                    dayEvents += eventDetail.StartTime + " - " + eventDetail.EndTime + " ,";
-                }
-
-                // Remove the trailing comma from the concatenated string
-                if (!string.IsNullOrEmpty(dayEvents))
-                {
-                    dayEvents = dayEvents.TrimEnd(',', ' '); // Trim the last comma and any extra whitespace
-                }
-            }
-
-            // Return the final string representing schedule events for the specified day
-            return dayEvents;
-        }
-        public List<AttendanceDE> GetAttendanceReport(AttendanceDE mod)
-        {
-            List<AttendanceDE> retVals = new List<AttendanceDE>();
-            retVals = SearchAttendance(new AttendanceDE { FromDate = mod.FromDate, ToDate = mod.ToDate, UserId = mod.UserId });
+            List<AttendanceDE> retVals = new List<AttendanceDE> ();
+            retVals = SearchAttendance (new AttendanceDE { FromDate = mod.FromDate, ToDate = mod.ToDate, UserId = mod.UserId, IncludeSubordinatesData = mod.IncludeSubordinatesData, ClientId=mod.ClientId });
             foreach (var att in retVals)
             {
-                List<ScheduleDayEventDE> schEvents = new List<ScheduleDayEventDE>();
-                List<UserTaskDE> userTasks = new List<UserTaskDE>();
-                att.Day = att.Date.Value.DayOfWeek.ToString();
+                List<ScheduleDayEventDE> schEvents = new List<ScheduleDayEventDE> ();
+                List<UserTaskDE> userTasks = new List<UserTaskDE> ();
+                att.Day = att.Date.Value.DayOfWeek.ToString ();
                 if (att.DayEndTime == null)
                     att.DayEndTime = DateTime.Now;
+
                 #region DayStart/End
-                if (att.DayStartTime.Value.Date == att.DayEndTime.Value.Date)
-                    att.DayStartandEnd = att.DayStartTime.Value.TimeOfDay.ToString(AppConstants.TIME_FORMAT_HHMMSS) + " - " + att.DayEndTime.Value.TimeOfDay.ToString(AppConstants.TIME_FORMAT_HHMMSS);
-                else
-                    att.DayStartandEnd = att.DayStartTime.Value.ConvertToDateWith24HFormat() + " - " + att.DayEndTime.Value.ConvertToDateWith24HFormat();
+
+                att.DayStartandEnd = GetDayStartandEndStr (att);
+
                 #endregion
                 #region In/OutTime
-                var events = _logEventSvc.SearchLogEvents(new LogEventDE { UserId = att.UserId, Date = att.Date });
-                if (events != null && events.Count > 0)
-                    foreach (var evt in events)
-                    {
-                        if (evt.OutTime == null)
-                            evt.OutTime = DateTime.Now;
-                        if (evt.OutTime.Value.Date == evt.InTime.Value.Date)
-                            att.InandOutTime += evt.InTime.Value.TimeOfDay.ToString(AppConstants.TIME_FORMAT_HHMMSS) + " - " + evt.OutTime.Value.TimeOfDay.ToString(AppConstants.TIME_FORMAT_HHMMSS);
-                        else
-                            att.InandOutTime += evt.InTime.Value.ConvertToDateWith24HFormat() + " - " + evt.OutTime.Value.ConvertToDateWith24HFormat();
-                        if (evt != events.Last())
-                            att.InandOutTime += ",";
-                    }
+
+                att.InandOutTime = GetInOutTimeStr (att);
+
                 #endregion
                 #region ScheduleTime & Due Time
+
                 if (att.SchDayId > 0)
                 {
-                    schEvents = _schSvc.GetDayEvents(att.SchDayId);
-                    if (schEvents != null && schEvents.Count > 0)
+                    var sch = _schSvc.GetScheduleandDueTimeStr (att.UserId,(int)att.SchDayId, att.ClientId, (DateTime)att.Date);
+                    att.SchTime = sch.Item1;
+                    att.DueSPs = sch.Item2;
+                }
+
+                #endregion
+                #region Late
+
+                if(att.SchId>0)
+                schEvents = _schSvc.GetDayEvents (att.SchDayId, att.ClientId);
+                if (schEvents != null && schEvents.Count > 0)
+                {
+                    var firstSchEvt = schEvents[0];
+                    if (att.DayStartTime != null && firstSchEvt.StartTime != null)
                     {
-                        TimeSpan dueSps = new TimeSpan();
-                        foreach (var schEvt in schEvents)
+                        if (TimeSpan.TryParse (firstSchEvt.StartTime, out var schStartTime))
                         {
-                            #region ScheduleTime 
-                            att.SchTime += schEvt.StartTime.ToString() + " - " + schEvt.EndTime.ToString();
-                            if (schEvt != schEvents.Last())
-                                att.SchTime += ",";
-                            att.SchTime += Environment.NewLine;
-                            #endregion
-                            #region DueTime
-                            dueSps += TimeSpan.Parse(schEvt.EndTime) - TimeSpan.Parse(schEvt.StartTime);
-                            att.DueSPs = dueSps.ToString();
-                            #endregion
+                            DateTime scheduleStartTime = att.DayStartTime.Value.Date + schStartTime;
+                            if (att.DayStartTime > scheduleStartTime)
+                                att.Late = (att.DayStartTime - scheduleStartTime).ToString ();
                         }
                     }
                 }
-                #endregion
-                #region Late
-                if (schEvents != null && schEvents.Count > 0)
-                    if (att.DayStartTime != null && schEvents[0].StartTime != null)
-                    {
-                        if (TimeSpan.TryParse(schEvents[0].StartTime, out var schStartTime))
-                        {
-                            DateTime scheduleStartDateTime = att.DayStartTime.Value.Date + schStartTime;
-                            if (att.DayStartTime > scheduleStartDateTime)
-                                att.Late = (att.DayStartTime - scheduleStartDateTime).ToString();
-                        }
-                    }
+
                 #endregion
                 #region Day WorkedTime
 
                 if (att.DayEndTime.Value < att.DayStartTime.Value)
-                    att.DayEndTime = att.DayEndTime.Value.AddDays(1);
+                    att.DayEndTime = att.DayEndTime.Value.AddDays (1);
                 TimeSpan workedTime = att.DayEndTime.Value - att.DayStartTime.Value;
-                att.WorkedTime = new TimeSpan(workedTime.Hours, workedTime.Minutes, workedTime.Seconds).ToString();
+                att.WorkedTime = new TimeSpan (workedTime.Hours, workedTime.Minutes, workedTime.Seconds).ToString ();
 
                 #endregion
                 #region Missing & Extra Time
 
                 if (att.DueSPs != null && att.WorkedTime != null)
                 {
-                    TimeSpan.TryParse(att.DueSPs, out var dueSps);
-                    TimeSpan.TryParse(att.WorkedTime, out var workTime);
+                    TimeSpan.TryParse (att.DueSPs, out var dueSps);
+                    TimeSpan.TryParse (att.WorkedTime, out var workTime);
                     if (workTime > dueSps)
-                        att.ExtraTime = (workTime - dueSps).ToString();
+                        att.ExtraTime = (workTime - dueSps).ToString ();
                     else if (dueSps > workTime)
                     {
-                        att.MissingTime = (dueSps - workTime).ToString();
+                        att.MissingTime = (dueSps - workTime).ToString ();
                     }
                 }
 
                 #endregion
                 #region User Targets, ClaimedSPs, DayEndStatus, Claimed%, SPsGap, ClaimError, FinalScore
 
-                string WhereClause = $"where   DATE(Date) = ''{att.Date.Value.ToString("yyyy-MM-dd")}''   and UserId = ''" + att.UserId + "''";
-                userTasks = _uTaskDAL.SearchUserTask(WhereClause);
-                var _uTasks = _uTaskDAL.SearchUserTask($"where  UserId = ''" + att.UserId + "''");
+                string WhereClause = $"where   DATE(Date) = ''{att.Date.Value.ToString ("yyyy-MM-dd")}''   and UserId = ''" + att.UserId + "'' and ClientId=" + att.ClientId + "";
+                userTasks = _uTaskDAL.SearchUserTask (WhereClause);
+                var _uTasks = _uTaskDAL.SearchUserTask ($"where  UserId = ''" + att.UserId + "'' and ClientId = " + att.ClientId + "");
                 double workedSPs = 0;
                 double totalSPs = 0;
                 double approvedSps = 0;
                 att.UserTasks = userTasks;
                 foreach (var task in userTasks)
                 {
-                    var _task = _uTaskDAL.SearchUserTask($"where  TaskId = ''" + task.TaskId + "''");
-                    if (_task != null)
-                    {
-                        var lastExistenceTask = _task.OrderByDescending(x => x.Id).First();
-                        if (task.Id == lastExistenceTask.Id)
-                            task.IsLastExistence = true;
-                        _task = _task.Where(x => x.Id <= task.Id).ToList();
-                        float totalClaim = (float)_task.Select(obj => obj.WorkTime).Sum();
-                        task.ClaimWorkTime = string.Join("+ ", _task.Select(obj => obj.WorkTime)) + " = " + totalClaim;
-                        task.ExtraTime = Math.Max(0, totalClaim - task.Sp).ToString();
-                        if (totalClaim > task.Sp)
-                            task.IsOverdue = true;
-                        else if (totalClaim < task.Sp && (task.ApprovedClaimId > 0 ? task.ApprovedClaimId == (int)ClaimPer.Claim_100Per : task.ClaimId == (int)ClaimPer.Claim_100Per))
-                        {
-                            task.IsOverdue = false;
-                            task.IsEarlyFinshed = true;
-                        }
-                    }
+                    var taskWithStatus = GetTaskStatus (task);
+                    task.IsLastExistence = taskWithStatus.IsLastExistence;
+                    task.ClaimWorkTime = taskWithStatus.ClaimWorkTime;
+                    task.ExtraTime = taskWithStatus.ExtraTime;
+                    task.IsOverdue = taskWithStatus.IsOverdue;
+                    task.IsEarlyFinshed = taskWithStatus.IsEarlyFinshed;
+
                     #region Task Score & Task Completion Percentage
                     if (task.ClaimId > 0)
                     {
                         double currentClaim = 0;
                         if (task.LastClaim != null)
-                            currentClaim = Math.Max(0, double.Parse(task.ClaimPercent) - double.Parse(task.LastClaim));
+                            currentClaim = Math.Max (0, (double.Parse (task.ClaimPercent) - double.Parse (task.LastClaim)));
                         else
-                            currentClaim = double.Parse(task.ClaimPercent);
-                        task.TaskScore = Math.Round(currentClaim * task.Sp / 100, 2).ToString();
-                        task.TaskComPer = Math.Round(double.Parse(task.TaskScore) * 100 / task.Sp, 2).ToString() + " %";
+                            currentClaim = double.Parse (task.ClaimPercent);
+                        task.TaskScore = Math.Round (((currentClaim * task.Sp) / 100), 2).ToString ();
+                        task.TaskComPer = Math.Round ((double.Parse (task.TaskScore) * 100) / task.Sp, 2).ToString () + " %";
                     }
                     #endregion
 
                     if (task.ClaimPercent != null && task.ApprovedClaimId > 0)
-                        task.ClaimError = Math.Max(0, int.Parse(task.ClaimPercent) - int.Parse(task.ApprovedClaim)).ToString();
+                        task.ClaimError = Math.Max (0, ((int.Parse (task.ClaimPercent)) - (int.Parse (task.ApprovedClaim)))).ToString ();
 
                     #region Targets
 
-                    var stringBuilder = new StringBuilder();
+                    var stringBuilder = new StringBuilder ();
                     if (task.Module != null)
-                        stringBuilder.Append(task.Module + "-");
-                    stringBuilder.Append(task.TaskId.ToString() + "(" + task.Sp + "SPs" + ")" + ": " + task.Title);
-                    if (task != userTasks.Last())
-                        stringBuilder.Append(", ");
+                        stringBuilder.Append (task.Module + "-");
+                    stringBuilder.Append (task.TaskId.ToString () + "(" + task.Sp + "SPs" + ")" + ": " + task.Title);
+                    if (task != userTasks.Last ())
+                        stringBuilder.Append (", ");
                     att.Targets += stringBuilder;
 
                     #endregion
@@ -423,49 +267,49 @@ namespace QST.MicroERP.Service.ATT
                     {
                         #region DayEndStatus
 
-                        var dayEndStatus = new StringBuilder();
+                        var dayEndStatus = new StringBuilder ();
                         if (task.Module != null)
-                            dayEndStatus.Append(task.Module + "- ");
-                        dayEndStatus.Append(task.TaskId.ToString() + " : " + task.ClaimPercent + "%");
+                            dayEndStatus.Append (task.Module + "- ");
+                        dayEndStatus.Append (task.TaskId.ToString () + " : " + task.ClaimPercent + "%");
                         if (task.Comments != null)
-                            dayEndStatus.Append("(" + task.Comments + ")");
-                        if (task != userTasks.Last())
-                            dayEndStatus.Append(", ");
+                            dayEndStatus.Append ("(" + task.Comments + ")");
+                        if (task != userTasks.Last ())
+                            dayEndStatus.Append (", ");
                         att.DayEndStatus += dayEndStatus;
 
                         #endregion
                         #region Claimed SPs
 
-                        task.WorkSP = Math.Round(double.Parse(task.ClaimPercent) * task.Sp / 100, 2);
-                        workedSPs += double.Parse(task.ClaimPercent) * task.Sp / 100;
+                        task.WorkSP = Math.Round (((double.Parse (task.ClaimPercent) * task.Sp) / 100), 2);
+                        workedSPs += ((double.Parse (task.ClaimPercent) * task.Sp) / 100);
                         totalSPs += task.Sp;
 
                         #endregion
                         #region Approved Claim
 
-                        string approveClaim = string.Empty;
+                        String approveClaim = String.Empty;
                         if (task.ApprovedClaim != null)
                             approveClaim = task.ApprovedClaim;
                         else
                             approveClaim = task.ClaimPercent;
-                        task.FinalScore = Math.Round(double.Parse(approveClaim) * task.Sp / 100, 2).ToString();
-                        approvedSps += double.Parse(approveClaim) * task.Sp / 100;
+                        task.FinalScore = Math.Round ((double.Parse (approveClaim) * task.Sp / 100), 2).ToString ();
+                        approvedSps += (double.Parse (approveClaim) * task.Sp / 100);
 
                         #endregion
                     }
                 }
                 if (workedSPs > 0 && totalSPs > 0)
                 {
-                    att.ClaimedSPs = Math.Round(workedSPs, 2).ToString() + "/" + Math.Round(totalSPs, 2).ToString();
-                    att.FinalScore = Math.Round(approvedSps, 2).ToString() + "/" + Math.Round(totalSPs, 2).ToString();
+                    att.ClaimedSPs = Math.Round (workedSPs, 2).ToString () + "/" + Math.Round (totalSPs, 2).ToString ();
+                    att.FinalScore = Math.Round (approvedSps, 2).ToString () + "/" + Math.Round (totalSPs, 2).ToString ();
                     #region Claimed %
 
-                    att.ClaimPer = Math.Round(workedSPs * 100 / totalSPs, 2).ToString() + " %";
+                    att.ClaimPer = Math.Round ((workedSPs * 100) / totalSPs, 2).ToString () + " %";
 
                     #endregion
                     #region SPs Gap
 
-                    att.SPsGap = Math.Round(totalSPs - approvedSps, 2).ToString();
+                    att.SPsGap = Math.Round (totalSPs - approvedSps, 2).ToString ();
 
                     #endregion
                 }
@@ -492,10 +336,59 @@ namespace QST.MicroERP.Service.ATT
                 if (att.DayEndStatus == null)
                     att.DayEndStatus = "N/A";
 
-
                 #endregion
             }
             return retVals;
         }
+        public string GetInOutTimeStr ( AttendanceDE att )
+        {
+            string inOutTime = String.Empty;
+            var events = _logEventSvc.SearchLogEvents (new LogEventDE { UserId = att.UserId, Date = att.Date, ClientId=att.ClientId });
+            if (events != null && events.Count > 0)
+                foreach (var evt in events)
+                {
+                    if (evt.OutTime == null)
+                        evt.OutTime = DateTime.Now;
+                    if (evt.OutTime.Value.Date == evt.InTime.Value.Date)
+                        inOutTime += evt.InTime.Value.TimeOfDay.ToString (AppConstants.TIME_FORMAT_HHMMSS) + " - " + evt.OutTime.Value.TimeOfDay.ToString (AppConstants.TIME_FORMAT_HHMMSS);
+                    else
+                        inOutTime += evt.InTime.Value.ConvertToDateWith24HFormat () + " - " + evt.OutTime.Value.ConvertToDateWith24HFormat ();
+                    if (evt != events.Last ())
+                        inOutTime += ",";
+                }
+            return inOutTime;
+        }
+        public string GetDayStartandEndStr ( AttendanceDE att )
+        {
+            string dayStartandEnd = String.Empty;
+            if (att.DayStartTime.Value.Date == att.DayEndTime.Value.Date)
+                dayStartandEnd = att.DayStartTime.Value.TimeOfDay.ToString (AppConstants.TIME_FORMAT_HHMMSS) + " - " + att.DayEndTime.Value.TimeOfDay.ToString (AppConstants.TIME_FORMAT_HHMMSS);
+            else
+                dayStartandEnd = att.DayStartTime.Value.ConvertToDateWith24HFormat () + " - " + att.DayEndTime.Value.ConvertToDateWith24HFormat ();
+            return dayStartandEnd;
+        }
+        public UserTaskDE GetTaskStatus ( UserTaskDE task )
+        {
+            var _task = _uTaskDAL.SearchUserTask ($"where  TaskId = ''" + task.TaskId + "'' and ClientId=" + task.ClientId + "");
+            if (_task != null)
+            {
+                var taskLastExistence = _task.OrderByDescending (x => x.Id).First ();
+                if (task.Id == taskLastExistence.Id)
+                    task.IsLastExistence = true;
+                _task = _task.Where (x => x.Id <= task.Id).ToList ();
+                float totalClaim = (float)_task.Select (obj => obj.WorkTime).Sum ();
+                task.ClaimWorkTime = string.Join ("+ ", _task.Select (obj => obj.WorkTime)) + " = " + totalClaim;
+                task.ExtraTime = Math.Max (0, totalClaim - task.Sp).ToString ();
+                if (totalClaim > task.Sp)
+                    task.IsOverdue = true;
+                else if (totalClaim < task.Sp && (task.ApprovedClaimId > 0 ? task.ApprovedClaimId == (int)ClaimPer.Claim_100Per : task.ClaimId == (int)ClaimPer.Claim_100Per))
+                {
+                    task.IsOverdue = false;
+                    task.IsEarlyFinshed = true;
+                }
+            }
+            return task;
+        }
+
     }
 }

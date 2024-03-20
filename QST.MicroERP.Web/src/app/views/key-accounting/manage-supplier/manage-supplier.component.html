@@ -1,0 +1,187 @@
+<div class="container-fluid page">
+    <div class="d-flex page_box p-3 mt-2  header-sticky" position="sticky">
+        <div *ngIf="Add">Manage Supplier
+        </div>
+        <div *ngIf="Edit">Edit Supplier
+        </div>
+    </div>
+    <div class="page_content shadow p-3 position-relative">
+        <form #userForm="ngForm">
+            <div fxLayout="row" fxLayoutAlign="space-between">
+                <mat-form-field fxFlex="48%" appearance="outline" class="form-group">
+                    <mat-label>Company Name</mat-label>
+                    <input matInput required #companyName="ngModel" name="companyName"
+                        [(ngModel)]="selectedSupplier.companyName" />
+                </mat-form-field>
+                <mat-form-field fxFlex="48%" appearance="outline" class="form-group">
+                    <mat-label>Contact Name</mat-label>
+                    <input matInput required #contactName="ngModel" name="contactName"
+                        [(ngModel)]="selectedSupplier.contactName" />
+                </mat-form-field>
+                <div fxFlex="2%"></div>
+                <mat-form-field fxFlex="50%" appearance="outline" class="form-group">
+                    <mat-label>Disc Rate</mat-label>
+                    <input matInput #discRate="ngModel" name="discRate" type="number" min="0" step="any" required="true"
+                        oninput="validity.valid||(value='')" [(ngModel)]="selectedSupplier.discRate" />
+                </mat-form-field>
+                <mat-form-field fxFlex="48%" appearance="outline" class="form-group">
+                    <mat-label> Phone</mat-label>
+                    <input matInput #phone="ngModel" name="phone" [(ngModel)]="selectedSupplier.phone" />
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between">
+                <mat-form-field fxFlex="17%" appearance="outline" class="form-group">
+                    <mat-label> Select Account</mat-label>
+                    <mat-select name="accId" matNativeControl required="true" #accId="ngModel"
+                        [(ngModel)]="selectedSupplier.accId">
+                        <mat-option [value]="0">--Please Select--</mat-option>
+                        <mat-option *ngFor="let pt of Accounts" [value]=" pt.id">
+                            {{ pt.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field fxFlex="15%" appearance="outline" class="form-group">
+                    <mat-label> Select Country</mat-label>
+                    <mat-select name="countryId" matNativeControl #countryId="ngModel"
+                        [(ngModel)]="selectedSupplier.countryId">
+                        <mat-option [value]="0" (click)="ReSetValues()">--Please Select--</mat-option>
+                        <mat-option *ngFor="let pt of Countries" [value]=" pt.id" (click)="OnSelectCountry(pt)">
+                            {{ pt.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field fxFlex="17%" appearance="outline" class="form-group">
+                    <mat-label> Select City</mat-label>
+                    <mat-select name="cityId" matNativeControl #cityId="ngModel" [(ngModel)]="selectedSupplier.cityId">
+                        <mat-option [value]="0">--Please Select--</mat-option>
+                        <mat-option *ngFor="let pt of Cities" [value]=" pt.id">
+                            {{ pt.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <div fxFlex="2%"></div>
+                <mat-form-field fxFlex="50%" appearance="outline" class="form-group">
+                    <mat-label> Address</mat-label>
+                    <textarea matInput #address="ngModel" name="address" rows="1"
+                        [(ngModel)]="selectedSupplier.address"></textarea>
+                </mat-form-field>
+            </div>
+            <div fxLayoutAlign="end end">
+                <mat-checkbox name="isActive" [(ngModel)]="selectedSupplier.isActive">
+                    IsActive
+                </mat-checkbox>
+            </div>
+            <div fxLayoutAlign="end end">
+                <c-spinner *ngIf="proccessing" style="height: 50px;width: 50px;color: rgb(3, 71, 102);"></c-spinner>
+                <div style="margin-top: 10px;" *ngIf="!proccessing">
+                    <button *ngIf="Add" cButton class="me-1" style="background-color:#1e293b ;" type="submit"
+                        (click)="SaveSupplier();">
+                        Save
+                    </button>
+                    <button *ngIf="Edit" cButton class="me-1" style="background-color:#1e293b ;" type="submit"
+                        (click)="UpdateSupplier()">
+                        Update
+                    </button>
+                </div>
+                <div>
+                    <button mat-icon-button mat-sm-button color="primary" cTooltip="Refresh" cTooltipPlacement="top"
+                        (click)="ngOnInit()">
+                        <mat-icon>autorenew</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <c-card style="padding: 10px; margin-top: 30px;" class="mat-elevation-z8">
+            <h5 cCardTitle>Supplier List</h5>
+            <c-card-body style="padding: 10px;background-color: rgb(2, 42, 75);margin: 5px;border-radius: 10px;">
+                <div class="example-table-container">
+                    <section class="example-container mat-elevation-z8" tabindex="0" style="border-radius: 5px;">
+                        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                            <ng-container matColumnDef="Id">
+                                <th mat-header-cell *matHeaderCellDef> Sr No </th>
+                                <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="companyName">
+                                <th mat-header-cell *matHeaderCellDef>Company Name </th>
+                                <td mat-cell *matCellDef="let element"> {{element.companyName}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="discRate">
+                                <th mat-header-cell *matHeaderCellDef>Discount Rate </th>
+                                <td mat-cell *matCellDef="let element"> {{element.discRate}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="contactName">
+                                <th mat-header-cell *matHeaderCellDef> Contact Name </th>
+                                <td mat-cell *matCellDef="let element"> {{element.contactName}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="country">
+                                <th mat-header-cell *matHeaderCellDef> Country </th>
+                                <td mat-cell *matCellDef="let element"> {{element.country}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="city">
+                                <th mat-header-cell *matHeaderCellDef> City </th>
+                                <td mat-cell *matCellDef="let element"> {{element.city}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="account">
+                                <th mat-header-cell *matHeaderCellDef> Account </th>
+                                <td mat-cell *matCellDef="let element"> {{element.account}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="address">
+                                <th mat-header-cell *matHeaderCellDef> Address </th>
+                                <td mat-cell *matCellDef="let element"> {{element.address}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="phone">
+                                <th mat-header-cell *matHeaderCellDef> Phone </th>
+                                <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="isActive">
+                                <th mat-header-cell *matHeaderCellDef> IsActive </th>
+                                <td mat-cell *matCellDef="let element"> {{element.isActive ?'Yes':'No'}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="isCustomer" stickyEnd="true">
+                                <th mat-header-cell *matHeaderCellDef
+                                    style="font-size: 14px;min-width:160px;text-align: center;"> Deal as a Customer
+                                </th>
+                                <td mat-cell *matCellDef="let element" style="min-width:160px;text-align: center;">
+                                    <div>
+                                        <mat-checkbox (change)="IsCustomerCheck(element)" name="isCustomer"
+                                            [disabled]="!element.isActive" #isCustomer="ngModel"
+                                            [(ngModel)]="element.isCustomer">
+                                        </mat-checkbox>
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="actions" stickyEnd="true">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <p style="font-size: 14px;text-align: center;width:100px;">Action</p>
+                                </th>
+                                <td mat-cell *matCellDef="let row">
+                                    <div class="column" style="width:100px;text-align: center;">
+                                        <div>
+                                            <button mat-icon-button mat-sm-button style=" color:#1e293b ; "
+                                                cTooltip=" Edit Supplier" (click)="GetSupplierForEdit(row.id)">
+                                                <mat-icon>edit</mat-icon>
+                                            </button>
+
+                                            <!-- <button mat-icon-button mat-sm-button color="warn"
+                                                cTooltip="Delete Supplier" (click)="DeleteSupplier(row)">
+                                                <mat-icon>delete</mat-icon>
+                                            </button> -->
+                                        </div>
+                                        <!-- <div>
+                                            <mat-checkbox (change)="IsCustomerCheck(row)" name="isCustomer"
+                                                #isCustomer="ngModel" [(ngModel)]="row.isCustomer">
+                                                Deal as a Customer
+                                            </mat-checkbox>
+                                        </div> -->
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </section>
+                </div>
+            </c-card-body>
+        </c-card>
+    </div>
+</div>

@@ -11,58 +11,50 @@ using QST.MicroERP.Core.Models;
 using QST.MicroERP.DAL.SCH;
 using QST.MicroERP.Core.Entities.SCH;
 using QST.MicroERP.DAL.CTL;
+using QST.MicroERP.Core.Constants;
+using static Dapper.SqlMapper;
+using System.Data;
 
 namespace QST.MicroERP.Service.SCH
 {
-    public class ScheduleDayEventService
+    public class ScheduleDayEventService:BaseService
     {
         #region Class Variables
         private ScheduleDayEventDAL _schEvtDAL;
-        private CoreDAL _coreDAL;
-        private Logger _logger;
         #endregion
         #region Constructor
         public ScheduleDayEventService()
         {
             _schEvtDAL = new ScheduleDayEventDAL();
-            _coreDAL = new CoreDAL();
-            _logger = LogManager.GetLogger("fileLogger");
         }
         #endregion
         #region  Schedule Day Events
         public ScheduleDayEventDE ManageScheduleDayEvent(ScheduleDayEventDE mod)
         {
-            bool retVal = false;
-            string message = "";
             bool closeConnectionFlag = false;
-            MySqlCommand? cmd = null;
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection();
-                closeConnectionFlag = true;
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
+                _entity = TableNames.SCH_ScheduleDayEvent.ToString ();
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _coreDAL.GetnextId(TableNames.SCH_ScheduleDayEvent.ToString());
-                retVal = _schEvtDAL.ManageScheduleDayEvent(mod, cmd);
-                if (retVal == true)
+                    mod.Id = _coreDAL.GetNextIdByClient (_entity, mod.ClientId, "ClientId");
+
+                _logger.Info ($"Going to Call: _schEvtDAL.ManageScheduleDayEvent (mod, cmd)");
+                if (_schEvtDAL.ManageScheduleDayEvent (mod, cmd))
                 {
-                    if (mod.DBoperation == DBoperations.Insert)
-                        message = "ScheduleEvent Successfully Added";
-                    else if (mod.DBoperation == DBoperations.Update)
-                        message = "ScheduleEvent Successfully Updated";
-                    mod.HasErrors = false;
-                    _logger.Info(message);
+                    mod.AddSuccessMessage (string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                    _logger.Info ($"Success: " + string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
                 }
                 else
                 {
-                    if (mod.DBoperation == DBoperations.Insert)
-                        message = "Error Occurred while Saving the ScheduleEvent";
-                    else if (mod.DBoperation == DBoperations.Update)
-                        message = "Error Occurred while Updating the ScheduleEvent";
-                    mod.HasErrors = true;
-                    _logger.Error(message);
+                    mod.AddErrorMessage (string.Format (AppConstants.CRUD_ERROR, _entity));
+                    _logger.Info ($"Error: " + string.Format (AppConstants.CRUD_ERROR, _entity));
                 }
-                mod.ResponseMessage = message;
 
                 return mod;
             }
@@ -77,28 +69,31 @@ namespace QST.MicroERP.Service.SCH
                     MicroERPDataContext.CloseMySqlConnection(cmd);
             }
         }
-        public List<ScheduleDayEventDE> GetScheduleDayEvents(int schDayId)
+        public List<ScheduleDayEventDE> GetScheduleDayEvents(int schDayId, int clientId)
         {
-            List<ScheduleDayEventDE> mod = null;
             ScheduleDayEventSearchCriteria sc = new ScheduleDayEventSearchCriteria();
             sc.SchDayId = schDayId;
+            sc.ClientId = clientId;
             //sc.IsActive = true;
-            mod = SearchScheduleDayEvent(sc);
-
-            return mod;
+            return SearchScheduleDayEvent (sc);
         }
         public List<ScheduleDayEventDE> SearchScheduleDayEvent(ScheduleDayEventSearchCriteria _schEvt)
         {
-            List<ScheduleDayEventDE> retVal = new List<ScheduleDayEventDE>();
             bool closeConnectionFlag = false;
-            MySqlCommand? cmd = null;
+            List<ScheduleDayEventDE> retVal = new List<ScheduleDayEventDE>();
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection();
-                closeConnectionFlag = true;
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
+
                 string WhereClause = " Where 1=1";
                 if (_schEvt.Id != default)
                     WhereClause += $" AND Id={_schEvt.Id}";
+                if (_schEvt.ClientId != default && _schEvt.ClientId != 0)
+                    WhereClause += $" AND ClientId={_schEvt.ClientId}";
                 if (_schEvt.SchId != default)
                     WhereClause += $" AND SchId={_schEvt.SchId}";
                 if (_schEvt.SchDayId != default)

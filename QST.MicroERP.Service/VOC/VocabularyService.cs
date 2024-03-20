@@ -12,6 +12,7 @@ using QST.MicroERP.DAL.VOC;
 using MySql.Data.MySqlClient;
 using NLog;
 using static Dapper.SqlMapper;
+using System.Data;
 
 namespace QST.MicroERP.Service.VOC
 {
@@ -19,31 +20,31 @@ namespace QST.MicroERP.Service.VOC
     {
         #region Class Variables
         private VocabularyDAL _vcbDAL;
-        private CoreDAL _coreDAL;
         #endregion
         #region Constructor
         public VocabularyService()
         {
             _vcbDAL = new VocabularyDAL();
-            _coreDAL = new CoreDAL();
         }
         #endregion
         #region  Vocabulary
         public VocabularyDE ManageVocabularyAsync(VocabularyDE _vcb)
         {
             bool closeConnectionFlag = false;
-            MySqlCommand? cmd = null;
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection();
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
                 MicroERPDataContext.StartTransaction(cmd);
+                _entity = TableNames.VOC_Vocabulary.ToString();
 
-                closeConnectionFlag = true;
-                _entity = TableNames.Vocabulary.ToString();
                 var words = new List<VocabularyDE>();
                 if (_vcb.DBoperation == DBoperations.Insert || _vcb.DBoperation == DBoperations.Update)
                 {
-                    words = SearchVocabulary(new VocabularyDE { Word = _vcb.Word });
+                    words = SearchVocabulary(new VocabularyDE { Word = _vcb.Word, ClientId=_vcb.ClientId });
                     if (_vcb.DBoperation == DBoperations.Update)
                         words = words.Where(x => x.Id != _vcb.Id).ToList();
                 }
@@ -55,7 +56,9 @@ namespace QST.MicroERP.Service.VOC
                 else
                 {
                     if (_vcb.DBoperation == DBoperations.Insert)
-                        _vcb.Id = _coreDAL.GetnextId(_entity);
+                        _vcb.Id = _coreDAL.GetNextIdByClient (_entity.ToString (), _vcb.ClientId, "ClientId");
+
+                    _logger.Info ($"Going to Call:_vcbDAL.ManageVocabulary(_vcb, cmd)");
                     if (_vcbDAL.ManageVocabulary(_vcb, cmd) == true)
                     {
                         _vcb.AddSuccessMessage(string.Format(AppConstants.CRUD_DB_OPERATION, _entity, _vcb.DBoperation.ToString()));
@@ -64,7 +67,7 @@ namespace QST.MicroERP.Service.VOC
                         {
                             if (_vcb.DBoperation == DBoperations.Insert || _vcb.DBoperation == DBoperations.Update)
                             {
-                                var existingUserVocab = SearchUserVocabulary(new UserVocabularyDE { UserId = _vcb.UserVocab.UserId, WordId = _vcb.Id }).FirstOrDefault();
+                                var existingUserVocab = SearchUserVocabulary(new UserVocabularyDE { UserId = _vcb.UserVocab.UserId, WordId = _vcb.Id,ClientId=_vcb.ClientId }).FirstOrDefault();
                                 if (existingUserVocab != null && existingUserVocab.Id > 0)
                                     _vcb.UserVocab.DBoperation = DBoperations.Update;
                                 else
@@ -73,18 +76,20 @@ namespace QST.MicroERP.Service.VOC
 
                                 _entity = TableNames.VOC_UserVocabulary.ToString();
                                 if (_vcb.UserVocab.DBoperation == DBoperations.Insert)
-                                    _vcb.UserVocab.Id = _coreDAL.GetnextId(_entity);
-
+                                    _vcb.UserVocab.Id = _coreDAL.GetNextIdByClient (_entity.ToString (), _vcb.ClientId, "ClientId");
 
                                 _vcb.UserVocab.WordId = _vcb.Id;
+                                _vcb.UserVocab.ClientId = _vcb.ClientId;
+
+                                _logger.Info ($"Going to Call:_vcbDAL.ManageUserVocabulary(_vcb.UserVocab, cmd)");
                                 if (_vcbDAL.ManageUserVocabulary(_vcb.UserVocab, cmd) == true)
                                 {
-                                    _vcb.AddSuccessMessage(string.Format(AppConstants.CRUD_DB_OPERATION, _entity, _vcb.DBoperation.ToString()));
-                                    _logger.Info($"Success: " + string.Format(AppConstants.CRUD_DB_OPERATION, _entity, _vcb.DBoperation.ToString()));
+                                    _vcb.UserVocab.AddSuccessMessage(string.Format(AppConstants.CRUD_DB_OPERATION, _entity, _vcb.UserVocab.DBoperation.ToString()));
+                                    _logger.Info($"Success: " + string.Format(AppConstants.CRUD_DB_OPERATION, _entity, _vcb.UserVocab.DBoperation.ToString()));
                                 }
                                 else
                                 {
-                                    _vcb.AddErrorMessage(string.Format(AppConstants.CRUD_ERROR, _entity));
+                                    _vcb.UserVocab.AddErrorMessage(string.Format(AppConstants.CRUD_ERROR, _entity));
                                     _logger.Info($"Error: " + string.Format(AppConstants.CRUD_ERROR, _entity));
                                 }
                             }
@@ -116,17 +121,21 @@ namespace QST.MicroERP.Service.VOC
         }
         public List<VocabularyDE> SearchVocabulary(VocabularyDE _vcb)
         {
-            List<VocabularyDE> retVal = new List<VocabularyDE>();
             bool closeConnectionFlag = false;
-            MySqlCommand? cmd = null;
+            List<VocabularyDE> retVal = new List<VocabularyDE>();
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection();
-                closeConnectionFlag = true;
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
 
                 string whereClause = " Where 1=1";
                 if (_vcb.Id != default)
                     whereClause += $" AND Id={_vcb.Id}";
+                if (_vcb.ClientId != default && _vcb.ClientId != 0)
+                    whereClause += $" AND ClientId={_vcb.ClientId}";
                 if (_vcb.Word != default)
                     whereClause += $" and Word like ''" + _vcb.Word + "'' ";
                 if (_vcb.EnglishMeaning != default)
@@ -139,7 +148,7 @@ namespace QST.MicroERP.Service.VOC
                 retVal = _vcbDAL.SearchVocabulary(whereClause, cmd);
                 foreach (var vocab in retVal)
                 {
-                    vocab.UserVocab = SearchUserVocabulary(new UserVocabularyDE { WordId = vocab.Id, UserId = _vcb.UserVocab.UserId }).FirstOrDefault();
+                    vocab.UserVocab = SearchUserVocabulary(new UserVocabularyDE { WordId = vocab.Id, UserId = _vcb.UserVocab.UserId,ClientId=vocab.ClientId }).FirstOrDefault();
                 }
                 return retVal;
             }
@@ -156,17 +165,21 @@ namespace QST.MicroERP.Service.VOC
         }
         public List<UserVocabularyDE> SearchUserVocabulary(UserVocabularyDE _vcb)
         {
-            List<UserVocabularyDE> retVal = new List<UserVocabularyDE>();
             bool closeConnectionFlag = false;
-            MySqlCommand? cmd = null;
+            List<UserVocabularyDE> retVal = new List<UserVocabularyDE>();
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection();
-                closeConnectionFlag = true;
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
 
                 string whereClause = " Where 1=1";
                 if (_vcb.WordId != default)
                     whereClause += $" and WordId like ''" + _vcb.WordId + "'' ";
+                if (_vcb.ClientId != default && _vcb.ClientId != 0)
+                    whereClause += $" AND ClientId={_vcb.ClientId}";
                 if (_vcb.UserId != default)
                     whereClause += $" and UserId like ''" + _vcb.UserId + "'' ";
 

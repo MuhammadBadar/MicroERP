@@ -1,0 +1,375 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$coreui-free-angular-admin-template-primary: mat.define-palette(mat.$indigo-palette);
+$coreui-free-angular-admin-template-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$coreui-free-angular-admin-template-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$coreui-free-angular-admin-template-theme: mat.define-light-theme((color: (primary: $coreui-free-angular-admin-template-primary,
+        accent: $coreui-free-angular-admin-template-accent,
+        warn: $coreui-free-angular-admin-template-warn,
+      )));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($coreui-free-angular-admin-template-theme);
+
+/* You can add global styles to this file, and also import other style files */
+// If you want to override variables do it here
+@import "variables";
+
+$enable-ltr: true;
+$enable-rtl: true;
+
+// Import styles with default layout.
+@import "@coreui/coreui/scss/coreui";
+
+// Import Chart.js custom tooltips styles
+@import "@coreui/chartjs/scss/coreui-chartjs";
+
+// perfect scrollbar theming for use with [perfectScrollbar] directive
+//@import '~perfect-scrollbar/css/perfect-scrollbar.css';
+
+@import "layout";
+
+// Some temp fixes
+@import "fixes";
+
+// Prism.js
+@import "examples";
+
+// If you want to add something do it here
+@import "custom";
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;1,200&display=swap");
+ @import '~quill/dist/quill.core.css';
+ @import '~quill/dist/quill.bubble.css';
+ @import '~quill/dist/quill.snow.css';
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Fraunces", serif;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+
+// tbody tr:nth-child(even) {
+//   background-color: rgb(193, 226, 247) !important;
+//   //background-color: rgb(243, 219, 208);
+
+// }
+
+// tbody tr:hover {
+//   background-color: rgb(207, 181, 156);
+// }
+th {
+  // background-color: rgb(193, 226, 247) !important;
+  //background-color: rgb(243, 219, 208);
+  background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122)) !important;
+  color: white;
+  font-weight: normal
+}
+button{
+  cursor: help;
+}
+// td {
+//   color: white;
+// }
+
+
+.mat-mdc-snack-bar-container {
+  &.blue-snackbar {
+    --mdc-snackbar-container-color: #022530;
+    --mat-mdc-snack-bar-button-color: #fff;
+    --mdc-snackbar-supporting-text-color: #fff;
+  }
+}
+.mat-mdc-snack-bar-container {
+  &.green-snackbar {
+    --mdc-snackbar-container-color: #023014;
+    --mat-mdc-snack-bar-button-color: #fff;
+    --mdc-snackbar-supporting-text-color: #fff;
+  }
+}
+
+.mat-mdc-snack-bar-container {
+  &.red-snackbar {
+    --mdc-snackbar-container-color: #680409;
+    --mat-mdc-snack-bar-button-color: #fff;
+    --mdc-snackbar-supporting-text-color: #fff;
+  }
+}
+
+
+
+// table {
+//   border: 10px solid rgb(4, 46, 85);
+//   border-radius: 10px;
+// }
+.withoutArrow {
+& .mat-select-arrow {
+  display: none;
+  border: none;
+}
+}
+.timepicker-overlay {
+  z-index: 1100 !important;
+}
+
+.timepicker-backdrop-overlay {
+  z-index: 1100 !important;
+}
+.mat-raised-button{
+  background-color: #022530;
+  color: white;
+}
+.spinnerBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1200;
+    background-color: rgba(0, 0, 0, .85);
+  }
+
+.search-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #3f9dcd;
+    border-radius: 20px 20px 0 0; 
+    padding: 5px 15px;
+    background-color: #daebfa; 
+    box-shadow: 0 2px 5px rgba(217, 242, 249, 0.2);
+    transition: all 0.3s ease;
+}
+
+.search-box:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.search-icon {
+    font-size: 28px;
+    font-weight: bold;
+    color:#023c58;
+    transition: transform 0.3s ease;
+}
+
+.search-icon:hover {
+    transform: scale(1.2); 
+}
+
+.search-input {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    padding: 10px;
+    font-size: 16px;
+    color: #023c58; 
+    background-color: transparent;
+}
+
+.more-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.material-icons {
+    font-size: 24px;
+}
+
+.bttn {
+  background-color:  rgb(0, 76, 139);
+  color: white;
+  margin: 5px;
+  padding: 5px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.bttn:hover {
+  background-color:  rgb(2, 61, 109); /* Darker color on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05); /* Slight scale-up on hover */
+}
+
+.bttn:active {
+  background-color: rgb(1, 45, 81); /* Darker color when button is clicked */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: scale(0.95); /* Slight scale-down when button is clicked */
+}
+.secBttn {
+  background-color:  rgb(246, 135, 8);
+  color: white;
+  margin: 5px;
+  padding: 5px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.secBttn:hover {
+  background-color:  rgb(245, 157, 56); /* Darker color on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05); /* Slight scale-up on hover */
+}
+
+.secBttn:active {
+  background-color:rgb(172, 93, 3); /* Darker color when button is clicked */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: scale(0.95); /* Slight scale-down when button is clicked */
+}
+.darkBttn {
+  background-color:  rgb(56, 53, 50);
+  color: white;
+  margin: 5px;
+  padding: 5px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.darkBttn:hover {
+  background-color:  rgb(69, 69, 68); /* Darker color on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05); /* Slight scale-up on hover */
+}
+
+.darkBttn:active {
+  background-color:rgb(25, 25, 25); /* Darker color when button is clicked */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: scale(0.95); /* Slight scale-down when button is clicked */
+}
+.disabledBtn {
+  pointer-events: none;
+  background-color: #929191; 
+  color: white;
+  cursor: not-allowed;
+  box-shadow: none;
+  transition: none; 
+}
+.disabledDiv{
+   pointer-events: none; 
+}
+.disabledDiv button mat-icon{
+  color: #929191;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.disabledIconBtn mat-icon{
+  color: #929191;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.disabledIconBtn {
+  cursor: not-allowed;
+}
+.disabledDiv  mat-icon{
+  color: #929191;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.disabledDiv a mat-icon{
+  color: #929191;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.disabledDiv  i{
+  color: #929191;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.disabledDivBtn  button{
+    pointer-events: none;
+  background-color: #929191; 
+  color: white;
+  cursor: not-allowed;
+  box-shadow: none;
+  transition: none; 
+}
+.disabledIcon{
+  color: #929191;
+  cursor: not-allowed;
+}
+.primaryIcon{
+  color:#034156 ;
+  cursor: pointer;
+}
+.blueIcon{
+  color:#0385b0 ;
+  cursor: pointer;
+}
+.redIcon{
+  color:#940540;
+  cursor: pointer;
+}
+.disIconBtn {
+  pointer-events: none;
+  background-color: #929191; 
+  color: white;
+  margin: 10px;
+  margin-bottom: 30px;
+}
+.icon-button{
+   background-color:  rgb(0, 76, 139);
+  color: white;
+  margin: 5px;
+  padding: 5px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.icon-button:hover {
+  background-color:  rgb(2, 61, 109); /* Darker color on hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05); /* Slight scale-up on hover */ 
+}
+.redText{
+  color: rgb(164, 17, 17);
+}
+.greenText{
+  color: #065c2a;
+}
+.cutText {
+   text-decoration: line-through;
+}
+.dataTable{
+  position: sticky;
+   max-height: 100vh;
+}

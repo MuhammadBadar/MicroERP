@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using QST.MicroERP.Core.Constants;
 
 namespace QST.MicroERP.DAL.NTF
 {
@@ -28,7 +29,7 @@ namespace QST.MicroERP.DAL.NTF
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                cmd.CommandText = "NTF_Manage_NotificationLog";
+                cmd.CommandText = SPNames.NTF_Manage_NotificationLog.ToString ();
                 cmd.Parameters.AddWithValue("@prm_Id", log.Id);
                 cmd.Parameters.AddWithValue("@prm_ClientId", log.ClientId);
                 cmd.Parameters.AddWithValue("@prm_UserId", log.UserId);
@@ -37,6 +38,8 @@ namespace QST.MicroERP.DAL.NTF
                 cmd.Parameters.AddWithValue("@prm_IsSent", log.IsSent);
                 cmd.Parameters.AddWithValue("@prm_Subject", log.Subject);
                 cmd.Parameters.AddWithValue("@prm_Body", log.Body);
+                cmd.Parameters.AddWithValue ("@prm_From", log.From);
+                cmd.Parameters.AddWithValue ("@prm_To", log.To);
                 cmd.Parameters.AddWithValue("@prm_CreatedOn", log.CreatedOn);
                 cmd.Parameters.AddWithValue("@prm_CreatedById", log.CreatedById);
                 cmd.Parameters.AddWithValue("@prm_ModifiedOn", log.ModifiedOn);
@@ -47,39 +50,9 @@ namespace QST.MicroERP.DAL.NTF
                 cmd.ExecuteNonQuery();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-                return false;
-            }
-            finally
-            {
-                if (closeConnectionFlag)
-                    MicroERPDataContext.CloseMySqlConnection(cmd);
-            }
-        }
-        public bool AlterNotificationLog(NotificationLogDE NotificationLog, int? Id = null, MySqlCommand cmd = null)
-        {
-            bool closeConnectionFlag = false;
-            try
-            {
-                if (cmd == null)
-                {
-                    cmd = MicroERPDataContext.OpenMySqlConnection();
-                    closeConnectionFlag = true;
-                }
-                if (cmd.Connection.State == ConnectionState.Open)
-                    Console.WriteLine("Connection  has been created");
-                else
-                    Console.WriteLine("Connection error");
-                cmd.CommandText = "AlterNotificationLog";
-                cmd.Parameters.AddWithValue("@id", Id);
-                cmd.Parameters.AddWithValue("@filter", NotificationLog.DBoperation.ToString());
-                cmd.ExecuteNonQuery();
-                return true;
-            }
-            catch (Exception exp)
-            {
-                return false;
+                throw;
             }
             finally
             {
@@ -102,13 +75,12 @@ namespace QST.MicroERP.DAL.NTF
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<NotificationLogDE>("call NTF_Search_NotificationLog( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<NotificationLogDE>("call "+SPNames.NTF_Search_NotificationLog.ToString () + "( '" + whereClause + "')").ToList();
                 return top;
             }
-            catch (Exception exp)
+            catch (Exception )
             {
-                throw exp;
-                //return top;
+                throw ;
             }
             finally
             {

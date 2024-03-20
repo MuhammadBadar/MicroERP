@@ -12,7 +12,7 @@ namespace QST.MicroERP.Service.CTL
     public partial class CatalogueService
     {
         #region Class Variables
-        public ClientsDAL _clientsDAL;
+        public ClientDAL _clientsDAL;
         public CoreDAL _coreDAL;
         public Logger _logger;
 
@@ -22,7 +22,7 @@ namespace QST.MicroERP.Service.CTL
         #endregion
         public CatalogueService()
         {
-            _clientsDAL = new ClientsDAL();
+            _clientsDAL = new ClientDAL();
             _coreDAL = new CoreDAL();
             _logger = LogManager.GetLogger("fileLogger");
 

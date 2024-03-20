@@ -1,0 +1,157 @@
+<div class="container-fluid page">
+    <div class="d-flex page_box p-3 mt-2">Delivery Challan List</div>
+    <div class="page_content shadow p-3 position-relative">
+        <div class="pull-right" style="text-align:end; margin-top: 20px;">
+            <button mat-raised-button style="background-color: rgb(2, 57, 102); color: white;"
+                [routerLink]="['/keyAccounting/dc']">Add New</button>
+            <!-- <mat-checkbox *ngIf="selectedRow.statusId!=DraftId" name="isPosted" [(ngModel)]="selectedRow.isPosted"
+                style="margin: 10px;" ngModel="isPosted" (change)="IsPostedCheck($event)">
+                <mat-label>Post</mat-label>
+            </mat-checkbox> -->
+        </div>
+        <c-card style="padding: 10px; margin-top: 30px;" class="mat-elevation-z8">
+            <c-card-body
+                style="padding: 10px;background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));margin: 5px;border-radius: 10px;">
+                <div class="example-table-container">
+                    <section class="example-container mat-elevation-z8" tabindex="0" style="border-radius: 5px;">
+                        <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+                            <ng-container matColumnDef="expand">
+                                <th mat-header-cell *matHeaderCellDef aria-label="row actions"
+                                    style="color: white;background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));">
+                                    <div>&nbsp;</div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div>
+                                        <button mat-icon-button aria-label="expand row"
+                                            (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation();highlight(element)">
+                                            <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+                                            <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+                                        </button>
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="Id">
+                                <th mat-header-cell *matHeaderCellDef> Sr No </th>
+                                <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="invNo">
+                                <th mat-header-cell *matHeaderCellDef
+                                    style="background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));">
+                                    <div style="min-width: 150px; color: white;font-weight: normal;"> Inv No </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;"> {{element.invNo}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="customer">
+                                <th mat-header-cell *matHeaderCellDef
+                                    style="background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));">
+                                    <div style="min-width: 150px; color: white;font-weight: normal;"> Customer </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;"> {{element.customer}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="isActive">
+                                <th mat-header-cell *matHeaderCellDef
+                                    style="background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));">
+                                    <div style="min-width: 150px; color: white;font-weight: normal;"> IsActive </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;"> {{element.isActive?'Yes':'No'}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="date">
+                                <th mat-header-cell *matHeaderCellDef
+                                    style="background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));">
+                                    <div style="min-width: 150px; color: white;font-weight: normal;">Date</div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;"> {{element.date|date:"dd/MM/yyyy"}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="acName">
+                                <th mat-header-cell *matHeaderCellDef
+                                    style="background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));">
+                                    <div style="min-width: 150px; color: white;font-weight: normal;"> AC Name </div>
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <div style="min-width: 150px;">{{element.acName}}</div>
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="Action" stickyEnd="true">
+                                <th mat-header-cell *matHeaderCellDef
+                                    style="width: 100px; text-align: center;font-weight: normal;color: white;background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));">
+                                    Action
+                                </th>
+                                <td mat-cell *matCellDef="let row" style="width: 100px;text-align: center;">
+                                    <div>
+                                        <button mat-icon-button mat-sm-button color="primary" (click)="EditDC(row)"
+                                            matTooltip="Edit" style="cursor: pointer;">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                        <!-- <button mat-icon-button mat-sm-button color="warn" matTooltip="Delete"
+                                            (click)="DeleteDC(row.id)"><mat-icon>delete</mat-icon></button> -->
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="expandedDetail">
+                                <td mat-cell *matCellDef="let element"
+                                    [attr.colspan]="columnsToDisplayWithExpand.length">
+                                    <div class="example-element-detail" *ngIf="element.dcDetails"
+                                        style="width: 100%;border-radius: 30px;"
+                                        [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                                        <div *ngIf="expandedElement">
+                                            <section class="example-container mat-elevation-z8" tabindex="0"
+                                                style="margin: 50px;border-radius: 30px;margin-left: 150px;">
+                                                <table #innerTables mat-table [dataSource]="element.dcDetails"
+                                                    class="mat-elevation-z8">
+                                                    <ng-container matColumnDef="product">
+                                                        <th mat-header-cell *matHeaderCellDef>
+                                                            <div style="width: 200px;">Product</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element">
+                                                            <div style="width: 200px;">{{element.product}}</div>
+                                                        </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="qty">
+                                                        <th mat-header-cell *matHeaderCellDef>
+                                                            <div style="width: 100px;"> QTY</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element">
+                                                            <div style="width: 100px;">{{element.qty}}</div>
+                                                        </td>
+                                                    </ng-container>
+                                                    <ng-container matColumnDef="description">
+                                                        <th mat-header-cell *matHeaderCellDef>
+                                                            <div style="width: 150px;"> Description</div>
+                                                        </th>
+                                                        <td mat-cell *matCellDef="let element">
+                                                            <div style="width: 150px;">{{element.description}}</div>
+                                                        </td>
+                                                    </ng-container>
+                                                    <tr mat-header-row *matHeaderRowDef="innerDisplayedColumns"></tr>
+                                                    <tr mat-row *matRowDef="let row; columns: innerDisplayedColumns;">
+                                                    </tr>
+                                                </table>
+                                            </section>
+                                        </div>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+                            <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
+                                class="example-element-row" [class.example-expanded-row]="expandedElement === element"
+                                [ngClass]="{'highlight': selectedRowIndex == element.id}" (click)="highlight(element)">
+                            </tr>
+                            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row">
+                            </tr>
+                        </table>
+                    </section>
+                </div>
+            </c-card-body>
+        </c-card>
+    </div>
+</div>

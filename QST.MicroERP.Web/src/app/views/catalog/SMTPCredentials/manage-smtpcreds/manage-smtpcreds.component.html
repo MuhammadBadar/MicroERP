@@ -1,0 +1,60 @@
+<div class="container-fluid page">
+    <div class="d-flex page_box p-3 mt-2  header-sticky" position="sticky">
+        <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+            <div *ngIf="AddMode">Create SMTPCreds
+            </div>
+            <div *ngIf="EditMode">Update SMTPCreds
+            </div>
+            <div fxFlex="7%">
+                <button mat-icon-button fxLayoutAlign="end end" (click)="dialogref.close()" style="color: white">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="page_content shadow p-3 ">
+        <form #SMTPCredsForm="ngForm">
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-form-field appearance="outline" fxFlex="49%" class="form-group">
+                        <mat-label>Server </mat-label>
+                        <input matInput name="Server" #server="ngModel" [(ngModel)]="selectedSMTPCreds.server"
+                            required />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" fxFlex="49%" class="form-group">
+                        <mat-label>Port </mat-label>
+                        <input matInput name="Port" #port="ngModel" [(ngModel)]="selectedSMTPCreds.port" required />
+                    </mat-form-field>
+                </div>
+            </Row>
+            <Row>
+                <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+                    <mat-form-field appearance="outline" fxFlex="49%" class="form-group">
+                        <mat-label>UserName </mat-label>
+                        <input matInput name="UserName" #userName="ngModel" [(ngModel)]="selectedSMTPCreds.userName"
+                            required />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" fxFlex="49%" class="form-group">
+                        <mat-label>Password </mat-label>
+                        <input matInput [type]="hide ? 'password' : 'text'" name="Password" #password="ngModel" [(ngModel)]="selectedSMTPCreds.password"
+                            required />
+                            <mat-icon style="color: rgb(32, 10, 66);" matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' :
+                                'visibility'}}</mat-icon>
+                    </mat-form-field>
+                </div>
+            </Row>
+            <div fxLayoutAlign="end end">
+                <button mat-raised-button *ngIf="AddMode" style="background-color: rgb(3, 37, 68);color: white;"
+                    (click)="SaveSMTPCreds()" type="submit">Submit</button>
+                <button mat-raised-button type="submit" *ngIf="EditMode"
+                    style="background-color: rgb(3, 37, 68);color: white;" (click)="SaveSMTPCreds()">Update</button>
+                <div>
+                    <button mat-icon-button mat-sm-button color="primary" cTooltip="Refresh" cTooltipPlacement="top"
+                        (click)="Refresh()">
+                        <mat-icon>autorenew</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

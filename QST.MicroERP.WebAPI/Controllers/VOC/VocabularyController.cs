@@ -27,6 +27,7 @@ namespace QST.MicroERP.WebAPI.Controllers.VOC
         [HttpPost("{Search}")]
         public IActionResult SaveVocabulary(VocabularyDE vocabulary)
         {
+            vocabulary.IsActive = true;
             List<VocabularyDE> list = _vcbSvc.SearchVocabulary(vocabulary);
             return Ok(list);
         }
@@ -48,11 +49,11 @@ namespace QST.MicroERP.WebAPI.Controllers.VOC
             var retVal = _vcbSvc.ManageVocabularyAsync(vocabulary);
             return Ok(retVal);
         }
-        [HttpDelete("{id}")]
-        public IActionResult DeleteVocabulary(int id)
+        [HttpPost("Delete")]
+        public IActionResult DeleteVocabulary(VocabularyDE vocab)
         {
-            var vocab = new VocabularyDE();
-            vocab.Id = id;
+            vocab.Id = vocab.Id;
+            vocab.ClientId = vocab.ClientId;
             vocab.DBoperation = DBoperations.DeActivate;
             var retVal = _vcbSvc.ManageVocabularyAsync(vocab);
             return Ok(retVal);

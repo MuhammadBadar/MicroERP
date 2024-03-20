@@ -222,7 +222,7 @@ namespace QST.MicroERP.Service.CLT
         }
         public List<SettingsDE> SearchMenu ( )
         {
-            List<SettingsDE> Settingss = new List<SettingsDE> ();
+            List<SettingsDE> Settings = new List<SettingsDE> ();
             bool closeConnectionFlag = false;
             MySqlCommand cmd = null;
             try
@@ -237,7 +237,7 @@ namespace QST.MicroERP.Service.CLT
                 whereClause += $" AND ModuleId={0}";
                 whereClause += $" AND (EnumTypeId={(int)EnumType.Modules} or EnumTypeId={(int)EnumType.SideMenu} or EnumTypeId={(int)EnumType.SideSubMenu})";
                 whereClause += $" AND IsActive =1";
-                Settingss = _settingsDAL.SearchSettingss (whereClause);
+                Settings = _settingsDAL.SearchSettingss (whereClause);
                 var routes = new List<SettingsDE> ();
 
                 #endregion
@@ -252,7 +252,7 @@ namespace QST.MicroERP.Service.CLT
                 if (closeConnectionFlag)
                     MicroERPDataContext.CloseMySqlConnection (cmd);
             }
-            return Settingss;
+            return Settings;
         }
         public List<SettingsDE> SearchAccounts ( SettingsDE mod )
         {
@@ -326,7 +326,7 @@ namespace QST.MicroERP.Service.CLT
                 Settings = _settingsDAL.SearchSettingss (whereClause);
                 if (_permSvc != null && user.Id != null && user.RoleId > 0)
                 {
-                    var perm = _permSvc.GetPermsByUserOrRole (user.Id, user.RoleId);
+                    var perm = _permSvc.GetPermsByUserOrRole (user.Id, user.RoleId,user.ClientId);
                     foreach (var item in Settings)
                     {
                         item.ShouldDisplay = true;

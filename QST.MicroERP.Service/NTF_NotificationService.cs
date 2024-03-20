@@ -17,27 +17,23 @@ using QST.MicroERP.Core.Entities.ATT;
 using QST.MicroERP.Core.Translators.NTF;
 using Ubiety.Dns.Core.Common;
 using QST.MicroERP.Core.Constants;
+using QST.MicroERP.DAL.TMS;
 
 namespace QST.MicroERP.Service
 {
-    public class NTF_NotificationService
+    public class NTF_NotificationService:BaseService
     {
         #region Class Members/Class Variables
 
-        private Logger _logger;
         private Dictionary<string, string> _ntfDict; // Notificaitons Dictionary
-
         private NotificationTemplateDAL _nTemDAL;
-        private CoreDAL _corDAL;
         private NotificationLogDAL _nLogDAL;
 
         #endregion
         public NTF_NotificationService()
         {
-            _logger = LogManager.GetLogger("fileLogger");
             _ntfDict = new Dictionary<string, string>();
             _nTemDAL = new NotificationTemplateDAL();
-            _corDAL = new CoreDAL();
             _nLogDAL = new NotificationLogDAL();
         }
 
@@ -82,53 +78,100 @@ namespace QST.MicroERP.Service
                 throw;
             }
         }
-        public bool SendEmail(NotificationLogDE mail)
+        public async Task<bool> SendEmail ( NotificationLogDE mail )
         {
             bool retVal = false;
+            MailMessage message = new MailMessage ();
+            SmtpClient smtp = new SmtpClient ();
+
+            message.From = new MailAddress (MailConstants.SENDER, MailConstants.SENDER_NAME);
+            message.To.Add (new MailAddress (mail.To));
+            message.Subject = mail.Subject;
+            message.IsBodyHtml = true;
+            message.BodyEncoding = Encoding.UTF8;
+            message.Body = mail.Body;
+            smtp.Host = MailConstants.HOST;
+            smtp.Port = MailConstants.PORT;
+            smtp.Credentials = new System.Net.NetworkCredential ()
+            {
+                UserName = MailConstants.USER_NAME,
+                Password = MailConstants.PASSWORD
+            };
+            smtp.EnableSsl = false;
+
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool> ();
+
+            smtp.SendCompleted += ( sender, e ) =>
+            {
+                if (e.Error == null && !e.Cancelled)
+                {
+                    retVal = true;
+                    tcs.SetResult (true);
+                }
+                else
+                {
+                    tcs.SetResult (false);
+                }
+            };
             try
             {
-                MailMessage message = new MailMessage();
-                SmtpClient smtp = new SmtpClient();
-                message.From = new MailAddress(MailConstants.SENDER);
-                message.To.Add(new MailAddress(mail.To));
-                message.Subject = mail.Subject;
-                message.IsBodyHtml = true;
-                message.BodyEncoding = Encoding.UTF8;
-                message.Body = mail.Body;
-                smtp.Host = MailConstants.HOST;
-                smtp.Port = MailConstants.PORT;
-                smtp.Credentials = new System.Net.NetworkCredential()
-                {
-                    UserName = MailConstants.USER_NAME,
-                    Password = MailConstants.PASSWORD
-                };
-                smtp.EnableSsl = false;
-                smtp.SendAsync(message, null);
-
-                smtp.SendCompleted += (sender, e) =>
-                {
-                    //if (e.error != null)
-                    //    console.writeline($"error sending email: {e.error.message}");
-                    //else if (e.cancelled)
-                    //    console.writeline("email sending canceled.");
-                    //else
-                    //    console.writeline("email sent successfully.");
-                    if (e.Error == null && !e.Cancelled)
-                        retVal = true;
-                };
-
-                //smtp.SendCompleted += EmailSendingResult(sender, e);
+                await smtp.SendMailAsync (message);
+                retVal = true; 
             }
             catch (Exception ex)
             {
-                _logger.Error(ex);
-                throw;
+                Console.WriteLine ("Exception while sending email: " + ex.Message);
+                retVal = false;
             }
 
-            return retVal;
+            return await tcs.Task;
         }
 
+        //public bool SendEmail(NotificationLogDE mail)
+        //{
+        //    bool retVal = false;
+        //    try
+        //    {
+        //        MailMessage message = new MailMessage();
+        //        SmtpClient smtp = new SmtpClient();
+        //        message.From = new MailAddress(MailConstants.SENDER);
+        //        message.To.Add(new MailAddress(mail.To));
+        //        message.Subject = mail.Subject;
+        //        message.IsBodyHtml = true;
+        //        message.BodyEncoding = Encoding.UTF8;
+        //        message.Body = mail.Body;
+        //        smtp.Host = MailConstants.HOST;
+        //        smtp.Port = MailConstants.PORT;
+        //        smtp.Credentials = new System.Net.NetworkCredential()
+        //        {
+        //            UserName = MailConstants.USER_NAME,
+        //            Password = MailConstants.PASSWORD
+        //        };
+        //        smtp.EnableSsl = false;
+        //        smtp.SendAsync(message, null);
 
+        //        smtp.SendCompleted += (sender, e) =>
+        //        {
+        //            //if (e.error != null)
+        //            //    console.writeline($"error sending email: {e.error.message}");
+        //            //else if (e.cancelled)
+        //            //    console.writeline("email sending canceled.");
+        //            //else
+        //            //    console.writeline("email sent successfully.");
+        //            if (e.Error == null && !e.Cancelled)
+        //                retVal = true;
+        //        };
+
+        //        //smtp.SendCompleted += EmailSendingResult(sender, e);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.Error(ex);
+        //        throw;
+        //    }
+
+        //    return retVal;
+        //}
         public void SendEmailWithAttachment(IFormFile? pdfFile, NotificationDE mail)
         {
             try
@@ -179,67 +222,52 @@ namespace QST.MicroERP.Service
         #region NotificationTemplate
         public bool ManagementNotificationTemplate(NotificationTemplateDE mod)
         {
-            MySqlCommand cmd = null;
             try
             {
-                bool check = true;
                 cmd = MicroERPDataContext.OpenMySqlConnection();
-
+                _entity = TableNames.NTF_NotificationTemplate.ToString ();
 
                 if (mod.DBoperation == DBoperations.Insert)
-                {
-                    mod.Id = _corDAL.GetnextId(TableNames.notificationtemplate.ToString());
-                    check = _nTemDAL.ManageNotificationTemplate(mod);
-                }
-                else if (mod.DBoperation == DBoperations.Update)
-                {
-                    check = _nTemDAL.ManageNotificationTemplate(mod);
-                }
-                else if (mod.DBoperation == DBoperations.Delete)
-                {
-                    check = _nTemDAL.AlterNotificationTemplate(mod, mod.Id);
-                }
-                else if (mod.DBoperation == DBoperations.Activate)
-                {
-                    check = _nTemDAL.AlterNotificationTemplate(mod, mod.Id);
-                }
-                else if (mod.DBoperation == DBoperations.DeActivate)
-                {
-                    check = _nTemDAL.AlterNotificationTemplate(mod, mod.Id);
-                }
-                if (check == true)
-                    mod.DBoperation = DBoperations.NA;
+                    mod.Id = _coreDAL.GetNextIdByClient (_entity, mod.ClientId, "ClientId");
 
-
-                return true;
+                _logger.Info ($"Going to Call:_nTemDAL.ManageNotificationTemplate(mod)");
+                if (_nTemDAL.ManageNotificationTemplate (mod))
+                {
+                    mod.AddSuccessMessage (string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                    _logger.Info ($"Success: " + string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                    return true;
+                }
+                else
+                {
+                    mod.AddErrorMessage (string.Format (AppConstants.CRUD_ERROR, _entity));
+                    _logger.Info ($"Error: " + string.Format (AppConstants.CRUD_ERROR, _entity));
+                    return false;
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                _logger.Error (ex);
+                throw;
             }
             finally
             {
                 if (cmd != null)
-                    MicroERPDataContext.CloseMySqlConnection(cmd);
+                    MicroERPDataContext.CloseMySqlConnection (cmd);
             }
-
-
         }
         public List<NotificationTemplateDE> SearchNotificationTemplates(NotificationTemplateSearchCriteria sc)
         {
             List<NotificationTemplateDE> mod = new List<NotificationTemplateDE>();
-            bool closeConnectionFlag = false;
-            MySqlCommand cmd = null;
             try
             {
                 cmd = MicroERPDataContext.OpenMySqlConnection();
-
-
                 #region Search
 
                 string whereClause = " Where 1=1";
                 if (sc.Id != default)
                     whereClause += $" AND Id={sc.Id}";
+                if (sc.ClientId != default && sc.ClientId != 0)
+                    whereClause += $" AND ClientId={sc.ClientId}";
                 if (sc.KeyCode != default)
                     whereClause += $" AND KeyCode like ''" + sc.KeyCode + "''";
                 if (sc.TemplateName != default)
@@ -252,19 +280,16 @@ namespace QST.MicroERP.Service
                 mod = _nTemDAL.SearchNotificationTemplates(whereClause);
 
                 #endregion
-
-
             }
-            catch (Exception exp)
+            catch (Exception ex)
             {
-
-                throw exp;
-
+                _logger.Error (ex);
+                throw;
             }
             finally
             {
-                if (closeConnectionFlag)
-                    MicroERPDataContext.CloseMySqlConnection(cmd);
+                if (cmd != null)
+                    MicroERPDataContext.CloseMySqlConnection (cmd);
             }
             return mod;
         }
@@ -274,57 +299,42 @@ namespace QST.MicroERP.Service
         #region NotificationLog
         public bool ManagementNotificationLog(NotificationLogDE mod)
         {
-            MySqlCommand cmd = null;
             try
             {
-                bool check = true;
                 cmd = MicroERPDataContext.OpenMySqlConnection();
-
+                _entity = TableNames.NTF_NotificationLog.ToString ();
 
                 if (mod.DBoperation == DBoperations.Insert)
-                {
-                    mod.Id = _corDAL.GetnextId(TableNames.NTF_NotificationLog.ToString());
-                    check = _nLogDAL.ManageNotificationLog(mod);
-                }
-                else if (mod.DBoperation == DBoperations.Update)
-                {
-                    check = _nLogDAL.ManageNotificationLog(mod);
-                }
-                else if (mod.DBoperation == DBoperations.Delete)
-                {
-                    check = _nLogDAL.AlterNotificationLog(mod, mod.Id);
-                }
-                else if (mod.DBoperation == DBoperations.Activate)
-                {
-                    check = _nLogDAL.AlterNotificationLog(mod, mod.Id);
-                }
-                else if (mod.DBoperation == DBoperations.DeActivate)
-                {
-                    check = _nLogDAL.AlterNotificationLog(mod, mod.Id);
-                }
-                if (check == true)
-                    mod.DBoperation = DBoperations.NA;
+                    mod.Id = _coreDAL.GetNextIdByClient (_entity, mod.ClientId, "ClientId");
 
-
-                return true;
+                _logger.Info ($"Going to Call:_nLogDAL.ManageNotificationLog(mod)");
+                if (_nLogDAL.ManageNotificationLog (mod))
+                {
+                    mod.AddSuccessMessage (string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                    _logger.Info ($"Success: " + string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                    return true;
+                }
+                else
+                {
+                    mod.AddErrorMessage (string.Format (AppConstants.CRUD_ERROR, _entity));
+                    _logger.Info ($"Error: " + string.Format (AppConstants.CRUD_ERROR, _entity));
+                    return false;
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                _logger.Error (ex);
+                throw;
             }
             finally
             {
                 if (cmd != null)
-                    MicroERPDataContext.CloseMySqlConnection(cmd);
+                    MicroERPDataContext.CloseMySqlConnection (cmd);
             }
-
-
         }
         public List<NotificationLogDE> SearchNotificationLogs(NotificationLogSearchCriteria sc)
         {
             List<NotificationLogDE> NotificationLog = new List<NotificationLogDE>();
-            bool closeConnectionFlag = false;
-            MySqlCommand cmd = null;
             try
             {
                 cmd = MicroERPDataContext.OpenMySqlConnection();
@@ -336,6 +346,8 @@ namespace QST.MicroERP.Service
                     whereClause += $" AND ClientId={sc.ClientId}";
                 if (sc.Id != default)
                     whereClause += $" AND Id={sc.Id}";
+                if (sc.ClientId != default && sc.ClientId != 0)
+                    whereClause += $" AND ClientId={sc.ClientId}";
                 if (!string.IsNullOrWhiteSpace(sc.Subject))
                     whereClause += $" AND Subject like ''" + sc.Subject + "''";
                 if (!string.IsNullOrWhiteSpace(sc.Body))
@@ -351,16 +363,16 @@ namespace QST.MicroERP.Service
 
                 #endregion
             }
-            catch (Exception exp)
+            catch (Exception ex)
             {
-                throw exp;
+                _logger.Error (ex);
+                throw;
             }
             finally
             {
-                if (closeConnectionFlag)
-                    MicroERPDataContext.CloseMySqlConnection(cmd);
+                if (cmd != null)
+                    MicroERPDataContext.CloseMySqlConnection (cmd);
             }
-
             return NotificationLog;
         }
 
@@ -371,23 +383,23 @@ namespace QST.MicroERP.Service
         public NotificationLogDE GenerateNotification(NotificationTemplates template, BaseDomain domain)
         {
             NotificationLogDE mod = new NotificationLogDE();
-
+            var ntfTemplate = new NotificationTemplateDE ();
+            var ntSc = new NotificationTemplateSearchCriteria ();
+            var att = (AttendanceDE)domain;
             _ntfDict.Clear();
 
             switch (template)
             {
                 case NotificationTemplates.ATT_NotificationToSupervisor_OnDayStart:
-                    var att = (AttendanceDE)domain;
                     mod.ClientId = att.ClientId;
                     mod.UserId = att.UserId;
                     mod.KeyCode = NotificationTemplates.ATT_NotificationToSupervisor_OnDayStart.ToString();
                     mod.DBoperation = DBoperations.Insert;
                     mod.IsSent = false;
 
-                    var ntSc = new NotificationTemplateSearchCriteria();
                     ntSc.KeyCode = NotificationTemplates.ATT_NotificationToSupervisor_OnDayStart.ToString();
-                    var ntfTemplate = SearchNotificationTemplates(ntSc).FirstOrDefault();
-                    if (ntfTemplate.Id > 0)
+                     ntfTemplate = SearchNotificationTemplates(ntSc).FirstOrDefault();
+                    if (ntfTemplate != null &&  ntfTemplate.Id > 0)
                     {
                         ntSc.KeyCode = NotificationTemplates.ATT_TaskDetail.ToString();
                         var ntfTempTaskDetail = SearchNotificationTemplates(ntSc).FirstOrDefault();
@@ -415,25 +427,50 @@ namespace QST.MicroERP.Service
                     }
 
                     break;
-                case NotificationTemplates.ATT_NotificationToSupersor_OnDayEnd: break;
-            }
+                case NotificationTemplates.ATT_NotificationToSupervisor_OnDayEnd:
+                    mod.ClientId = att.ClientId;
+                    mod.UserId = att.UserId;
+                    mod.KeyCode = NotificationTemplates.ATT_NotificationToSupervisor_OnDayEnd.ToString ();
+                    mod.DBoperation = DBoperations.Insert;
+                    mod.IsSent = false;
+                    ntSc.KeyCode = NotificationTemplates.ATT_NotificationToSupervisor_OnDayEnd.ToString ();
+                     ntfTemplate = SearchNotificationTemplates (ntSc).FirstOrDefault ();
+                    if (ntfTemplate!=null && ntfTemplate.Id > 0)
+                    {
+                        ntSc.KeyCode = NotificationTemplates.ATT_DayEndTaskDetail.ToString ();
+                        var ntfTempTaskDetail = SearchNotificationTemplates (ntSc).FirstOrDefault ();
+                        att.Translate (ref _ntfDict);
+                        mod = ntfTemplate.Translate (_ntfDict);
+                        mod.Body = mod.Body.Replace ("#DAYENDSTATUS#", ntfTempTaskDetail.Body);
+                        var lineBaseContent = mod.Body;
+                        var mode = NotificationTemplateModes.Add;
 
+                        int sectionNo = 0;
+                        att.UserTasks.ForEach (task =>
+                        {
+                            sectionNo += 1;
+                            _ntfDict.Clear ();
+                            task.Translate (ref _ntfDict);
+                            mod = mod.AddTaskLine (lineBaseContent, _ntfDict, sectionNo);
+                        });
+                    }
+                    break;
+            }
             return mod;
         }
 
         #endregion
 
-        public void SendNotifications()
+        public async Task SendNotificationsAsync ()
         {
             var notificationsToSend = SearchNotificationLogs(new NotificationLogSearchCriteria
             {
-                IsSent = false,
-                ClientId = 1
+                IsSent = false
             });
 
             foreach (var ntf in notificationsToSend)
             {
-                if (SendEmail(ntf))
+                if (await SendEmail(ntf))
                 {
                     // Set IsSent Flag to True
                     ntf.IsSent = true;

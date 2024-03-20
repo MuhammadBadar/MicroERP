@@ -1,0 +1,272 @@
+<div class="container-fluid page">
+  <div class="d-flex page_box p-3 mt-2 header-sticky" position="sticky">
+    <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+      <div *ngIf="Add">
+        {{ dialogTitle ? "Create " + dialogTitle + " Account" : "Manage User" }}
+      </div>
+      <div *ngIf="Edit">
+        {{ dialogTitle ? "Update " + dialogTitle + " Account" : "Update User" }}
+      </div>
+      <div fxFlex="7%" *ngIf="isDialog">
+        <button
+          mat-icon-button
+          fxLayoutAlign="end end"
+          (click)="_dialogRef.close()"
+          style="color: white"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="page_content shadow p-3 position-relative">
+    <form
+      name="form"
+      style="margin-top: 20px; padding: 10px"
+      #userForm="ngForm"
+      fxFlex
+    >
+      <div fxLayout="row wrap" fxLayout.lt-sm="column">
+        <mat-card
+          *ngIf="messagebox"
+          fxFlex="100%"
+          style="
+            background-color: rgb(245, 212, 233);
+            color: rgb(3, 29, 72);
+            padding: 15px;
+            margin-top: 20px;
+            margin: 10px;
+            width: 680;
+            text-align: center;
+            justify-content: center;
+          "
+        >
+          <tbody>
+            <tr *ngFor="let msg of message">
+              <td>
+                <strong>{{ msg.description }}</strong>
+              </td>
+            </tr>
+          </tbody>
+        </mat-card>
+        <div
+          fxLayout="row"
+          fxLayoutAlign="space-between"
+          fxFlex="100%"
+          class="form-group"
+        >
+          <mat-form-field fxFlex="100%" appearance="outline">
+            <mat-label>UserName</mat-label>
+            <input
+              UserName
+              matInput
+              required
+              #userName="ngModel"
+              name="UserName"
+              [(ngModel)]="selectedUser.userName"
+              maxlength="200"
+              minlength="3"
+            />
+            <mat-error
+              class="form-text text-danger"
+              *ngIf="userForm.controls['userName']?.hasError || userForm.controls['userName']?.errors?.['minlength']"
+            >
+              UserName is required to be at least 3 characters.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field fxFlex="100%" appearance="outline">
+            <mat-label>Email</mat-label>
+            <input
+              class="form-control"
+              matInput
+              name="Email"
+              #email="ngModel"
+              [(ngModel)]="selectedUser.email"
+              required
+              email
+            />
+            <mat-error *ngIf="userForm.controls['Email']?.errors?.['email']">
+              Email is not valid.
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <!-- <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%" class="form-group">
+          <mat-form-field fxFlex="100%" appearance="outline">
+            <mat-label>Password</mat-label>
+            <input minlength="4" Password matInput required [type]="hide ? 'password' : 'text'" name="Password"
+              [ngClass]="{ 'is-invalid': userForm.submitted && userPassword.invalid }" #userPassword="ngModel"
+              [(ngModel)]="selectedUser.userPassword" maxlength="200" />
+            <mat-icon style="color: rgb(32, 10, 66);" matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' :
+              'visibility'}}</mat-icon>
+            <mat-error>
+              Password must be atleast 4 characters.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field fxFlex="100%" appearance="outline">
+            <mat-label>Confirm Password</mat-label>
+            <input minlength="4" ConfirmPassword matInput required [type]="cPHide ? 'password' : 'text'"
+              name="ConfirmPassword" [ngClass]="{ 'is-invalid': userForm.submitted && confirmPassword.invalid }"
+              #confirmPassword="ngModel" [(ngModel)]="selectedUser.confirmPassword" maxlength="200" />
+            <mat-icon style="color: rgb(32, 10, 66);" matSuffix (click)="cPHide = !cPHide">{{cPHide ? 'visibility_off' :
+              'visibility'}}</mat-icon>
+            <mat-error *ngIf="
+                          userForm.controls['ConfirmPassword'].hasError('passwordMismatch')">Passwords
+              do not match</mat-error>
+            <mat-error *ngIf="userForm.controls['ConfirmPassword']?.errors?.['minlength']">
+              Password must be atleast 4 characters.
+            </mat-error>
+          </mat-form-field>
+        </div> -->
+        <div
+          fxLayout="row"
+          fxLayoutAlign="space-between"
+          fxFlex="100%"
+          class="form-group"
+        >
+          <mat-form-field class="form-group" fxFlex="100%" appearance="outline">
+            <mat-label> Password</mat-label>
+            <input
+              minlength="4"
+              (blur)="ConfirmPassword()"
+              matInput
+              [type]="hide ? 'password' : 'text'"
+              name="userPassword"
+              [(ngModel)]="selectedUser.userPassword"
+              class="form-control"
+              required
+              #userPassword="ngModel"
+            />
+            <mat-icon
+              style="color: rgb(32, 10, 66)"
+              matSuffix
+              (click)="hide = !hide"
+              >{{ hide ? "visibility_off" : "visibility" }}</mat-icon
+            >
+            <mat-error *ngIf="userPassword.invalid && userPassword.touched"
+              >Password is required to be atleast 4 characters</mat-error
+            >
+          </mat-form-field>
+          <mat-form-field class="form-group" fxFlex="100%" appearance="outline">
+            <mat-label>Confirm Password</mat-label>
+            <input
+              minlength="4"
+              (blur)="ConfirmPassword()"
+              matInput
+              [type]="cPHide ? 'password' : 'text'"
+              name="confirmPassword"
+              [(ngModel)]="selectedUser.confirmPassword"
+              class="form-control"
+              required
+              #confirmPassword="ngModel"
+            />
+            <mat-icon
+              style="color: rgb(32, 10, 66)"
+              matSuffix
+              (click)="cPHide = !cPHide"
+              >{{ cPHide ? "visibility_off" : "visibility" }}</mat-icon
+            >
+            <mat-error
+              *ngIf="
+                userForm.controls['confirmPassword']?.hasError(
+                  'passwordMismatch'
+                )
+              "
+              >Passwords do not match</mat-error
+            >
+          </mat-form-field>
+        </div>
+        <div
+          fxLayout="row"
+          fxLayoutAlign="space-between"
+          fxFlex="100%"
+          class="form-group"
+        >
+          <mat-form-field fxFlex="50%" appearance="outline">
+            <mat-label>--Please Select Role--</mat-label>
+            <mat-select
+              [disabled]="isReadonly "
+              required
+              name="Role"
+              [(ngModel)]="selectedUser.roleId"
+            >
+              <mat-option [value]="0">--Please Select--</mat-option>
+              <mat-option
+                *ngFor="let val of Roles"
+                [value]="val.id"
+                (click)="OnSelectRole(val)"
+              >
+                {{ val.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field fxFlex="50%" appearance="outline">
+            <mat-label>Phone No</mat-label>
+            <!-- <span matPrefix>+1 &nbsp;</span> -->
+            <input
+              type="tel"
+              #phoneNumber="ngModel"
+              matInput
+              placeholder="Cell Number"
+              required
+              name="PhoneNumber"
+              [(ngModel)]="selectedUser.phoneNumber"
+            />
+          </mat-form-field>
+          <!-- <mat-form-field fxFlex="50%" appearance="outline">
+            <mat-label>CNIC</mat-label>
+            <input class="form-control" matInput name="cnic" #cnic="ngModel" [(ngModel)]="selectedUser.cnic">
+          </mat-form-field> -->
+        </div>
+        <!-- <mat-form-field fxFlex="100%" appearance="outline">
+          <mat-label>Address</mat-label>
+          <input class="form-control" matInput name="address" #address="ngModel" [(ngModel)]="selectedUser.address">
+        </mat-form-field> -->
+      </div>
+      <div fxLayoutAlign="end end">
+        <button
+          *ngIf="Add"
+          cButton
+          class="me-1"
+          style="background-color: #1e293b"
+          type="submit"
+          (click)="SaveUser()"
+        >
+          Create
+        </button>
+        <button
+          *ngIf="Edit"
+          cButton
+          class="me-1"
+          style="background-color: #1e293b"
+          type="submit"
+          (click)="SaveUser()"
+        >
+          Update
+        </button>
+        <button
+          mat-raised-button
+          color="warn"
+          *ngIf="isDialog"
+          (click)="_dialogRef.close()"
+          style="margin-left: 5px; margin-top: 20x"
+        >
+          Back
+        </button>
+        <button
+          mat-raised-button
+          color="warn"
+          *ngIf="!isDialog"
+          (click)="Back()"
+          style="margin-left: 5px; margin-top: 20x"
+        >
+          Back
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+<div>
+  <div *ngIf="isLoading" class="spinnerBox">
+    <c-spinner style="height: 100px; width: 100px; color: white"></c-spinner>
+  </div>
+</div>

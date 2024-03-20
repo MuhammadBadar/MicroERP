@@ -1,0 +1,115 @@
+<div class="container-fluid page">
+  <div class="d-flex page_box p-3 mt-2 header-sticky" position="sticky">
+    <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+      <div *ngIf="Add">Add Vocabulary</div>
+      <div *ngIf="Edit">Update Vocabulary</div>
+      <div fxFlex="7%">
+        <button mat-icon-button fxLayoutAlign="end end" (click)="vocabDialogRef.close()" style="color: white">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      </div>
+      </div>
+      <div class="page_content shadow p-3 position-relative">
+    <form #vocabForm="ngForm">
+      <div fxLayout="row" fxLayoutAlign="space-between">
+        <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+          <mat-label>Word</mat-label>
+          <input maxlength="50" matInput required #word="ngModel" name="word" [(ngModel)]="selectedVocabulary.word" />
+        </mat-form-field>
+        <div fxLayout="row" fxFlex="49%">
+          <mat-form-field appearance="outline" fxFlex="100%">
+            <mat-label>Select Novel</mat-label>
+            <mat-select name="novelid" [(ngModel)]="selectedUserVocabulary.novelId" (selectionChange)="SearchChapters()">
+              <mat-option [value]="0">--Please Select--</mat-option>
+              <mat-option *ngFor="let val of novel" [value]="val.id">
+                {{ val.name }}
+              </mat-option>
+            </mat-select>
+            <div matSuffix>
+              <button mat-icon-button style="color: #940540" (click)="OpenNovelDialog(); $event.stopPropagation()">
+                <mat-icon cTooltip="Explore Novel">add</mat-icon>
+              </button>
+            </div>
+          </mat-form-field>
+          <mat-form-field appearance="outline" fxFlex="100%" *ngIf="selectedUserVocabulary.novelId>0">
+            <mat-label>Select Chapter</mat-label>
+            <mat-select name="chapterid" [(ngModel)]="selectedUserVocabulary.chapterId">
+              <mat-option [value]="0">--Please Select--</mat-option>
+              <mat-option *ngFor="let val of chapters; let i = index" [value]="val.id" (click)="selectedUserVocabulary.novelId = val.parentId">
+               <b>({{ i + 1 }}).</b>&nbsp;  {{ val.name }}
+              </mat-option>
+            </mat-select>
+            <div matSuffix>
+              <button mat-icon-button style="color: #940540" (click)="OpenChapterDialog(); $event.stopPropagation()">
+                <mat-icon cTooltip="Explore Chapter">add</mat-icon>
+              </button>
+            </div>
+          </mat-form-field>
+        </div>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="space-between">
+        <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+          <mat-label>English Meaning</mat-label>
+          <input maxlength="500" matInput [required]="
+                                                                                    selectedVocabulary.urduMeaning == null ||
+                                                                                    selectedVocabulary.urduMeaning == ''
+                                                                                  " #englishMeaning="ngModel"
+            name="engmeaning" [(ngModel)]="selectedVocabulary.englishMeaning" />
+        </mat-form-field>
+        <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+          <mat-label>Urdu Meaning</mat-label>
+          <input maxlength="500" matInput [required]="
+                                                                                    selectedVocabulary.englishMeaning == null ||
+                                                                                    selectedVocabulary.englishMeaning == ''
+                                                                                  " #urdumeaning="ngModel"
+            name="urdumeanin" [(ngModel)]="selectedVocabulary.urduMeaning" />
+        </mat-form-field>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="space-between">
+        <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+          <mat-label>Pronunciation</mat-label>
+          <input maxlength="500" matInput #pronunciation="ngModel" name="pronun"
+            [(ngModel)]="selectedUserVocabulary.pronunciation" />
+        </mat-form-field>
+        <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+          <mat-label>DifficultyLevel</mat-label>
+          <mat-select [(ngModel)]="selectedUserVocabulary.vocabDifficultyLevelId" name="VocabDifficultyLevelId">
+            <mat-option [value]="0">---Please Select---</mat-option>
+            <mat-option *ngFor="let st of difficultyLevel" [value]="st.id">
+              {{ st.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between">
+        <mat-form-field fxFlex="100%" appearance="outline" class="form-group">
+          <mat-label>Sentence</mat-label>
+          <textarea maxlength="5000" matInput rows="1" #sentence="ngModel" name="sentence"
+            [(ngModel)]="selectedUserVocabulary.sentence"></textarea>
+        </mat-form-field>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="space-between">
+        <mat-form-field fxFlex="100%" appearance="outline" class="form-group">
+          <mat-label>Comments</mat-label>
+          <textarea maxlength="5000" rows="1" matInput #comments="ngModel" name="comments"
+            [(ngModel)]="selectedUserVocabulary.comments"></textarea>
+        </mat-form-field>
+        </div>
+      <mat-checkbox name="isNeedHelp" [(ngModel)]="selectedUserVocabulary.isNeedHelp" checked>Is Need
+        Help</mat-checkbox>
+      <div fxLayoutAlign="end end">
+        <div style="margin-top: 10px">
+          <button *ngIf="Add" class="bttn" type="submit" (click)="SaveVocabulary()">
+            Add
+          </button>
+        </div>
+        <div style="margin-top: 10px">
+          <button *ngIf="Edit" class="bttn" type="submit" (click)="SaveVocabulary()">
+            Update
+          </button>
+        </div>
+      </div>
+      </form>
+      </div>
+</div>

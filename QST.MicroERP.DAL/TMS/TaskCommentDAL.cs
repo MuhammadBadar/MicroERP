@@ -10,6 +10,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using QST.MicroERP.Core.Constants;
 
 namespace QST.MicroERP.DAL.TMS
 {
@@ -31,26 +33,27 @@ namespace QST.MicroERP.DAL.TMS
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                cmd.CommandText = "ManageTaskComment";
-                cmd.Parameters.AddWithValue("@id", taskc.Id);
-                cmd.Parameters.AddWithValue("@taskId", taskc.TaskId);
-                cmd.Parameters.AddWithValue("@userId", taskc.UserId != null ? taskc.UserId : string.Empty);
-                cmd.Parameters.AddWithValue("@comment", taskc.Comment);
-                cmd.Parameters.AddWithValue("@time", taskc.Time);
-                cmd.Parameters.AddWithValue("@createdOn", taskc.CreatedOn);
-                cmd.Parameters.AddWithValue("@createdById", taskc.CreatedById);
-                cmd.Parameters.AddWithValue("@modifiedOn", taskc.ModifiedOn);
-                cmd.Parameters.AddWithValue("@modifiedById", taskc.ModifiedById);
-                cmd.Parameters.AddWithValue("@isActive", taskc.IsActive);
-                cmd.Parameters.AddWithValue("@filter", taskc.DBoperation.ToString());
+                cmd.CommandText = SPNames.TMS_Manage_TaskComment.ToString ();
+                cmd.Parameters.AddWithValue("@prm_id", taskc.Id);
+                cmd.Parameters.AddWithValue("@prm_clientId", taskc.ClientId);
+                cmd.Parameters.AddWithValue("@prm_taskId", taskc.TaskId);
+                cmd.Parameters.AddWithValue("@prm_userId", taskc.UserId != null ? taskc.UserId : string.Empty);
+                cmd.Parameters.AddWithValue("@prm_comment", taskc.Comment);
+                cmd.Parameters.AddWithValue("@prm_time", taskc.Time);
+                cmd.Parameters.AddWithValue("@prm_createdOn", taskc.CreatedOn);
+                cmd.Parameters.AddWithValue("@prm_createdById", taskc.CreatedById);
+                cmd.Parameters.AddWithValue("@prm_modifiedOn", taskc.ModifiedOn);
+                cmd.Parameters.AddWithValue("@prm_modifiedById", taskc.ModifiedById);
+                cmd.Parameters.AddWithValue("@prm_isActive", taskc.IsActive);
+                cmd.Parameters.AddWithValue("@prm_filter", taskc.DBoperation.ToString());
 
                 cmd.ExecuteNonQuery();
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-                return false;
+                throw;
             }
             finally
             {
@@ -73,12 +76,12 @@ namespace QST.MicroERP.DAL.TMS
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<TaskCommentVM>("call SearchTaskComments( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<TaskCommentVM>("call "+SPNames.TMS_Search_TaskComment.ToString () + "( '" + whereClause + "')").ToList();
                 return top;
             }
-            catch (Exception exp)
+            catch (Exception )
             {
-                return top;
+                throw;
             }
             finally
             {
@@ -88,6 +91,5 @@ namespace QST.MicroERP.DAL.TMS
         }
 
         #endregion
-
     }
 }

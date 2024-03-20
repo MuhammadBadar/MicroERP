@@ -1,0 +1,214 @@
+<!-- <c-header class="mb-4 d-print-none" position="sticky" style="width: 100%;"> -->
+<ng-container style="background-color:  #FFAC1C;">
+
+  <c-container [fluid]="true" style="
+     background: linear-gradient(170deg, #013b54,#678396);">
+    <button toggle="visible" cHeaderToggler [cSidebarToggle]="sidebarId" class="ps-1" style="color: rgb(255, 255, 255)">
+      <svg cIcon name="cilMenu" size="lg"></svg>
+    </button>
+    <P style=" text-align: center !important;
+      font-size: larger;font-family: 'Franklin Gothic Medium',
+       'Arial Narrow', Arial, sans-serif; font-weight: bolder; color: rgb(255, 255, 255)">
+      QamSoft Technologies
+    </P>
+
+    <!-- <c-header-nav class="d-none d-lg-flex me-auto">
+        <c-nav-item>
+          <a cNavLink routerLink="/dashboard" routerLinkActive="active">
+            Dashboard
+          </a>
+        </c-nav-item>
+        <c-nav-item>
+          <a cNavLink routerLink="/users" routerLinkActive="active">Users</a>
+        </c-nav-item>
+        <c-nav-item>
+          <a cNavLink routerLink="/settings" routerLinkActive="active">
+            Settings
+          </a>
+        </c-nav-item>
+      </c-header-nav> -->
+
+    <!-- <c-header-nav class="d-none d-lg-flex">
+        <c-nav-item>
+          <a routerLink="./" cNavLink>
+            <svg cIcon name="cilBell" size="lg"></svg>
+          </a>
+        </c-nav-item>
+        <c-nav-item>
+          <a routerLink="./" cNavLink>
+            <svg cIcon name="cilList" size="lg"></svg>
+          </a>
+        </c-nav-item>
+        <c-nav-item>
+          <a routerLink="./" cNavLink>
+            <svg cIcon name="cilEnvelopeOpen" size="lg"></svg>
+          </a>
+        </c-nav-item>
+      </c-header-nav> -->
+    <c-header-nav class="ms-3">
+       <i
+      
+        (click)="ReAssignTask()"
+        style="margin-top: 10px; color: white; cursor: pointer"
+        class="material-icons"
+        matTooltip="ReAssign Tasks"
+        >assignment</i
+      >
+      <ng-container *ngTemplateOutlet="userDropdown"></ng-container>
+      <!-- <i class="material-icons" style=" cursor: pointer;color:white; margin-top: 8px;" cTooltip=" SMTP Credentials"
+    (click)="OpenSMPTCredsDialog()">settings</i> -->
+
+    </c-header-nav>
+    
+  </c-container>
+  <div *ngIf="Client!='null' && Client !=''" style="font-weight: bold;font-size: 17px;">
+    {{Client}}
+  </div>
+  <p *ngIf="userName && roleName"
+    style="justify-content: right;text-align: end; display: flex;margin-right: 0px;font-weight: bold;font-size: 17px;"
+    class="ps-1">{{roleName}}({{userName=="null"?"Having no User Account":userName}})</p>
+  <!-- <c-header-divider></c-header-divider>
+    <c-container [fluid]="true">
+      <c-breadcrumb-router class="ms-2"></c-breadcrumb-router>
+    </c-container> -->
+</ng-container>
+
+<!-- </c-header> -->
+
+<ng-template #userDropdown>
+  <c-dropdown alignment="end" variant="nav-item">
+    <button cButton color="" [caret]="false" cDropdownToggle class="py-0" (click)="Refresh()">
+      <c-avatar cTextColor="primary" shape="rounded-8" size="md" style="background-color: whitesmoke;" status="success">
+      </c-avatar>
+    </button>
+    <ul cDropdownMenu class="pt-0 pr-5 w-auto" style="max-width: 50px;overflow: auto;max-height: 350px;">
+      <!-- <li>
+        <h6 cDropdownHeader class="bg-light fw-semibold py-2" style="text-align: center;">Account</h6>
+      </li>
+      <li>
+        <a routerLink="./" cDropdownItem>
+          <svg cIcon class="me-2" name="cilBell"></svg>
+          Updates
+          <c-badge class="ms-2 float-end" color="info">
+            42
+          </c-badge>
+        </a>
+      </li>
+      <li>
+        <a routerLink="./" cDropdownItem>
+          <svg cIcon class="me-2" name="cilEnvelopeOpen"></svg>
+          Messages
+          <c-badge class="ms-2 float-end" color="success">
+            42
+          </c-badge>
+        </a>
+      </li>
+      <li>
+        <a routerLink="./" cDropdownItem>
+          <svg cIcon class="me-2" name="cilTask"></svg>
+          Tasks
+          <c-badge class="ms-2 float-end" color="danger">
+            42
+          </c-badge>
+        </a>
+      </li>
+      <li>
+        <a routerLink="./" cDropdownItem>
+          <svg cIcon class="me-2" name='cilCommentSquare'></svg>
+          Comments
+          <c-badge class="ms-auto" color="warning">
+            42
+          </c-badge>
+        </a>
+      </li>
+      <li>
+        <h6 cDropdownHeader class="bg-light fw-semibold py-2">Settings</h6>
+      </li>
+      <li></li>
+      <li>
+        <a routerLink="./" cDropdownItem>
+          <svg cIcon class="me-2" name="cilUser"></svg>
+          Profile
+        </a>
+      </li>
+      <li>
+        <a routerLink="./" cDropdownItem>
+          <svg cIcon class="me-2" name="cilSettings"></svg>
+          Settings
+        </a>
+      </li>
+      <li>
+        <a routerLink="./" cDropdownItem>
+          <svg cIcon class="me-2" name="cilCreditCard"></svg>
+          Payments
+          <c-badge class="ms-2 float-end" color="secondary">
+            42
+          </c-badge>
+        </a>
+      </li>
+      <li>
+        <a routerLink="./" cDropdownItem>
+          <svg cIcon class="me-2" name="cilFile"></svg>
+          Projects
+          <c-badge class="ms-2 float-end" color="primary">
+            42
+          </c-badge>
+        </a>
+      </li> -->
+      <div *ngIf="superAdminId!='undefined'">
+        <!-- <li>
+          <h6 cDropdownHeader class="bg-light fw-semibold py-2">Clients</h6>
+        </li>
+        <li *ngFor="let clt of clients">
+          <a (click)="openCltData(clt)" cDropdownItem style="cursor: pointer;">
+            <svg cIcon class="me-2" name="cilUser"></svg>
+            {{clt.clientName}}
+          </a>
+        </li>
+        <li>
+          <hr cDropdownDivider />
+        </li>
+        <li>
+          <a routerLink="./" cDropdownItem (click)="reset()">
+            Super Admin
+          </a>
+        </li> -->
+      </div>
+
+      <!-- <li>
+        <hr cDropdownDivider />
+      </li>
+      <li *ngIf="catSvc.isClientAdmin()">
+        <a routerLink="" cDropdownItem (click)="OpenSMPTCredsDialog()">
+          SMTPCreds
+        </a>
+      </li> -->
+      <!-- <li>
+        <hr cDropdownDivider />
+      </li> -->
+       <!-- <li >
+        <a routerLink="" cDropdownItem (click)="OpenUserDialog()">
+          Edit Profile
+        </a>
+      </li> -->
+      <!-- <li>
+        <hr cDropdownDivider />
+      </li> -->
+      <li *ngIf="isDayStarted">
+        <a routerLink="./" cDropdownItem (click)="DayEnd()">
+          <div fxLayoutAlign="row">
+            <svg cIcon class="me-2" name="cilLockLocked"></svg>
+            Day End
+          </div>
+        </a>
+      </li>
+      <li>
+        <a routerLink="./" cDropdownItem (click)="LogOut()">
+          <svg cIcon class="me-2" name="cilLockLocked"></svg>
+          LogOut
+        </a>
+      </li>
+      <li></li>
+    </ul>
+  </c-dropdown>
+</ng-template>

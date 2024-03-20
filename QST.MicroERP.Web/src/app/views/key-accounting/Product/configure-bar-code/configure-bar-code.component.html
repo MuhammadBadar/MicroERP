@@ -1,0 +1,39 @@
+<div fxLayout="column">
+    <mat-toolbar style="background-image:linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));">
+        <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+            <span class="title dialog-title" style="color:white;margin: 30px 20px;font-size: 18px;">Configure
+                Item Variant By BarCode</span>
+            <button mat-icon-button (click)="dialogRef.close()" style="color: white">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </mat-toolbar>
+    <div class="column" fxFlex="65%">
+        <div fxLayout="row" style="margin-top: 10px;padding: 10px;">
+            <div fxLayout="column">
+                <p class="pStyle" style=" font-weight: bold;">Product Name </p>
+                <p class="pStyle" style="font-weight: bold;">Variant </p>
+            </div>
+            <div fxLayout="column">
+                <p class="pStyle">{{selecteditemVariants.item}}</p>
+                <p class="pStyle">{{selecteditemVariants.possibleValues}}</p>
+            </div>
+        </div>
+        <form #userForm="ngForm" style="margin-top: 10px;padding: 10px;">
+            <div>
+                <mat-form-field fxFlex=" 100%" appearance="outline" class="form-group">
+                    <mat-label>BarCode</mat-label>
+                    <input matInput #barCode="ngModel" name="barCode" type="text"
+                        [(ngModel)]="selecteditemVariants.barCode" />
+                </mat-form-field>
+            </div>
+        </form>
+    </div>
+    <div class="container">
+        <div class="btn-holder">
+            <button cButton style="background-color:#4c4d4e ;" (click)="UpdateitemVariants()">
+                Update
+            </button>
+        </div>
+    </div>
+</div>

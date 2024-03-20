@@ -1,0 +1,285 @@
+.page {
+    color: white;
+    padding: 0 1rem;
+    background: #f1f5f9;
+    width: 100%;
+
+
+}
+
+.page_content {
+    padding: 20px;
+    min-height: calc(100vh - 178px);
+    border-radius: 15px;
+    margin-top: -2rem;
+    background: white;
+    color: black;
+}
+
+.page_box {
+    min-height: 100px;
+
+    background-image: linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));
+    border-radius: 10px;
+    font-size: 25px;
+    padding: 10px;
+
+}
+
+.example-container {
+
+    width: 100;
+    max-width: 100%;
+    overflow: auto;
+}
+
+table {
+    width: 100;
+    z-index: 1;
+}
+
+
+td.mat-column-star {
+    width: 20%;
+    padding-right: 8px;
+}
+
+th.mat-column-position,
+td.mat-column-position {
+    padding-left: 8px;
+}
+
+.mat-mdc-table-sticky-border-elem-right {
+    border-left: 1px solid #e0e0e0;
+}
+
+.mat-mdc-table-sticky-border-elem-left {
+    border-right: 1px solid #e0e0e0;
+}
+
+
+td {
+    min-width: 150px !important;
+    /* text-align: center; */
+
+}
+
+th {
+    min-width: 150px !important;
+      color: white;
+    font-weight: normal
+}
+
+tr:nth-child(even) {
+    background: rgb(184, 245, 222);
+}
+
+
+input.mat-chip-input {
+    width: 110px;
+    margin: 4px;
+    flex: 0 0 auto;
+    color:white;
+}
+.gallery {
+  column-count: 3;
+}
+
+.gallery-img img {
+  cursor: zoom-in;
+  box-shadow: 0 1px 5px gray;
+
+}
+
+.lightbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, .85);
+}
+
+.close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0;
+  width: 7%;
+  height: 10%;
+  z-index: 2;
+  background: 0 0;
+  border: 0;
+  cursor: pointer;
+  margin-top: 60px;
+
+}
+
+/* Styles for the anchor link */
+.popup-link {
+  text-decoration: none; /* Remove default underline */
+  color: #063c76; /* Link text color */
+  border-bottom: 1px dashed #6b94c0; /* Dashed bottom border for a subtle link effect */
+  padding: 5px; /* Add some padding for spacing */
+  cursor: pointer;
+  transition: color 0.2s ease, border-bottom-color 0.2s ease;
+
+  /* Hover effect */
+  &:hover {
+    color: #970541; /* Text color on hover */
+    border-bottom-color: #206b8e; /* Border color on hover */
+  }
+
+  /* Focus effect (for keyboard navigation) */
+  /* &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(91, 126, 164, 0.5); Focus outline
+  } */
+}
+.custom-sort-header.mat-sort-header.mat-sort-header-sorted .mat-sort-header-arrow {
+  color: white; /* Replace 'your-color' with your desired color */
+}
+.required-asterisk {
+  color: red; /* or any color you prefer */
+  /* Adjust this value to control spacing */
+}
+.precautList {
+  text-align: center;
+  justify-content: center;
+  color: #333;
+  /* display: inline-block; */
+  background-color: #f0f0f0;
+  padding: 10px;
+  margin: 5px;
+  list-style: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 40px;
+  border: none;
+  border-radius: 25%;
+  background-color: #013063;
+  color: #fff;
+  cursor: pointer;
+  margin: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.icon-button:hover {
+  background-color: #0077b3;
+  transform: scale(1.05);
+}
+.spinnerBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, .85);
+} 
+.submit-button {
+  background-color: #04294e;
+  color: white;
+  margin: 4px;
+  min-width: 120px;
+}
+/* Define color variables */
+
+/* Apply styles to mat-button-toggle-group and mat-button-toggle */
+.mat-button-toggle-group {
+  border-radius: 25px;
+  overflow: hidden;
+  background-color: rgb(4, 95, 138);
+}
+.disIconBtn {
+  pointer-events: none;
+  background-color: #929191; 
+  color: white;
+  margin: 10px;
+  margin-bottom: 30px;
+}
+
+.mat-button-toggle-group:hover{
+  transform: scale(1.05);
+}
+/* .mat-button-toggle {
+  border-radius: 25px;
+  margin-right: 3px;
+  color: rgb(4, 95, 138)
+} */
+
+
+/* Apply styles to mat-menu-panel */
+.mat-menu-panel {
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+/* Apply styles to menu items */
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.menu-item:hover {
+  background-color: #e0e0e0;
+}
+
+/* Apply styles to menu item icons and text */
+.menu-item-icon {
+  color: rgb(4, 95, 138);
+  font-size: 20px;
+  margin-right: 8px;
+}
+
+.menu-item-text {
+  font-size: 16px;
+  color: #333;
+}
+
+/* Apply color styles to mat-icon elements */
+
+
+/* Apply color styles to mat-button-toggle with class split-button-1 */
+.split-button-1 {
+  background-color: rgb(4, 95, 138);
+  color: white;
+}
+.splitbutton1dis {
+   pointer-events: none;
+  background-color: #929191; 
+  color: white;
+}
+
+/* Apply color styles to dropdown toggle */
+/* .drop-down-button {
+  background-color:rgb(4, 95, 138);
+  color: white;
+} */
+
+.drop-down-button:hover {
+  background-color: rgb(1, 74, 107); /* Darken the background color on hover */
+}
+
+
+.submit-btn:hover{
+  background-color: rgb(1, 74, 107); 
+}

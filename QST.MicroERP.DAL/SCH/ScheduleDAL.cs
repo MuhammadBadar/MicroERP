@@ -8,6 +8,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using QST.MicroERP.Core.Constants;
 
 namespace QST.MicroERP.DAL.SCH
 {
@@ -28,9 +29,10 @@ namespace QST.MicroERP.DAL.SCH
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                cmd.CommandText = "Manage_Schedule";
+                cmd.CommandText =SPNames.SCH_Manage_Schedule.ToString ();
                 cmd.Parameters.AddWithValue("@prm_Id", sch.Id);
                 cmd.Parameters.AddWithValue("@prm_UserId", sch.UserId);
+                cmd.Parameters.AddWithValue("@prm_ClientId", sch.ClientId);
                 cmd.Parameters.AddWithValue("@prm_RoleId", sch.RoleId);
                 cmd.Parameters.AddWithValue("@prm_EntityId", sch.EntityId);
                 cmd.Parameters.AddWithValue("@prm_ScheduleTypeId", sch.ScheduleTypeId);
@@ -45,7 +47,6 @@ namespace QST.MicroERP.DAL.SCH
                 cmd.Parameters.AddWithValue("@prm_ModifiedBy", sch.ModifiedById);
                 cmd.Parameters.AddWithValue("@prm_IsActive", sch.IsActive);
                 cmd.Parameters.AddWithValue("@prm_DBoperation", sch.DBoperation.ToString());
-                cmd.Parameters.AddWithValue("@prm_Filter", sch.DBoperation.ToString());
                 cmd.ExecuteNonQuery();
                 return true;
             }
@@ -75,7 +76,7 @@ namespace QST.MicroERP.DAL.SCH
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<ScheduleDE>("call SCH_Search_Schedule( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<ScheduleDE>("call "+SPNames.SCH_Search_Schedule.ToString () + "( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception)
@@ -104,20 +105,21 @@ namespace QST.MicroERP.DAL.SCH
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                cmd.CommandText = "ManageScheduleDayEvent";
-                cmd.Parameters.AddWithValue("@Id", Events.Id);
-                cmd.Parameters.AddWithValue("@StartTime", Events.StartTime);
-                cmd.Parameters.AddWithValue("@EndTime", Events.EndTime);
-                cmd.Parameters.AddWithValue("@EventTypeId", Events.EventTypeId);
-                cmd.Parameters.AddWithValue("@schId", Events.SchId);
-                cmd.Parameters.AddWithValue("@ScheduleDayId", Events.SchDayId);
-                cmd.Parameters.AddWithValue("@LocationId", Events.LocationId);
-                cmd.Parameters.AddWithValue("@createdOn", Events.CreatedOn);
-                cmd.Parameters.AddWithValue("@createdById", Events.CreatedById);
-                cmd.Parameters.AddWithValue("@modifiedOn", Events.ModifiedOn);
-                cmd.Parameters.AddWithValue("@modifiedById", Events.ModifiedById);
-                cmd.Parameters.AddWithValue("@isActive", Events.IsActive);
-                cmd.Parameters.AddWithValue("@DBoperation", Events.DBoperation.ToString());
+                cmd.CommandText = SPNames.SCH_Manage_ScheduleDayEvent.ToString ();
+                cmd.Parameters.AddWithValue("@prm_Id", Events.Id);
+                cmd.Parameters.AddWithValue("@prm_ClientId", Events.ClientId);
+                cmd.Parameters.AddWithValue("@prm_StartTime", Events.StartTime);
+                cmd.Parameters.AddWithValue("@prm_EndTime", Events.EndTime);
+                cmd.Parameters.AddWithValue("@prm_EventTypeId", Events.EventTypeId);
+                cmd.Parameters.AddWithValue("@prm_schId", Events.SchId);
+                cmd.Parameters.AddWithValue("@prm_ScheduleDayId", Events.SchDayId);
+                cmd.Parameters.AddWithValue("@prm_LocationId", Events.LocationId);
+                cmd.Parameters.AddWithValue("@prm_createdOn", Events.CreatedOn);
+                cmd.Parameters.AddWithValue("@prm_createdById", Events.CreatedById);
+                cmd.Parameters.AddWithValue("@prm_modifiedOn", Events.ModifiedOn);
+                cmd.Parameters.AddWithValue("@prm_modifiedById", Events.ModifiedById);
+                cmd.Parameters.AddWithValue("@prm_isActive", Events.IsActive);
+                cmd.Parameters.AddWithValue("@prm_DBoperation", Events.DBoperation.ToString());
 
                 cmd.ExecuteNonQuery();
                 return true;
@@ -148,7 +150,7 @@ namespace QST.MicroERP.DAL.SCH
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<ScheduleDayEventDE>("call SearchScheduleDayEvent( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<ScheduleDayEventDE>("call "+SPNames.SCH_Search_ScheduleDayEvent.ToString () + "( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception)
@@ -164,7 +166,7 @@ namespace QST.MicroERP.DAL.SCH
         }
         #endregion
         #region ScheduleDay Operations
-        public bool ManageScheduleDay(ScheduleDayDE Events, MySqlCommand cmd = null)
+        public bool ManageScheduleDay(ScheduleDayDE day, MySqlCommand cmd = null)
         {
             bool closeConnectionFlag = false;
             try
@@ -179,21 +181,23 @@ namespace QST.MicroERP.DAL.SCH
                 else
                     Console.WriteLine("Connection error");
 
-                cmd.CommandText = "Manage_ScheduleDay";
+                cmd.CommandText = SPNames.SCH_Manage_ScheduleDay.ToString ();
 
                 // Clear existing parameters before adding new ones
                 cmd.Parameters.Clear();
 
-                cmd.Parameters.AddWithValue("@prm_Id", Events.Id);
-                cmd.Parameters.AddWithValue("@prm_DayId", Events.DayId);
-                cmd.Parameters.AddWithValue("@prm_SchId", Events.SchId);
-                cmd.Parameters.AddWithValue("@prm_createdOn", Events.CreatedOn);
-                cmd.Parameters.AddWithValue("@prm_createdBy", Events.CreatedById);
-                cmd.Parameters.AddWithValue("@prm_modifiedOn", Events.ModifiedOn);
-                cmd.Parameters.AddWithValue("@prm_modifiedBy", Events.ModifiedById);
-                cmd.Parameters.AddWithValue("@prm_isActive", Events.IsActive);
-                cmd.Parameters.AddWithValue("@DBoperation", Events.DBoperation.ToString());
-                cmd.Parameters.AddWithValue("@prm_Filter", Events.DBoperation.ToString());
+                cmd.Parameters.AddWithValue("@prm_Id", day.Id);
+                cmd.Parameters.AddWithValue("@prm_ClientId", day.ClientId);
+                cmd.Parameters.AddWithValue("@prm_DayId", day.DayId);
+                cmd.Parameters.AddWithValue("@prm_SchId", day.SchId);
+                cmd.Parameters.AddWithValue("@prm_WorkTime", day.WorkTime);
+                cmd.Parameters.AddWithValue("@prm_createdOn", day.CreatedOn);
+                cmd.Parameters.AddWithValue("@prm_createdBy", day.CreatedById);
+                cmd.Parameters.AddWithValue("@prm_modifiedOn", day.ModifiedOn);
+                cmd.Parameters.AddWithValue("@prm_modifiedBy", day.ModifiedById);
+                cmd.Parameters.AddWithValue("@prm_isActive", day.IsActive);
+                cmd.Parameters.AddWithValue("@prm_DBoperation", day.DBoperation.ToString());
+                cmd.Parameters.AddWithValue("@prm_Filter", day.DBoperation.ToString());
 
                 cmd.ExecuteNonQuery();
                 return true;
@@ -224,7 +228,7 @@ namespace QST.MicroERP.DAL.SCH
                     Console.WriteLine("Connection  has been created");
                 else
                     Console.WriteLine("Connection error");
-                top = cmd.Connection.Query<ScheduleDayDE>("call SCH_Search_ScheduleDay( '" + whereClause + "')").ToList();
+                top = cmd.Connection.Query<ScheduleDayDE>("call "+SPNames.SCH_Search_ScheduleDay.ToString () + "( '" + whereClause + "')").ToList();
                 return top;
             }
             catch (Exception)

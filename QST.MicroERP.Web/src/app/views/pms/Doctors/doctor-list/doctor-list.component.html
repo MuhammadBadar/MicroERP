@@ -1,0 +1,84 @@
+<div class="container-fluid page">
+    <div class="d-flex page_box p-3 mt-2  header-sticky" position="sticky">
+        <div> Doctors
+        </div>
+    </div>
+    <div class="page_content shadow p-3 position-relative">
+        <div class="pull-right" style="text-align:end; margin-top: 20px;">
+            <button  [ngClass]="{disabledBtn:isReadOnly}" class="bttn"(click)="OpenDialog()">Add
+                New
+            </button>
+        </div>
+        <section class="example-container mat-elevation-z8" tabindex="0" style="border-radius: 5px;margin-top: 30px;">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                <ng-container matColumnDef="doctorName">
+                    <th mat-header-cell *matHeaderCellDef> DoctorName </th>
+                    <td mat-cell *matCellDef="let element"> {{element.doctorName}} </td>
+                </ng-container>
+                <ng-container matColumnDef="startTime">
+                    <th mat-header-cell *matHeaderCellDef> StartTime </th>
+                    <td mat-cell *matCellDef="let element"> {{element.startTime}} </td>
+                </ng-container>
+                 <ng-container matColumnDef="defApptDur">
+                    <th mat-header-cell *matHeaderCellDef> DefApptDur </th>
+                    <td mat-cell *matCellDef="let element"> {{element.defApptDur}} </td>
+                </ng-container>
+                <ng-container matColumnDef="dateOfBirth">
+                    <th mat-header-cell *matHeaderCellDef> DateofBirth </th>
+                    <td mat-cell *matCellDef="let element"> {{element.dateOfBirth| date:"dd/MM/yyyy"}} </td>
+                </ng-container>
+                <ng-container matColumnDef="gender">
+                    <th mat-header-cell *matHeaderCellDef> Gender </th>
+                    <td mat-cell *matCellDef="let element"> {{element.gender}} </td>
+                </ng-container>
+                <ng-container matColumnDef="city">
+                    <th mat-header-cell *matHeaderCellDef>City</th>
+                    <td mat-cell *matCellDef="let element">{{ element.city }}</td>
+                </ng-container>
+                <ng-container matColumnDef="area">
+                    <th mat-header-cell *matHeaderCellDef>Area</th>
+                    <td mat-cell *matCellDef="let element">{{ element.area }}</td>
+                </ng-container>
+                <ng-container matColumnDef="contactNo">
+                    <th mat-header-cell *matHeaderCellDef> Contact No </th>
+                    <td mat-cell *matCellDef="let element"> {{element.contactNo}} </td>
+                </ng-container>
+                <ng-container matColumnDef="houseNo">
+                    <th mat-header-cell *matHeaderCellDef> HouseNo </th>
+                    <td mat-cell *matCellDef="let element"> {{element.houseNo}} </td>
+                </ng-container>
+                <ng-container matColumnDef="user">
+                    <th mat-header-cell *matHeaderCellDef> UserName </th>
+                    <td mat-cell *matCellDef="let element"> {{element.user}} </td>
+                </ng-container>
+                <ng-container matColumnDef="email">
+                    <th mat-header-cell *matHeaderCellDef> Email </th>
+                    <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+                </ng-container>
+                <ng-container matColumnDef="address">
+                    <th mat-header-cell *matHeaderCellDef> Address </th>
+                    <td mat-cell *matCellDef="let element"> {{element.address}} </td>
+                </ng-container>
+                <ng-container matColumnDef="isActive">
+                    <th mat-header-cell *matHeaderCellDef> Is Active </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.isActive ? 'Yes' : 'No' }} </td>
+                </ng-container>
+                <ng-container matColumnDef="actions" stickyEnd="true">
+                    <th mat-header-cell *matHeaderCellDef style="max-width: 100px;text-align: center;">
+                        <p style="font-size: 14px;">Actions</p>
+                    </th>
+                    <td mat-cell *matCellDef="let row" style="max-width: 100px;text-align: center;">
+                        <div [ngClass]="{disabledDiv:isReadOnly}">
+                            <i class="material-icons" style="cursor: pointer;" cTooltip=" Edit Doctor"
+                                (click)="GetDoctorForEdit(row.id)">edit</i>
+                            <i class="material-icons" style=" cursor: pointer;" cTooltip=" User Account"
+                                (click)="OpenUserDialog(row)">person_add</i>
+                        </div>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </section>
+    </div>
+</div>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using QST.MicroERP.Core.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,12 +16,12 @@ namespace QST.MicroERP.Core.Entities.TMS
         public int LastClaimId { get; set; }
         public string? LastClaim { get; set; }
         public string? Title { get; set; }
+        public string? Description { get; set; }
         public string? User { get; set; }
         public string? Parent { get; set; }
         public DateTime Date { get; set; }
         public int ClaimId { get; set; }
         public string? ClaimPercent { get; set; }
-        public float Sp { get; set; }
         public string? Comments { get; set; }
         public bool IsDayEnded { get; set; }
         public string? ReviewedBy { get; set; }
@@ -41,5 +42,12 @@ namespace QST.MicroERP.Core.Entities.TMS
         public bool IsLastExistence { get; set; }
         public string? Priority { get; set; }
         public bool IsOverdue { get; set; }
+        public double Sp { get; set; }
+        public string SPStr
+        {
+            get { return Sp.ToHHMM (); }
+        }
+        public string? Status { get; set; }
+        public string? StalledReason { get; set; }
     }
 }

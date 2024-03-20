@@ -1,0 +1,133 @@
+<div class="container-fluid page">
+    <div class="d-flex page_box p-3 mt-2  header-sticky" position="sticky">
+        <div fxLayout="row" fxLayoutAlign="space-between" fxFlex="100%">
+            <div *ngIf="Add">Manage VoucherType
+            </div>
+            <div *ngIf="Edit">Update VoucherType
+            </div>
+            <div fxFlex="7%" *ngIf="isDialog">
+                <button mat-icon-button fxLayoutAlign="end end" (click)="dialogRef.close()" style="color: white">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="page_content shadow p-3 position-relative">
+        <form #userForm="ngForm" novalidate cForm>
+            <div fxLayout="row" fxLayoutAlign="space-between">
+                <mat-form-field fxFlex="49%" appearance="outline" class="form-group">
+                    <mat-label>Name</mat-label>
+                    <input (input)="getKeyCode()" matInput required #name="ngModel" maxlength="100" name="name"
+                        type="text" required="true" [(ngModel)]="selectedVoucherType.name" />
+                </mat-form-field>
+                <mat-form-field [inert]="Edit" fxFlex="49%" appearance="outline" class="form-group">
+                    <mat-label>Key Code</mat-label>
+                    <input matInput required #keyCode="ngModel" required="true" name="keyCode"
+                        [(ngModel)]="selectedVoucherType.keyCode" />
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="space-between">
+                <mat-form-field fxFlex="88%" appearance="outline" class="form-group">
+                    <mat-label> DefaultDrCrSecond </mat-label>
+                    <mat-select matNativeControl name="defaultDrCrSecondId" matNativeControl
+                        #defaultDrCrSecondId="ngModel" required="true"
+                        [(ngModel)]="selectedVoucherType.defaultDrCrSecondId">
+                        <mat-option [value]="0">--Please Select--</mat-option>
+                        <mat-option *ngFor="let pt of accounts" [value]=" pt.id">
+                            {{ pt.name}}
+                        </mat-option>
+                    </mat-select>
+                    <div matSuffix>
+                        <button mat-icon-button style="color:#940540;"
+                            (click)="AccountsDialog(); $event.stopPropagation()" cTooltip="Explore Accounts">
+                            <mat-icon>add</mat-icon>
+                        </button>
+                    </div>
+                </mat-form-field>
+                <div fxLayoutAlign="end center" fxLayout="row">
+                    <mat-checkbox name="defaultDrCrFirst" [(ngModel)]="selectedVoucherType.defaultDrCrFirst">
+                        DefaultDrCrFirst
+                    </mat-checkbox>
+                </div>
+            </div>
+            <div fxLayoutAlign="end end">
+                <mat-checkbox name="isActive" [(ngModel)]="selectedVoucherType.isActive">
+                    IsActive
+                </mat-checkbox>
+            </div>
+            <div fxLayoutAlign="end end">
+                <div style="margin-top: 10px;">
+                    <button *ngIf="Add" [ngClass]="{disabledBtn:isReadOnly}" class="bttn" type="submit"
+                        (click)="SaveVoucherType()">
+                        Save
+                    </button>
+                    <button *ngIf="Edit" [ngClass]="{disabledBtn:isReadOnly}" class="bttn" type="submit"
+                        (click)="SaveVoucherType()">
+                        Update
+                    </button>
+                </div>
+                <div>
+                    <button mat-icon-button mat-sm-button color="primary" cTooltip="Refresh" cTooltipPlacement="top"
+                        (click)="ngOnInit()">
+                        <mat-icon>autorenew</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <c-card style="padding: 10px; margin-top: 30px;" class="mat-elevation-z8">
+            <h5 cCardTitle>VoucherType List</h5>
+            <c-card-body style="padding: 10px;background-color: rgb(2, 42, 75);margin: 5px;border-radius: 10px;">
+                <div class="example-table-container">
+                    <section class="example-container mat-elevation-z8" tabindex="0" style="border-radius: 5px;">
+                        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                            <ng-container matColumnDef="id">
+                                <th mat-header-cell *matHeaderCellDef> Sr No </th>
+                                <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="name">
+                                <th mat-header-cell *matHeaderCellDef> Name </th>
+                                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="defaultDrCrFirst">
+                                <th mat-header-cell *matHeaderCellDef> DefaultDrCrFirst</th>
+                                <td mat-cell *matCellDef="let element"> {{element.defaultDrCrFirst}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="keyCode">
+                                <th mat-header-cell *matHeaderCellDef> KeyCode </th>
+                                <td mat-cell *matCellDef="let element"> {{element.keyCode}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="isActive">
+                                <th mat-header-cell *matHeaderCellDef> IsActive </th>
+                                <td mat-cell *matCellDef="let element"> {{element.isActive?'Yes':'No'}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="defaultDrCr">
+                                <th mat-header-cell *matHeaderCellDef> DefaultDrCrSecond </th>
+                                <td mat-cell *matCellDef="let element"> {{element.defaultDrCrSecond}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="actions" stickyEnd="true">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <p style="font-size: 14px;text-align: center;">Action</p>
+                                </th>
+                                <td mat-cell *matCellDef="let row">
+                                    <div style="text-align: center;" [ngClass]="{disabledDiv:isReadOnly}">
+                                        <button mat-icon-button mat-sm-button style=" color:#1e293b ; "
+                                            cTooltip=" Edit " (click)="GetVoucherTypeForEdit(row.id)">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+
+                                        <!-- <button mat-icon-button mat-sm-button color="warn"
+                                            cTooltip="Delete " (click)="DeleteVoucherType(row)" >
+                                            <mat-icon>delete</mat-icon>
+                                        </button> -->
+                                    </div>
+                                </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </section>
+                </div>
+            </c-card-body>
+        </c-card>
+    </div>
+</div>

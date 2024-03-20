@@ -8,6 +8,7 @@ using QST.MicroERP.Service.TMS;
 using QST.MicroERP.WebAPI.Token;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using QST.MicroERP.Core.Enums;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -43,6 +44,10 @@ namespace QST.MicroERP.WebAPI.Controllers.SEC
         [HttpPost]
         public async Task<ActionResult> Login(LoginModel model)
         {
+            bool showDayStartDialog = false;
+            bool showDayEndDialog = false;
+            bool shouldMarkAttendance = false;
+
             try
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
@@ -59,33 +64,51 @@ namespace QST.MicroERP.WebAPI.Controllers.SEC
                             if (user.Name != model.Name)
                                 return BadRequest("Invalid client request");
                     }
-                    TaskSearchCriteria sc = new TaskSearchCriteria();
-                    sc.UserId = user.Id;
-                    sc.Date = DateTime.Now;
-                    var existingTask = new UserTaskService().SearchUserTask(sc);
-                    bool showDayStartDialog = false;
-                    bool showDayEndDialog = false;
-                    if (existingTask.Count == 0)
-                        showDayStartDialog = true;
-                    if (showDayStartDialog)
-                    {
-                        sc = new TaskSearchCriteria();
-                        sc.IsDayEnded = false;
-                        sc.UserId = user.Id;
-                        var pendingTask = new UserTaskService().SearchUserTask(sc);
-                        if (pendingTask.Count > 0)
-                        {
-                            showDayEndDialog = true;
-                            showDayStartDialog = false;
-                        }
-                    }
                     var _user = new UserDE();
                     _user.Id = user.Id;
                     List<UserDE> users = _userService.SearchUsers(_user);
                     if (users != null && users.Count > 0)
                         _user = users[0];
+
+                    #region Permissions
+
                     var _permissions = new List<PermissionDE> ();
-                    _permissions = _permsSvc.GetPermsByUserOrRole (user.Id, (int)_user.RoleId);
+                    _permissions = _permsSvc.GetPermsByUserOrRole (user.Id, (int)_user.RoleId, _user.CltId);
+
+                    #endregion
+                    #region Dialogs for Attendance
+                    if (_user.ModuleIds != null)
+                    {
+                        var modulesIdList = _user.ModuleIds.Split (",");
+                        if(modulesIdList.Length > 0)
+                        {
+                            if (modulesIdList.Any (x => x == ((int)Modules.Attendance).ToString ()))
+                            {
+                                shouldMarkAttendance = true;
+                                TaskSearchCriteria sc = new TaskSearchCriteria ();
+                                sc.UserId = user.Id;
+                                sc.Date = DateTime.Now;
+                                var existingTask = new UserTaskService ().SearchUserTask (sc);
+                                if (existingTask.Count == 0)
+                                    showDayStartDialog = true;
+                                if (showDayStartDialog)
+                                {
+                                    sc = new TaskSearchCriteria ();
+                                    sc.IsDayEnded = false;
+                                    sc.UserId = user.Id;
+                                    var pendingTask = new UserTaskService ().SearchUserTask (sc);
+                                    if (pendingTask.Count > 0)
+                                    {
+                                        showDayEndDialog = true;
+                                        showDayStartDialog = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    #endregion
+
                     return Ok(new
                     {
                         result = results,
@@ -97,11 +120,11 @@ namespace QST.MicroERP.WebAPI.Controllers.SEC
                         supervisorId = _user.SupervisorId,
                         showDayStartDialog,
                         showDayEndDialog,
-                        clientId = user.ClientId,
+                        shouldMarkAttendance,
+                        clientId = _user.ClientId,
+                        cltId=_user.CltId,
                         client = _user.Client,
-                        moduleIds = _user.ModuleIds,
-                        cLTId = _user.CLTId,
-                        cLTModuleIds = _user.CLTModuleIds,
+                        moduleIds =_user.ModuleIds,
                         doctorId = _user.DoctorId,
                         token = _jwtToken.GenerateToken (user, new List<string> { _user.Role }),
                         permissions = _permissions

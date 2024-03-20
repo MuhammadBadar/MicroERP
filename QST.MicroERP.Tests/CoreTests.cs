@@ -134,25 +134,6 @@ namespace QST.MicroERP.Tests
 
             #endregion
         }
-
-        [Test]
-        public void Service_City_CRUD()
-        {
-            CityService ctySvc = new CityService();
-
-            //var list = new List<CourseDE>();
-            //list = crsSvc.SearchCourse();
-
-            var cty = new Core.Entities.CTL.CityDE();
-            cty.Id = 1;
-            cty.Name = "Lahoreeeee";
-
-
-            //crs.DBoperation = DBoperations.Update;
-            cty.DBoperation = DBoperations.Insert;
-
-            ctySvc.ManageCity(cty);
-        }
         [Test]
         public void Service_Student_CRUD()
         {

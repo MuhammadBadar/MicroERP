@@ -52,9 +52,9 @@ namespace QST.MicroERP.WebAPI.Controllers
             return Ok (perms);
         }
         [HttpPost ("GetPerms")]
-        public ActionResult GetPermsByUserOrRole ( string UserId, int RoleId )
+        public ActionResult GetPermsByUserOrRole ( string UserId, int RoleId, int ClientId )
         {
-            List<PermissionDE> perms = _permSvc.GetPermsByUserOrRole (UserId, RoleId);
+            List<PermissionDE> perms = _permSvc.GetPermsByUserOrRole (UserId, RoleId, ClientId);
             return Ok (perms);
         }
 

@@ -1,0 +1,85 @@
+<div fxLayout="column">
+    <mat-toolbar style="background-image:linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));">
+        <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+            <span class="title dialog-title"
+                style="color:white;margin: 10px 10px;font-size: 18px;margin-left: 20px;">Select Purchase
+                UOM</span>
+            <button mat-icon-button (click)="dialogRef.close()" style="color: white">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </mat-toolbar>
+    <div fxLayout="row" style="margin: 20px;">
+        <div fxFlex="50%">
+            <button mat-fab extended style="background-color:#4e4c4c ;color: white;margin: 5px;"
+                (click)="dialogRef.close()">
+                <mat-icon>arrow_back</mat-icon>
+                Back
+            </button>
+            <button type="submit" *ngIf="addMode" mat-fab extended
+                style="background-color:#04294e ;color: white;margin: 4px;" (click)="Add()">
+                <mat-icon>check_circle</mat-icon> Add
+            </button>
+            <button type="submit" *ngIf="editMode" mat-fab extended
+                style="background-color:#04294e ;color: white;margin: 4px;" (click)="Add()">
+                <mat-icon>check_circle</mat-icon> Update
+            </button>
+        </div>
+    </div>
+    <c-card style="padding: 50px;">
+        <h5 cCardTitle> UOM Conversions</h5>
+        <c-card-body
+            style="padding: 10px; background-image: linear-gradient(to bottom, rgb(4, 71, 138), rgb(8, 117, 150));margin: 5px;border-radius: 10px;">
+            <div class="example-table-container">
+                <section class="example-container mat-elevation-z8" tabindex="0" style="border-radius: 5px;">
+                    <table mat-table [dataSource]="DataSource" class="mat-elevation-z8">
+                        <ng-container matColumnDef="select">
+                            <th mat-header-cell *matHeaderCellDef>
+                                <!-- <mat-checkbox (change)="$event ? toggleAllRows() : null" id="check"
+                                    [checked]="selection.hasValue() && isAllSelected()"
+                                    [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                    [aria-label]="checkboxLabel()">
+                                </mat-checkbox> -->
+                            </th>
+                            <td mat-cell *matCellDef="let row">
+                                <!-- <mat-checkbox (click)="$event.stopPropagation()"
+                                    (change)="$event ? selection.toggle(row) : null"
+                                    [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+                                </mat-checkbox> -->
+                                <mat-checkbox [(ngModel)]="row.isChecked">
+                                </mat-checkbox>
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="Id">
+                            <th mat-header-cell *matHeaderCellDef> Sr No </th>
+                            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                        </ng-container>
+                        <ng-container matColumnDef="displayUOM">
+                            <th mat-header-cell *matHeaderCellDef>
+                                UOM </th>
+                            <td mat-cell *matCellDef="let element"> {{element.displayUOM}}
+                            </td>
+                        </ng-container>
+                        <ng-container matColumnDef="price">
+                            <th mat-header-cell *matHeaderCellDef style="width: 100px;">
+                                Purchase Price </th>
+                            <td mat-cell *matCellDef="let element" style="width: 100px;">
+                                <!-- <mat-form-field appearance="outline" style="margin-bottom: -12px; margin-top: 10px;"
+                                        [inert]="!element.isChecked">
+                                        <input matInput type="number" #purPrice="ngModel" [(ngModel)]="element.purPrice"
+                                            name="purPrice">
+                                    </mat-form-field> -->
+                                <mat-form-field appearance="outline" style="margin-bottom: -12px; margin-top: 10px;"
+                                    [inert]="!element.isChecked">
+                                    <input matInput [(ngModel)]="element.purPrice" type="number">
+                                </mat-form-field>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="DisplayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: DisplayedColumns;"></tr>
+                    </table>
+                </section>
+            </div>
+        </c-card-body>
+    </c-card>
+</div>

@@ -1,0 +1,85 @@
+<div fxLayout="column">
+    <mat-toolbar style="background-image:linear-gradient(to bottom, rgb(2, 33, 58), rgb(7, 95, 122));">
+        <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+            <span class="title dialog-title" style="color:white;margin: 30px 10px;font-size: 18px;">Configure
+                Product Variant(s)</span>
+            <button mat-icon-button (click)="dialogRef.close()" style="color: white">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+    </mat-toolbar>
+    <div class="column">
+        <div fxLayout="row" style="margin:20px;">
+            <p style="color: rgb(87, 87, 90);font-size: 17px;font-weight: bolder;">Product:</p>
+            <p>&nbsp; {{selectedProduct.name}}</p>
+        </div>
+        <div fxLayout="row" style="margin: 20px;">
+            <div fxFlex="50%">
+                <button mat-fab extended style="background-color:#4e4c4c ;color: white;margin: 5px;"
+                    (click)="dialogRef.close()">
+                    <mat-icon>arrow_back</mat-icon>
+                    Back
+                </button>
+                <button *ngIf="addMode" mat-fab extended style="background-color:#04294e ;color: white;margin: 4px;"
+                    (click)="Add()">
+                    <mat-icon>check_circle</mat-icon> Add
+                </button>
+                <button *ngIf="editMode" mat-fab extended style="background-color:#04294e ;color: white;margin: 4px;"
+                    (click)="Add()">
+                    <mat-icon>check_circle</mat-icon> Update
+                </button>
+            </div>
+        </div>
+        <!-- <form novalidate class="event-form  column" style="margin: 30px;">
+            <div *ngFor="let attrib of selectedProduct.attributes" class="column" [formGroup]="group">
+                <div fxLayout="row">
+                    <div class="column" fxFlex=10% style="margin-top: 6px;">
+                        <mat-label style="color: rgb(87, 87, 90);font-size: 17px;font-weight: bolder;">
+                            {{attrib.name }}&nbsp;:&nbsp;
+                        </mat-label>
+                    </div>
+                    <div class="column" fxFlex=90%>
+                        <mat-radio-group appearance="outline" [formControlName]="attrib.name">
+                            <mat-radio-button (change)="radioChange(val)" [checked]="isChecked(val.id)"
+                                *ngFor="let val of attrib.productAttribs" [value]="val">
+                                {{val.attributeValue}}
+                            </mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+            </div>
+        </form> -->
+        <form novalidate class="event-form  column" style="margin: 30px;">
+
+            <div class="column" fxFlex=90%>
+                <mat-radio-group appearance="outline" name="attributeValuesIds"
+                    [(ngModel)]="selectedVariant.attributeValuesIds">
+                    <mat-radio-button (change)="radioChange(val)" *ngFor="let val of selectedProduct.variants"
+                        [value]="val.attributeValuesIds">
+                        {{val.possibleValues}}
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+        </form>
+    </div>
+    <footer style="margin-top: 20px;" class="footer">
+        <!-- <hr style="width: 100%;height: 5px;background-color: rgb(104, 84, 84);"> -->
+        <div fxLayout="row">
+            <div fxLayout="row">Extra Price for: <p style="color: rgb(87, 87, 90);size: 17px;font-weight: bolder;">
+                    &nbsp;&nbsp; {{selectedVariant.item}} &nbsp;&nbsp;</p>
+                ( {{selectedVariant.possibleValues}} )&nbsp; =
+                &nbsp;
+            </div>
+            <div>
+                <p style="color: rgb(87, 87, 90);size: 17px;font-weight: bolder;">
+                    {{selectedVariant.saleExtraRate?selectedVariant.saleExtraRate:0}}
+                </p>
+            </div>
+        </div>
+        <!-- <div *ngIf="selectedProductAttrib.saleRate>=0">
+            <p style="color: rgb(87, 87, 90);size: 17px;font-weight: bolder;">Total Extra Sale
+                Rate:&nbsp;{{totalSaleRate}}
+            </p>
+        </div> -->
+    </footer>
+</div>

@@ -5,24 +5,21 @@ using QST.MicroERP.DAL.CTL;
 using QST.MicroERP.DAL.SEC;
 using MySql.Data.MySqlClient;
 using NLog;
+using System.Data;
 
 namespace QST.MicroERP.Service.SEC
 {
-    public class UserService
+    public class UserService:BaseService
     {
         #region Class Members/Class Variables
 
         private UserDAL _userDAL;
-        private CoreDAL _corDAL;
-        private Logger _logger;
 
         #endregion
         #region Constructors
         public UserService()
         {
             _userDAL = new UserDAL();
-            _corDAL = new CoreDAL();
-            _logger = LogManager.GetLogger("fileLogger");
         }
         #endregion
         #region User
@@ -30,18 +27,20 @@ namespace QST.MicroERP.Service.SEC
         {
             List<UserDE> Users = new List<UserDE>();
             bool closeConnectionFlag = false;
-            MySqlCommand cmd = null;
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection();
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
+
                 #region Search
                 string whereClause = " Where 1=1";
-                if (mod.Id != default)
-                    whereClause += $" AND Id like ''" + mod.Id + "''";
-                if (mod.CLTId != default)
-                    whereClause += $" AND CLTId like ''" + mod.CLTId + "''";
                 if (mod.ClientId != default)
                     whereClause += $" AND ClientId ={mod.ClientId}";
+                if (mod.CltId != default)
+                    whereClause += $" AND CltId ={mod.CltId}";
                 if (mod.ModuleId != default)
                     whereClause += $" AND ModuleId ={mod.ModuleId}";
                 if (mod.Role != default)
@@ -50,6 +49,27 @@ namespace QST.MicroERP.Service.SEC
                     whereClause += $" AND RoleId like ''" + mod.RoleId + "''";
                 if (mod.UserPassword != default)
                     whereClause += $" AND UserPassword like ''" + mod.UserPassword + "''";
+                if (mod.IncludeSubordinatesData && mod.Id != default)
+                {
+                    var user = new UserDE ();
+                    user.Id = mod.Id;
+                    var subordinateUsers = GetSubordinates (user);
+                    if (subordinateUsers.Count > 0)
+                    {
+                        string subordinateIds = string.Join ("'',''", subordinateUsers.Select (x => x.Id));
+                        whereClause += $" and (Id like ''" + mod.Id + "'' or Id IN (''" + subordinateIds + "''))";
+                    }
+                    else
+                    {
+                        if (mod.Id != default && mod.Id != "")
+                            whereClause += $" and Id like ''" + mod.Id + "''";
+                    }
+                }
+                else
+                {
+                    if (mod.Id != default)
+                        whereClause += $" AND Id like ''" + mod.Id + "'' ";
+                }
                 Users = _userDAL.SearchUser (whereClause);
 
                 #endregion
@@ -69,7 +89,7 @@ namespace QST.MicroERP.Service.SEC
         public List<UserDE> GetSupervisor(UserDE mod)
         {
             List<UserDE> supervisors = new List<UserDE>();
-            var userList = SearchUsers(new UserDE { IsActive = true });
+            var userList = SearchUsers(new UserDE { IsActive = true, ClientId =mod.ClientId });
             GetSupervisorsRecursive(userList, mod.Id, supervisors);
             return supervisors;
         }
@@ -87,7 +107,7 @@ namespace QST.MicroERP.Service.SEC
         public List<UserDE> GetSubordinates(UserDE mod)
         {
             List<UserDE> subordinates = new List<UserDE>();
-            var userList = SearchUsers(new UserDE { IsActive = true });
+            var userList = SearchUsers(new UserDE { IsActive = true, ClientId = mod.ClientId });
             GetSubordinatesRecursive(userList, mod.Id, subordinates);
             return subordinates;
         }
@@ -101,7 +121,11 @@ namespace QST.MicroERP.Service.SEC
                 GetSubordinatesRecursive(userList, subordinate.Id, subordinates);
             }
         }
-
+        public List<UserDE> GetUserWithSubordinates ( UserDE mod )
+        {
+            mod.IncludeSubordinatesData = true;
+            return SearchUsers (mod);
+        }
         #endregion
     }
 }

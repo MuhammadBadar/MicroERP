@@ -13,43 +13,55 @@ using MySql.Data.MySqlClient;
 using NLog;
 using Org.BouncyCastle.Bcpg.Sig;
 using Org.BouncyCastle.Crypto.Prng;
+using QST.MicroERP.Core.Constants;
+using QST.MicroERP.Service.CTL;
+using QST.MicroERP.Core.Extensions;
 
 namespace QST.MicroERP.Services
 {
-    public class PermissionsService : IBaseService<PermissionDE>, IPermissionService
+    public class PermissionsService :BaseService, IBaseService<PermissionDE>, IPermissionService
     {
         #region Class Members/Class Variables
 
         private IBaseDAL<PermissionDE> _permsDAL;
         private SettingsService _stngSvc;
         private CoreDAL _corDAL;
-        private Logger _logger;
+        private CatalogueService _ctlSvc;
 
         #endregion
         #region Constructors
         public PermissionsService ( IBaseDAL<PermissionDE> permsDAL )
         {
             _permsDAL = permsDAL;
+            _ctlSvc = new CatalogueService ();
             _stngSvc = new SettingsService (null);
             _corDAL = new CoreDAL ();
-            _logger = LogManager.GetLogger ("fileLogger");
         }
         #endregion
         #region Permission
         public bool ManageData ( PermissionDE mod )
         {
-            bool retVal = false;
-            bool closeConnectionFlag = false;
-            MySqlCommand? cmd = null;
             try
             {
                 cmd = MicroERPDataContext.OpenMySqlConnection ();
-                closeConnectionFlag = true;
+                _entity = TableNames.SEC_Permission.ToString ();
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetnextId (TableNames.SEC_Permission.ToString ());
-                retVal = _permsDAL.ManageData (mod, cmd);
-                return retVal;
+                    mod.Id = _coreDAL.GetNextIdByClient (_entity, mod.ClientId, "ClientId");
+
+                _logger.Info ($"Going to Call:_permsDAL.ManageData (mod, cmd)");
+                if (_permsDAL.ManageData (mod, cmd))
+                {
+                    mod.AddSuccessMessage (string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                    _logger.Info ($"Success: " + string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                    return true;
+                }
+                else
+                {
+                    mod.AddErrorMessage (string.Format (AppConstants.CRUD_ERROR, _entity));
+                    _logger.Info ($"Error: " + string.Format (AppConstants.CRUD_ERROR, _entity));
+                    return false;
+                }
             }
             catch (Exception ex)
             {
@@ -58,44 +70,42 @@ namespace QST.MicroERP.Services
             }
             finally
             {
-                if (closeConnectionFlag)
+                if (cmd!=null)
                     MicroERPDataContext.CloseMySqlConnection (cmd);
             }
         }
         public bool SavePermissions ( List<PermissionDE> permissions )
         {
             bool retVal = false;
-            bool closeConnectionFlag = false;
-            MySqlCommand? cmd = null;
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection ();
-                MicroERPDataContext.StartTransaction (cmd);
-
-                closeConnectionFlag = true;
-                var Id = _corDAL.GetMaxId (TableNames.SEC_Permission.ToString ());
-                foreach (var perm in permissions)
+                if (permissions != null && permissions.Count > 0)
                 {
-                    //if (perm.PermissionId != 0)
-                    //{
-                    if (perm.Id > 0)
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    MicroERPDataContext.StartTransaction (cmd);
+                    _entity = TableNames.SEC_Permission.ToString ();
+
+                    var Id = _coreDAL.GetNextIdByClient (_entity, permissions[0].ClientId, "ClientId");
+                    foreach (var perm in permissions)
                     {
-                        perm.DBoperation = DBoperations.Update;
-                        retVal = _permsDAL.ManageData (perm, cmd);
-                    }
-                    else
-                    {
-                        if (perm.PermissionId != 0)
+                        if (perm.Id > 0)
                         {
-                            perm.DBoperation = DBoperations.Insert;
-                            Id += 1;
-                            perm.Id = Id;
+                            perm.DBoperation = DBoperations.Update;
                             retVal = _permsDAL.ManageData (perm, cmd);
                         }
+                        else
+                        {
+                            if (perm.PermissionId != 0)
+                            {
+                                perm.DBoperation = DBoperations.Insert;
+                                Id += 1;
+                                perm.Id = Id;
+                                retVal = _permsDAL.ManageData (perm, cmd);
+                            }
+                        }
                     }
-                    //}
+                    MicroERPDataContext.EndTransaction (cmd);
                 }
-                MicroERPDataContext.EndTransaction (cmd);
                 return retVal;
             }
             catch (Exception ex)
@@ -106,7 +116,7 @@ namespace QST.MicroERP.Services
             }
             finally
             {
-                if (closeConnectionFlag)
+                if (cmd!=null)
                     MicroERPDataContext.CloseMySqlConnection (cmd);
             }
         }
@@ -124,6 +134,8 @@ namespace QST.MicroERP.Services
                     WhereClause += $" AND Id={mod.Id}";
                 if (mod.RouteId != default)
                     WhereClause += $" AND RouteId={mod.RouteId}";
+                if (mod.ClientId != default && mod.ClientId != 0)
+                    WhereClause += $" AND ClientId={mod.ClientId}";
                 if (mod.RoleId != default)
                     WhereClause += $" AND RoleId={mod.RoleId}";
                 if (mod.PermissionId != default)
@@ -151,21 +163,22 @@ namespace QST.MicroERP.Services
             List<PermissionDE> retVal = new List<PermissionDE> ();
             try
             {
-                var Routes = GetRoutes ();
+                var Routes = GetRoutes (mod.ClientId);
                 if (Routes != null && Routes.Count > 0)
                 {
-                    foreach (var feat in Routes)
+                    foreach (var route in Routes)
                     {
                         var perm = new PermissionDE ();
-                        perm.RouteId = feat.Id;
-                        perm.Route = feat.Name;
+                        perm.RouteId = route.Id;
+                        perm.Route = route.Name;
                         perm.IsActive = true;
                         perm.UserId = mod.UserId;
                         perm.RoleId = mod.RoleId;
+                        perm.ClientId = mod.CltId;
                         perm.IsReadOnly = null;
                         if (mod.UserId != default && mod.UserId != "")
                         {
-                            var userPerms = SearchData (new PermissionDE { UserId = mod.UserId, RouteId = feat.Id });
+                            var userPerms = SearchData (new PermissionDE { UserId = mod.UserId, RouteId = route.Id, ClientId=mod.CltId });
                             if (userPerms != null && userPerms.Count > 0)
                             {
                                 perm.Id = userPerms[0].Id;
@@ -175,7 +188,7 @@ namespace QST.MicroERP.Services
                         }
                         if (mod.RoleId > 0)
                         {
-                            var userPerms = SearchData (new PermissionDE { RoleId = mod.RoleId, RouteId = feat.Id });
+                            var userPerms = SearchData (new PermissionDE { RoleId = mod.RoleId, RouteId = route.Id, ClientId = mod.CltId });
                             if (userPerms != null && userPerms.Count > 0)
                             {
                                 perm.Id = userPerms[0].Id;
@@ -197,7 +210,7 @@ namespace QST.MicroERP.Services
             }
             return retVal;
         }
-        public List<PermissionDE> GetPermsByUserOrRole ( string UserId, int RoleId )
+        public List<PermissionDE> GetPermsByUserOrRole ( string UserId, int RoleId, int ClientId )
         {
             List<PermissionDE> perms = new List<PermissionDE> ();
             try
@@ -207,17 +220,17 @@ namespace QST.MicroERP.Services
                 {
                     var userPerms = new List<PermissionDE> ();
                     var rolePerms = new List<PermissionDE> ();
-                    var perm = new PermissionDE ();
                     foreach (var route in routes)
                     {
-                        userPerms = SearchData (new PermissionDE { UserId = UserId, RouteId = route.Id });
+                        var perm = new PermissionDE ();
+                        userPerms = SearchData (new PermissionDE { UserId = UserId, RouteId = route.Id, ClientId=ClientId });
                         if (userPerms != null && userPerms.Count > 0 && userPerms[0].PermissionId > 0)
                         {
                                 perm = userPerms[0];
                         }
                         else
                         {
-                            rolePerms = SearchData (new PermissionDE { RoleId = RoleId, RouteId = route.Id });
+                            rolePerms = SearchData (new PermissionDE { RoleId = RoleId, RouteId = route.Id, ClientId = ClientId });
                             if (rolePerms != null && rolePerms.Count > 0)
                                 if (rolePerms[0].PermissionId > 0)
                                 {
@@ -229,6 +242,7 @@ namespace QST.MicroERP.Services
                             perm.RouteId = route.Id;
                             perm.Route = route.Name;
                             perm.IsActive = true;
+                            perm.ClientId = ClientId;
                             perm.UserId = UserId;
                             perm.RoleId = RoleId;
                             perm.IsReadOnly = null;
@@ -249,12 +263,26 @@ namespace QST.MicroERP.Services
             }
             return perms;
         }
-        public List<SettingsDE> GetRoutes ( )
+        public List<SettingsDE> GetRoutes (int? clientId=null )
         {
             List<SettingsDE> Routes = new List<SettingsDE> ();
             try
             {
+                if (clientId!=null && clientId > 0)
+                {
+                   
+                }
                 var menu = _stngSvc.SearchMenu ().OrderBy (x => x.ParentId).ToList ();
+                if (clientId != null && clientId > 0) 
+                {
+                    var client = _ctlSvc.SearchClients (new ClientDE { Id = (int)clientId }).FirstOrDefault ();
+                    if (client != null) 
+                    {
+                        menu = menu.Where (x => client.ModuleIds.ToStringList ().Contains(x.PParentId.ToString()) ||
+                         client.ModuleIds.ToStringList ().Contains (x.ParentId.ToString ()) ||
+                         client.ModuleIds.ToStringList ().Contains (x.Id.ToString ())).ToList();
+                    }                   
+                }
                 if (menu != null && menu.Count > 0)
                     foreach (var item in menu)
                     {

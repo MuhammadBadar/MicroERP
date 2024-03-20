@@ -29,7 +29,6 @@ namespace QST.MicroERP.WebAPI.Controllers.TMS
 
             return Ok(filteredValues);
         }
-
         [HttpGet("{id}")]
         public IActionResult GetusertaskById(int id)
         {
@@ -40,7 +39,6 @@ namespace QST.MicroERP.WebAPI.Controllers.TMS
             return Ok(list[0]);
 
         }
-
         [HttpPost("{Search}")]
         public ActionResult Search(TaskSearchCriteria usr)
         {
@@ -50,13 +48,13 @@ namespace QST.MicroERP.WebAPI.Controllers.TMS
         [HttpPost("IsDayStarted")]
         public ActionResult IsDayStarted(UserVM user)
         {
-            bool retVal = _tskSvc.IsDayStarted(user.Id);
+            bool retVal = _tskSvc.IsDayStarted(user.Id, user.ClientId);
             return Ok(retVal);
         }
         [HttpPost("HasTodaysTasks")]
         public ActionResult HasTasks(UserVM user)
         {
-            bool retVal = _tskSvc.HasTodaysTasks(user.Id);
+            bool retVal = _tskSvc.HasTodaysTasks(user.Id, user.ClientId);
             return Ok(retVal);
         }
         [HttpPost]
@@ -64,8 +62,8 @@ namespace QST.MicroERP.WebAPI.Controllers.TMS
         {
             foreach (var item in mod)
                 item.DBoperation = DBoperations.Insert;
-            bool usr = _tskSvc.ManageUserTask(mod, markAttendance, null);
-            return Ok(usr);
+            bool retVal = _tskSvc.ManageUserTask(mod, markAttendance, null);
+            return Ok(retVal);
         }
         [HttpPut]
         public ActionResult Put([FromBody] List<UserTaskDE> tasks, [FromQuery] bool markDayEnd)
@@ -73,10 +71,7 @@ namespace QST.MicroERP.WebAPI.Controllers.TMS
             foreach (var item in tasks)
                 item.DBoperation = DBoperations.Update;
             bool retVal = _tskSvc.ManageUserTask(tasks, null, markDayEnd);
-            if (retVal)
-                return Ok(tasks);
-            else
-                return BadRequest("Failed to update tasks");
+            return Ok();
         }
         [HttpPut("MarkStatus")]
         public ActionResult MarkStatus(TaskDE task)
@@ -84,6 +79,12 @@ namespace QST.MicroERP.WebAPI.Controllers.TMS
             task.DBoperation = DBoperations.Update;
             bool retVal = _tskSvc.ChangeTaskStatus(task);
             return Ok(retVal);
+        }
+        [HttpPost ("TaskActivities")]
+        public ActionResult GetTaskActivities ( TaskSearchCriteria mod )
+        {
+            var retVal = _tskSvc.GetTaskActivities (mod);
+            return Ok (retVal);
         }
     }
 }

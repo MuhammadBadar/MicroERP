@@ -13,16 +13,17 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using QST.MicroERP.Core.Constants;
+using System.Data;
+using QST.MicroERP.Core.Extensions;
 
 namespace QST.MicroERP.Service.SCH
 {
-    public class ScheduleService
+    public class ScheduleService:BaseService
     {
         #region Class Variables
         private ScheduleDAL _schDAL;
         private ScheduleDayEventDAL _schDayEventDAL;
-        private CoreDAL _corDAL;
-        private Logger _logger;
         private ScheduleDayEventService _schDayEvntSvc;
         private AttendanceDAL _attDAL;
         #endregion
@@ -32,22 +33,24 @@ namespace QST.MicroERP.Service.SCH
             _schDAL = new ScheduleDAL();
             _attDAL = new AttendanceDAL();
             _schDayEventDAL = new ScheduleDayEventDAL();
-            _corDAL = new CoreDAL();
-            _logger = LogManager.GetLogger("fileLogger");
             _schDayEvntSvc = new ScheduleDayEventService();
         }
         #endregion
         #region  Schedule
         public ScheduleDE ManageSchedule(ScheduleDE mod)
         {
-            bool retVal = false;
-            string message = "";
             bool closeConnectionFlag = false;
-            MySqlCommand? cmd = null;
+            bool retVal = false;
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection();
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
                 MicroERPDataContext.StartTransaction(cmd);
+                _entity = TableNames.SCH_Schedule.ToString (); 
+
                 if (mod.DBoperation == DBoperations.Update)
                 {
                     var inUse = IsScheInUse(mod);
@@ -62,13 +65,10 @@ namespace QST.MicroERP.Service.SCH
                         mod.DBoperation = DBoperations.Update;
                 }
                 if (mod.DBoperation == DBoperations.Insert)
-                {
-                    mod.Id = _corDAL.GetnextId(TableNames.SCH_Schedule.ToString());
-                    retVal = _schDAL.ManageSchedule(mod, cmd);
-                }
+                    mod.Id = _coreDAL.GetNextIdByClient (_entity, mod.ClientId, "ClientId");
                 int schDayId = 0;
-                schDayId = _corDAL.GetnextId(TableNames.SCH_ScheduleDay.ToString());
-                var schedules = SearchSchedule(new ScheduleDE { Id = mod.Id });
+                schDayId = _coreDAL.GetNextIdByClient (TableNames.SCH_ScheduleDay.ToString(), mod.ClientId, "ClientId");
+                var schedules = SearchSchedule(new ScheduleDE { Id = mod.Id,ClientId=mod.ClientId });
                 var sch = new ScheduleDE();
                 if (schedules != null && schedules.Count > 0) { sch = schedules[0]; }
 
@@ -85,7 +85,7 @@ namespace QST.MicroERP.Service.SCH
                         if (shouldDelete)
                         {
                             schDay.DBoperation = DBoperations.Delete;
-                            _schDAL.ManageScheduleDay(schDay, cmd);
+                            retVal = _schDAL.ManageScheduleDay(schDay, cmd);
                         }
                     }
                 }
@@ -103,31 +103,25 @@ namespace QST.MicroERP.Service.SCH
                         SchLine.Id = schDayId;
                         SchLine.DayId = day;
                         SchLine.SchId = mod.Id;
+                        SchLine.ClientId = mod.ClientId;
                         SchLine.DBoperation = DBoperations.Insert;
                         SchLine.IsActive = true;
                         retVal = _schDAL.ManageScheduleDay(SchLine, cmd);
                         schDayId += 1;
                     }
                 }
-                if (retVal == true)
+                retVal = _schDAL.ManageSchedule (mod, cmd);
+                if (retVal)
                 {
-                    if (mod.DBoperation == DBoperations.Insert)
-                        message = "Schedule Successfully Added";
-                    else if (mod.DBoperation == DBoperations.Update)
-                        message = "Schedule Successfully Updated";
-                    mod.HasErrors = false;
-                    _logger.Info(message);
+                    mod.AddSuccessMessage (string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                    _logger.Info ($"Success: " + string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                    mod.DayIds.Clear();
                 }
                 else
                 {
-                    if (mod.DBoperation == DBoperations.Insert)
-                        message = "Error Occurred while Saving the Schedule";
-                    else if (mod.DBoperation == DBoperations.Update)
-                        message = "Error Occurred while Updating the Schedule";
-                    mod.HasErrors = true;
-                    _logger.Error(message);
+                    mod.AddErrorMessage (string.Format (AppConstants.CRUD_ERROR, _entity));
+                    _logger.Info ($"Error: " + string.Format (AppConstants.CRUD_ERROR, _entity));
                 }
-                mod.ResponseMessage = message;
                 MicroERPDataContext.EndTransaction(cmd);
             }
             catch (Exception ex)
@@ -145,29 +139,34 @@ namespace QST.MicroERP.Service.SCH
         }
         public ScheduleDE CopySchedule(ScheduleDE mod)
         {
-            bool retVal = false;
-            string message = "";
             bool closeConnectionFlag = false;
-            MySqlCommand? cmd = null;
+            bool retVal = false;
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection();
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
                 MicroERPDataContext.StartTransaction(cmd);
+                _entity=TableNames.SCH_Schedule.ToString ();
+
                 if (mod.DBoperation == DBoperations.Insert)
                 {
-                    mod.Id = _corDAL.GetnextId(TableNames.SCH_Schedule.ToString());
+                    mod.Id = _coreDAL.GetNextIdByClient (_entity, mod.ClientId, "ClientId");
                     retVal = _schDAL.ManageSchedule(mod, cmd);
                 }
                 int schDayId = 0;
                 int dayEvtId = 0;
-                schDayId = _corDAL.GetnextId(TableNames.SCH_ScheduleDay.ToString());
-                dayEvtId = _corDAL.GetnextId(TableNames.SCH_ScheduleDayEvent.ToString());
+                schDayId = _coreDAL.GetNextIdByClient (TableNames.SCH_ScheduleDay.ToString (), mod.ClientId, "ClientId");
+                dayEvtId = _coreDAL.GetNextIdByClient (TableNames.SCH_ScheduleDayEvent.ToString (), mod.ClientId, "ClientId");
                 foreach (var day in mod.ScheduleDays)
                 {
                     var SchLine = new ScheduleDayDE();
                     SchLine.Id = schDayId;
                     SchLine.DayId = day.DayId;
                     SchLine.SchId = mod.Id;
+                    SchLine.ClientId = mod.ClientId;
                     SchLine.DBoperation = DBoperations.Insert;
                     SchLine.IsActive = true;
                     retVal = _schDAL.ManageScheduleDay(SchLine, cmd);
@@ -178,6 +177,7 @@ namespace QST.MicroERP.Service.SCH
                         evt.Id = dayEvtId;
                         evt.SchId = mod.Id;
                         evt.SchDayId = schDayId;
+                        evt.ClientId= mod.ClientId;
                         evt.StartTime = schEvt.StartTime;
                         evt.EndTime = schEvt.EndTime;
                         evt.IsActive = true;
@@ -186,25 +186,16 @@ namespace QST.MicroERP.Service.SCH
                         dayEvtId += 1;
                     }
                 }
-                if (retVal == true)
+                if (retVal)
                 {
-                    if (mod.DBoperation == DBoperations.Insert)
-                        message = "Schedule Successfully Added";
-                    else if (mod.DBoperation == DBoperations.Update)
-                        message = "Schedule Successfully Updated";
-                    mod.HasErrors = false;
-                    _logger.Info(message);
+                    mod.AddSuccessMessage (string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                    _logger.Info ($"Success: " + string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
                 }
                 else
                 {
-                    if (mod.DBoperation == DBoperations.Insert)
-                        message = "Error Occurred while Saving the Schedule";
-                    else if (mod.DBoperation == DBoperations.Update)
-                        message = "Error Occurred while Updating the Schedule";
-                    mod.HasErrors = true;
-                    _logger.Error(message);
+                    mod.AddErrorMessage (string.Format (AppConstants.CRUD_ERROR, _entity));
+                    _logger.Info ($"Error: " + string.Format (AppConstants.CRUD_ERROR, _entity));
                 }
-                mod.ResponseMessage = message;
                 MicroERPDataContext.EndTransaction(cmd);
             }
             catch (Exception ex)
@@ -222,19 +213,24 @@ namespace QST.MicroERP.Service.SCH
         }
         public List<ScheduleDE> SearchSchedule(ScheduleDE mod)
         {
-            List<ScheduleDE> list = new List<ScheduleDE>();
             bool closeConnectionFlag = false;
-            MySqlCommand? cmd = null;
+            List<ScheduleDE> list = new List<ScheduleDE>();
+
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection();
-                MicroERPDataContext.StartTransaction(cmd);
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
 
                 #region Search
 
                 string whereClause = " Where 1=1";
                 if (mod.Id != default && mod.Id != 0)
                     whereClause += $" AND Id={mod.Id}";
+                if (mod.ClientId != default && mod.ClientId != 0)
+                    whereClause += $" AND ClientId={mod.ClientId}";
                 if (mod.UserId != default && mod.UserId != null)
                     whereClause += $" AND UserId=\"{mod.UserId}\"";
                 if (mod.IsActive != default)
@@ -249,7 +245,7 @@ namespace QST.MicroERP.Service.SCH
             }
             catch (Exception exp)
             {
-                MicroERPDataContext.CancelTransaction(cmd);
+                _logger.Error ("Error:" + exp);
                 throw;
             }
             finally
@@ -261,19 +257,22 @@ namespace QST.MicroERP.Service.SCH
         }
         public bool ManageScheduleDay(ScheduleDayDE schDay)
         {
-            bool retVal = false;
             bool closeConnectionFlag = false;
-            MySqlCommand? cmd = null;
+            bool retVal = false;
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection();
-                closeConnectionFlag = true;
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
 
                 if (schDay.DBoperation == DBoperations.Insert)
-                    schDay.Id = _corDAL.GetnextId(TableNames.SCH_ScheduleDay.ToString());
+                    schDay.Id = _coreDAL.GetNextIdByClient (TableNames.SCH_ScheduleDay.ToString (), schDay.ClientId, "ClientId");
+
                 if (schDay.DBoperation == DBoperations.Delete)
                 {
-                    var schDayEvents = _schDayEvntSvc.GetScheduleDayEvents(schDay.Id);
+                    var schDayEvents = _schDayEvntSvc.GetScheduleDayEvents(schDay.Id, schDay.ClientId);
                     foreach (var schDayEvent in schDayEvents)
                     {
                         schDayEvent.DBoperation = DBoperations.Delete;
@@ -294,7 +293,7 @@ namespace QST.MicroERP.Service.SCH
                     MicroERPDataContext.CloseMySqlConnection(cmd);
             }
         }
-        public ScheduleDE GetScheduleByUserId(string userId)
+        public ScheduleDE GetScheduleByUserId(string userId, int ClientId)
         {
             ScheduleDE sch = new ScheduleDE();
             sch.HasErrors = true;
@@ -302,7 +301,7 @@ namespace QST.MicroERP.Service.SCH
             {
                 string whereClause = " Where 1=1";
                 if (!string.IsNullOrWhiteSpace(userId))
-                    whereClause += $" AND UserId=\"{userId}\" AND IsActive ={true}";
+                    whereClause += $" AND UserId=\"{userId}\" and ClientId={ClientId} AND IsActive ={true}";
                 var list = _schDAL.SearchSchedule(whereClause);
                 if (list.Count > 0)
                     sch = list.LastOrDefault();
@@ -314,17 +313,13 @@ namespace QST.MicroERP.Service.SCH
                 _logger.Error(ex);
                 throw;
             }
-            finally
-            {
-                // Close the database connection if necessary
-            }
             sch.UserId = userId;
             return sch;
         }
         public ScheduleDE GetSchWithDays(ScheduleDE sch)
         {
             string whereClause = "where 1=1";
-            sch.ScheduleDays = _schDAL.SearchScheduleDay(whereClause += $" AND SchId={sch.Id} AND IsActive ={true}");
+            sch.ScheduleDays = _schDAL.SearchScheduleDay(whereClause += $" AND SchId={sch.Id} and ClientId="+sch.ClientId+" AND IsActive =true");
             if (sch.ScheduleDays != null && sch.ScheduleDays.Count > 0)
             {
                 foreach (var schDay in sch.ScheduleDays)
@@ -333,7 +328,7 @@ namespace QST.MicroERP.Service.SCH
                     {
                         sch.DayIds.Add((int)schDay.DayId);
                         whereClause = "where 1=1";
-                        schDay.ScheduleDayEvents = _schDAL.SearchScheduleDayEvent(whereClause += $" AND SchDayId={schDay.Id} AND IsActive ={true}");
+                        schDay.ScheduleDayEvents = _schDAL.SearchScheduleDayEvent(whereClause += $" AND SchDayId={schDay.Id} and ClientId="+sch.ClientId+" AND IsActive =true");
                         foreach (var schDayEvent in schDay.ScheduleDayEvents)
                         {
                             schDay.Location = schDayEvent.Location;
@@ -346,28 +341,32 @@ namespace QST.MicroERP.Service.SCH
                                     schDayEvent.Sp = Math.Round(timeDifference.TotalHours, 2);
                                 }
                             }
-                            string eventString = $"{schDayEvent.StartTime} - {schDayEvent.EndTime} ({schDayEvent.Sp} Sp's) {schDayEvent.EventType} {schDayEvent.Location}";
+                            string eventString = $"{schDayEvent.StartTime} - {schDayEvent.EndTime} ({schDayEvent.Sp} Hr) {schDayEvent.EventType} {schDayEvent.Location}";
                             if (schDayEvent != schDay.ScheduleDayEvents.Last())
                                 eventString += " , ";
                             schDay.SchDayEvents += eventString;
                         }
                     }
+                    if (schDay.WorkTime != null && schDay.WorkTime != "")
+                        schDay.SchDayType = (int)ScheduleDayTypes.FlexibleHoursSchDay;
+                    else if(schDay.ScheduleDayEvents.Count>0)
+                        schDay.SchDayType = (int)ScheduleDayTypes.FixedHoursSchDay;
                 }
             }
             return sch;
         }
-        public ScheduleDayDE GetSchDayByUserId(string userId, DateTime date)
+        public ScheduleDayDE GetSchDayByUserId(string userId,int clientId, DateTime date)
         {
             ScheduleDayDE schDay = new ScheduleDayDE();
             ScheduleDE sch = new ScheduleDE();
             try
             {
-                var list = SearchSchedule(new ScheduleDE { UserId = userId, IsActive = true });
+                var list = SearchSchedule(new ScheduleDE { UserId = userId, IsActive = true, ClientId=clientId });
 
                 if (list != null && list.Count > 0)
                     sch = list.LastOrDefault();
                 string whereClause = "where 1=1";
-                var days = _schDAL.SearchScheduleDay(whereClause += $" AND SchId={sch.Id} " +
+                var days = _schDAL.SearchScheduleDay(whereClause += $" AND SchId={sch.Id} and ClientId={clientId} " +
                   $" and DAY =  ''" + date.DayOfWeek + "''");
 
                 if (days != null && days.Count > 0)
@@ -378,18 +377,14 @@ namespace QST.MicroERP.Service.SCH
                 _logger.Error(ex);
                 throw;
             }
-            finally
-            {
-
-            }
             return schDay;
         }
-        public List<ScheduleDayEventDE> GetDayEvents(int? SchDayId)
+        public List<ScheduleDayEventDE> GetDayEvents(int? SchDayId, int ClientId)
         {
             try
             {
                 string whereClause = "where 1=1";
-                return _schDAL.SearchScheduleDayEvent(whereClause += $" AND SchDayId={SchDayId} ");
+                return _schDAL.SearchScheduleDayEvent(whereClause += $" AND SchDayId={SchDayId} and ClientId=" + ClientId + " ");
             }
             catch (Exception ex)
             {
@@ -400,18 +395,22 @@ namespace QST.MicroERP.Service.SCH
         public bool IsScheInUse(ScheduleDE sch)
         {
             bool inUse = false;
-            var att = _attDAL.SearchAttendance($"where SchId={sch.Id}");
+            var att = _attDAL.SearchAttendance($"where SchId={sch.Id} and ClientId={sch.ClientId}");
             if (att != null && att.Count > 0)
                 inUse = true;
             return inUse;
         }
         public ScheduleDE UpdateSchedule(ScheduleDE Schedule)
         {
-            MySqlCommand? cmd = null;
+            bool closeConnectionFlag = false;
             var sch = new ScheduleDE();
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection();
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
                 var inUse = IsScheInUse(Schedule);
                 if (inUse)
                 {
@@ -431,7 +430,101 @@ namespace QST.MicroERP.Service.SCH
                 _logger.Error(ex);
                 throw;
             }
+            finally
+            {
+                if (closeConnectionFlag)
+                    MicroERPDataContext.CloseMySqlConnection (cmd);
+            }
             return sch;
+        }
+        public double GetDueSPs ( string user,int clientId, DateTime inputDate )
+        {
+            double dueSPs = 0.00;
+            string schTimes = GetScheduleTime (user, clientId, inputDate);
+            var timeIntervals = schTimes.Split (',');
+            foreach (var timeInterval in timeIntervals)
+            {
+                var times = timeInterval.Split ("-");
+                if (times.Length > 1)
+                {
+                    {
+                        var timeParts = times[0].Split (':');
+                        TimeSpan startTime = new TimeSpan (Convert.ToInt32 (timeParts[0]), Convert.ToInt32 (timeParts[1]), 0);
+
+                        timeParts = times[1].Split (':');
+                        TimeSpan endTime = new TimeSpan (Convert.ToInt32 (timeParts[0]), Convert.ToInt32 (timeParts[1]), 0);
+
+                        dueSPs += (endTime - startTime).TotalHours;
+                    }
+                }
+                else if (times != null && times.Length > 0 && times[0]!="")
+                    return Double.Parse( times[0]);
+            }
+            return dueSPs;
+        }
+        public string GetScheduleTime ( string userId,int clientId, DateTime inputDate )
+        {
+            string dayEvents = string.Empty;
+            var userSchedule = GetScheduleByUserId (userId, clientId);
+            int dayOfWeekId = (int)inputDate.DayOfWeek;
+            int dayId = -1;
+            switch (dayOfWeekId)
+            {
+                // Map days of the week to specific IDs
+                case 0: dayId = (int)WeekDays.Sunday; break; // Sunday
+                case 1: dayId = (int)WeekDays.Monday; break; // Monday
+                case 2: dayId = (int)WeekDays.Tuesday; break; // Tuesday
+                case 3: dayId = (int)WeekDays.Wednesday; break; // Wednesday
+                case 4: dayId = (int)WeekDays.Thursday; break; // Thursday
+                case 5: dayId = (int)WeekDays.Friday; break; // Friday
+                case 6: dayId = (int)WeekDays.Saturday; break; // Saturday
+            }
+            var daySchedule = userSchedule.ScheduleDays.Where (m => m.DayId == dayId).FirstOrDefault ();
+            if (daySchedule != null)
+            {
+                if(daySchedule.WorkTime!=null && daySchedule.WorkTime!="")
+                    return daySchedule.WorkTime;
+                foreach (var eventDetail in daySchedule.ScheduleDayEvents)
+                {
+                    dayEvents += eventDetail.StartTime + " - " + eventDetail.EndTime + " ,";
+                }
+                if (!string.IsNullOrEmpty (dayEvents))
+                    dayEvents = dayEvents.TrimEnd (',', ' '); 
+            }
+            return dayEvents;
+        }
+        public (string, string) GetScheduleandDueTimeStr (string userId, int dayId, int clientId, DateTime date )
+        {
+            string schTime = String.Empty;
+            string dueTime = String.Empty;
+            if (dayId > 0)
+            {
+                var schEvents = GetDayEvents (dayId, clientId);
+                if (schEvents != null && schEvents.Count > 0)
+                {
+                    TimeSpan dueSps = new TimeSpan ();
+                    foreach (var schEvt in schEvents)
+                    {
+                        #region ScheduleTime 
+                        schTime += schEvt.StartTime.ToString () + " - " + schEvt.EndTime.ToString ();
+                        if (schEvt != schEvents.Last ())
+                            schTime += ",";
+                        schTime += Environment.NewLine;
+                        #endregion
+                        #region DueTime
+                        dueSps += (TimeSpan.Parse (schEvt.EndTime)) - (TimeSpan.Parse (schEvt.StartTime));
+                        dueTime = dueSps.TotalHours.ToHHMMSS();
+                        #endregion
+                    }
+                }
+                else
+                {
+                    var schDay = GetSchDayByUserId (userId, clientId, date);
+                    if (schDay != null)
+                        dueTime = Double.Parse((schDay.WorkTime?? String.Empty)).ToHHMMSS();
+                }
+            }
+            return (schTime, dueTime);
         }
         #endregion
     }

@@ -1,0 +1,47 @@
+
+table {
+    width: 100;
+    z-index: 1;
+}
+
+
+td.mat-column-star {
+    width: 20%;
+    padding-right: 8px;
+}
+
+th.mat-column-position,
+td.mat-column-position {
+    padding-left: 8px;
+}
+
+.mat-mdc-table-sticky-border-elem-right {
+    border-left: 1px solid #e0e0e0;
+}
+
+.mat-mdc-table-sticky-border-elem-left {
+    border-right: 1px solid #e0e0e0;
+}
+
+th {
+    font-weight: normal;
+color: white;
+text-align: center;
+}
+td{
+    text-align: center;
+}
+ .mat-checkbox-frame {
+  border-color: white
+}
+#check {
+border-color: white;
+border-radius: 7px;
+background-color: white;
+}
+
+
+
+
+
+

@@ -14,6 +14,6 @@ namespace QST.MicroERP.Core.ViewModel
         public string? User { get; set; }
         public string? UserId { get; set; }
         public string? Comment { get; set; }
-        public DateTime Datetime { get; set; }
+        public DateTime Time { get; set; }
     }
 }

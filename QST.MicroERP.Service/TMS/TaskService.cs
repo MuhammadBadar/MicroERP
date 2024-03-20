@@ -17,16 +17,17 @@ using QST.MicroERP.DAL.TMS;
 using QST.MicroERP.Core.Entities.TMS;
 using QST.MicroERP.DAL.CTL;
 using QST.MicroERP.Core.Entities.SEC;
+using QST.MicroERP.Core.Constants;
+using System.Data;
 
 namespace QST.MicroERP.Service.TMS
 {
-    public class TaskService
+    public class TaskService : BaseService
     {
 
         #region Class Members/Class Variables
         private readonly string AppDirectory = Path.Combine (Directory.GetCurrentDirectory (), "wwwroot");
         private TaskDAL _taskDAL;
-        private CoreDAL _corDAL;
         private UserService _userSvc;
 
         #endregion
@@ -34,7 +35,6 @@ namespace QST.MicroERP.Service.TMS
         public TaskService ( )
         {
             _taskDAL = new TaskDAL ();
-            _corDAL = new CoreDAL ();
             _userSvc = new UserService ();
         }
 
@@ -42,63 +42,93 @@ namespace QST.MicroERP.Service.TMS
         #region Task
         public TaskDE ManagementTask ( TaskDE mod )
         {
-            MySqlCommand cmd = null;
             int fileId = 0;
+            bool closeConnectionFlag = false;
             try
             {
                 mod.HasErrors = false;
                 bool check = true;
-                cmd = MicroERPDataContext.OpenMySqlConnection ();
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
                 MicroERPDataContext.StartTransaction (cmd);
+                _entity = TableNames.TMS_Task.ToString ();
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetnextId (TableNames.TMS_Task.ToString ());
+                    mod.Id = _coreDAL.GetNextIdByClient (_entity, mod.ClientId, "ClientId");
                 if (mod.Id == 1)
                     mod.Id = 1001;
-                check = _taskDAL.ManageTask (mod);
-                fileId= _corDAL.GetnextId (TableNames.TMS_Attachments.ToString ());
-                foreach (var file in mod.Attachments)
+
+                _logger.Info ($"Going to Call:_taskDAL.ManageTask (mod)");
+                if (_taskDAL.ManageTask (mod))
                 {
-                    if (!Directory.Exists (AppDirectory))
-                        Directory.CreateDirectory (AppDirectory);
-                    var FileName = DateTime.Now.Ticks.ToString () + Path.GetExtension (file.Name);
-                    var path = Path.Combine (AppDirectory, FileName);
-                    file.DocPath = path;
-                    file.TaskId = mod.Id;
-                    file.DBoperation = mod.DBoperation;
-                    check = _taskDAL.ManageAttachments (file);
-                    if (file.DBoperation == DBoperations.Insert)
-                        fileId += 1;
+                    mod.AddSuccessMessage (string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                    _logger.Info ($"Success: " + string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+
+                    _entity = TableNames.TMS_Attachments.ToString ();
+                    fileId = _coreDAL.GetNextIdByClient (TableNames.TMS_Attachments.ToString (), mod.ClientId, "ClientId");
+                    foreach (var file in mod.Attachments)
+                    {
+                        if (!Directory.Exists (AppDirectory))
+                            Directory.CreateDirectory (AppDirectory);
+                        var FileName = DateTime.Now.Ticks.ToString () + Path.GetExtension (file.Name);
+                        var path = Path.Combine (AppDirectory, FileName);
+                        if(file.DBoperation==DBoperations.Insert)
+                        file.Id = fileId;
+                        file.DocPath = path;
+                        file.TaskId = mod.Id;
+                        file.ClientId = mod.ClientId;
+                       // file.DBoperation = mod.DBoperation;
+                        _logger.Info ($"Going to Call:_taskDAL.ManageAttachments (file)");
+                        if (_taskDAL.ManageAttachments (file))
+                        {
+                            file.AddSuccessMessage (string.Format (AppConstants.CRUD_DB_OPERATION, _entity, file.DBoperation.ToString ()));
+                            _logger.Info ($"Success: " + string.Format (AppConstants.CRUD_DB_OPERATION, _entity, file.DBoperation.ToString ()));
+                        }
+                        else
+                        {
+                            file.AddErrorMessage (string.Format (AppConstants.CRUD_ERROR, _entity));
+                            _logger.Info ($"Error: " + string.Format (AppConstants.CRUD_ERROR, _entity));
+                        }
+
+                        if (file.DBoperation == DBoperations.Insert)
+                            fileId += 1;
+                    }
                 }
-                if (check == true)
+                else
                 {
-                    mod.HasErrors = false;
-                    mod.DBoperation = DBoperations.NA;
+                    mod.AddErrorMessage (string.Format (AppConstants.CRUD_ERROR, _entity));
+                    _logger.Info ($"Error: " + string.Format (AppConstants.CRUD_ERROR, _entity));
                 }
 
                 MicroERPDataContext.EndTransaction (cmd);
             }
-            catch
+            catch (Exception ex)
             {
-                mod.HasErrors = true;
+                _logger.Error (ex);
                 MicroERPDataContext.CancelTransaction (cmd);
+                throw;
             }
             finally
             {
-                if (cmd != null)
+                if (closeConnectionFlag)
                     MicroERPDataContext.CloseMySqlConnection (cmd);
             }
             return mod;
-
         }
         public List<UserTaskVM> SearchUserTasks ( TaskSearchCriteria mod )
         {
             List<UserTaskVM> tasks = new List<UserTaskVM> ();
             bool closeConnectionFlag = false;
-            MySqlCommand cmd = null;
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection ();
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
 
                 #region Search
 
@@ -107,6 +137,8 @@ namespace QST.MicroERP.Service.TMS
                 whereClause = "where 1=1 ";
                 if (mod.Id != default)
                     whereClause += $" AND Id={mod.Id}";
+                if (mod.ClientId != default && mod.ClientId != 0)
+                    whereClause += $" AND ClientId={mod.ClientId}";
                 if (mod.IsActive != default)
                     whereClause += $" AND IsActive={mod.IsActive}";
                 if (mod.UserId != default)
@@ -146,10 +178,8 @@ namespace QST.MicroERP.Service.TMS
                     float y = 100;
                     if (line.ClaimPercent > 0)
                     {
-
                         if (line.ApprovedClaimId > 0)
                             line.ClaimPercent = line.ApprovedClaim;
-                        line.RemainingSPs = (float)Math.Round (line.SP - line.ClaimPercent / y * line.SP, 2);
                     }
                     else
                     {
@@ -157,16 +187,16 @@ namespace QST.MicroERP.Service.TMS
                             line.LastClaim = line.ApprovedClaim;
                         line.ClaimId = line.LastClaimId;
                         line.ClaimPercent = line.LastClaim;
-                        line.RemainingSPs = (float)Math.Round (line.SP - line.LastClaim / y * line.SP, 2);
                     }
-                    line.Attachments = _taskDAL.SearchAttachments (whereClause += $" AND TaskId={line.Id}");
+                    line.RemainingSPs = Math.Round (line.SP - ((line.ClaimPercent / y) * line.SP), 2);
                 }
 
                 #endregion
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.Error (ex);
                 throw;
             }
             finally
@@ -181,11 +211,13 @@ namespace QST.MicroERP.Service.TMS
             List<TaskDE> tasks = new List<TaskDE> ();
             List<AttachmentsDE> attchmt = new List<AttachmentsDE> ();
             bool closeConnectionFlag = false;
-            MySqlCommand cmd = null;
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection ();
-                //MicroERPDataContext.StartTransaction (cmd);
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
 
                 #region Search
 
@@ -194,8 +226,8 @@ namespace QST.MicroERP.Service.TMS
                 whereClause = "where 1=1";
                 if (mod.Id != default)
                     whereClause += $" AND Id={mod.Id}";
-                if (mod.UserId != default)
-                    whereClause += $" AND UserId like ''{mod.UserId}''";
+                if (mod.ClientId != default && mod.ClientId != 0)
+                    whereClause += $" AND ClientId={mod.ClientId}";
                 if (mod.ModuleId != default)
                     whereClause += $" AND ModuleId={mod.ModuleId}";
                 if (mod.StatusId != default)
@@ -226,13 +258,19 @@ namespace QST.MicroERP.Service.TMS
                 {
                     var user = new UserDE ();
                     user.Id = mod.UserId;
+                    user.ClientId = mod.ClientId;
                     var subordinateUsers = _userSvc.GetSubordinates (user);
 
                     if (subordinateUsers.Count > 0)
                     {
                         string subordinateIds = string.Join ("'',''", subordinateUsers.Select (x => x.Id));
-                        whereClause += $" or UserId IN (''{subordinateIds}'')";
+                        whereClause += $" and (UserId like ''" + mod.UserId + "'' or UserId IN (''" + subordinateIds + "''))";
                     }
+                }
+                else
+                {
+                    if (mod.UserId != default)
+                        whereClause += $" AND UserId like ''{mod.UserId}''";
                 }
                 var result = _taskDAL.SearchTasks (whereClause, TaskReturnTypes.Task.ToString ());
                 tasks = result.Tasks;
@@ -240,16 +278,15 @@ namespace QST.MicroERP.Service.TMS
                 whereClause = "where 1=1";
                 foreach (var line in tasks)
                 {
-                    line.Attachments = _taskDAL.SearchAttachments (whereClause += $" AND TaskId={line.Id}");
+                    line.Attachments = _taskDAL.SearchAttachments (whereClause += $" AND TaskId={line.Id} and ClientId=" + line.ClientId + "");
                 }
 
                 #endregion
 
-                //MicroERPDataContext.EndTransaction (cmd);
             }
-            catch (Exception exp)
+            catch (Exception ex)
             {
-                //MicroERPDataContext.CancelTransaction (cmd);
+                _logger.Error (ex);
                 throw;
             }
             finally
@@ -277,6 +314,7 @@ namespace QST.MicroERP.Service.TMS
             //retVal = retVal.Where (x => x.ClaimId != 1013001).ToList ();
             return retVal;
         }
+
         #endregion
     }
 }

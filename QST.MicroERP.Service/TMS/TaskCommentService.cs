@@ -12,63 +12,81 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using QST.MicroERP.Core.Constants;
+using System.Data;
 
 namespace QST.MicroERP.Service.TMS
 {
-    public class TaskCommentService
+    public class TaskCommentService:BaseService
     {
 
         #region Class Members/Class Variables
 
         private TaskCommentDAL _taskDAL;
-        private CoreDAL _corDAL;
 
         #endregion
         #region Constructors
         public TaskCommentService ( )
         {
             _taskDAL = new TaskCommentDAL ();
-            _corDAL = new CoreDAL ();
         }
 
         #endregion
         #region TaskComment
         public bool ManagementTaskComment ( TaskCommentDE mod )
         {
-            MySqlCommand cmd = null;
+            bool closeConnectionFlag = false;
             try
             {
-                bool check = true;
-                cmd = MicroERPDataContext.OpenMySqlConnection ();
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
+                _entity = TableNames.TMS_TaskComment.ToString ();
 
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetnextId (TableNames.TMS_TaskComment.ToString ());
-                check = _taskDAL.ManageTaskComment (mod);
-                if (check == true)
-                    mod.DBoperation = DBoperations.NA;
+                {
+                    mod.Id = _coreDAL.GetNextIdByClient (TableNames.TMS_TaskComment.ToString (), mod.ClientId, "ClientId");
+                    mod.Time = DateTime.Now;
+                }
+
+                _logger.Info ($"Going to Call:_taskDAL.ManageTaskComment (mod)");
+                if (_taskDAL.ManageTaskComment (mod))
+                {
+                    mod.AddSuccessMessage (string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                    _logger.Info ($"Success: " + string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                    return true;
+                }
+                else
+                {
+                    mod.AddErrorMessage (string.Format (AppConstants.CRUD_ERROR, _entity));
+                    _logger.Info ($"Error: " + string.Format (AppConstants.CRUD_ERROR, _entity));
+                    return false;
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                MicroERPDataContext.CancelTransaction (cmd);
+                _logger.Error (ex);
+                throw;
             }
             finally
             {
-                if (cmd != null)
+                if (closeConnectionFlag)
                     MicroERPDataContext.CloseMySqlConnection (cmd);
             }
-            return true;
-
         }
         public List<TaskCommentVM> SearchTaskComments ( TaskCommentSearchCriteria mod )
         {
-            List<TaskCommentVM> Task = new List<TaskCommentVM> ();
             bool closeConnectionFlag = false;
-            MySqlCommand cmd = null;
+            List<TaskCommentVM> Task = new List<TaskCommentVM> ();
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection ();
-                MicroERPDataContext.StartTransaction (cmd);
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
 
                 #region Search
 
@@ -77,6 +95,8 @@ namespace QST.MicroERP.Service.TMS
                     whereClause += $" AND Id={mod.Id}";
                 if (mod.TaskId != default)
                     whereClause += $" AND TaskId={mod.TaskId}";
+                if (mod.ClientId != default && mod.ClientId != 0)
+                    whereClause += $" AND ClientId={mod.ClientId}";
                 if (mod.Comment != default)
                     whereClause += $" AND Comment like ''{mod.Comment}''";
                 if (mod.User != default)
@@ -88,13 +108,11 @@ namespace QST.MicroERP.Service.TMS
                 Task = _taskDAL.SearchTaskComments (whereClause);
 
                 #endregion
-
-                MicroERPDataContext.EndTransaction (cmd);
             }
-            catch (Exception exp)
+            catch (Exception ex)
             {
-                MicroERPDataContext.CancelTransaction (cmd);
-                throw exp;
+                _logger.Error (ex);
+                throw;
             }
             finally
             {

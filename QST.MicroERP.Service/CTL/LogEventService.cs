@@ -9,40 +9,54 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using QST.MicroERP.Core.Entities.ATT;
+using QST.MicroERP.Core.Constants;
+using System.Data;
 
 namespace QST.MicroERP.Service.CLT
 {
-    public class LogEventService
+    public class LogEventService:BaseService
     {
         #region Class Members/Class Variables
 
         private LogEventDAL _LogEventDAL;
-        private CoreDAL _corDAL;
-        private Logger _logger;
 
         #endregion
         #region Constructors
         public LogEventService()
         {
             _LogEventDAL = new LogEventDAL();
-            _corDAL = new CoreDAL();
-            _logger = LogManager.GetLogger("fileLogger");
         }
         #endregion
         #region LogEvent
         public bool ManagementLogEvent(LogEventDE mod)
         {
-            bool retVal = false;
-            MySqlCommand cmd = null;
+            bool closeConnectionFlag = false;
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection();
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
+                _entity = TableNames.CTL_LogEvent.ToString ();
+
                 if (mod.DBoperation == DBoperations.Insert)
-                    mod.Id = _corDAL.GetnextId(TableNames.CTL_LogEvent.ToString());
-                retVal = _LogEventDAL.ManageLogEvent(mod, cmd);
-                if (retVal == true)
-                    mod.DBoperation = DBoperations.NA;
-                return retVal;
+                    mod.Id = _coreDAL.GetNextIdByClient (_entity, mod.ClientId, "ClientId");
+
+                _logger.Info ($"Going to Call: _LogEventDAL.ManageLogEvent(mod, cmd)");
+                if (_LogEventDAL.ManageLogEvent (mod, cmd))
+                {
+                    mod.AddSuccessMessage (string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                    _logger.Info ($"Success: " + string.Format (AppConstants.CRUD_DB_OPERATION, _entity, mod.DBoperation.ToString ()));
+                    return true;
+                }
+                else
+                {
+                    mod.AddErrorMessage (string.Format (AppConstants.CRUD_ERROR, _entity));
+                    _logger.Info ($"Error: " + string.Format (AppConstants.CRUD_ERROR, _entity));
+                    return false;
+                }
             }
             catch (Exception ex)
             {
@@ -51,24 +65,29 @@ namespace QST.MicroERP.Service.CLT
             }
             finally
             {
-                if (cmd != null)
+                if (closeConnectionFlag)
                     MicroERPDataContext.CloseMySqlConnection(cmd);
             }
         }
         public List<LogEventDE> SearchLogEvents(LogEventDE mod)
         {
-            List<LogEventDE> LogEvents = new List<LogEventDE>();
             bool closeConnectionFlag = false;
-            MySqlCommand cmd = null;
+            List<LogEventDE> LogEvents = new List<LogEventDE>();
             try
             {
-                cmd = MicroERPDataContext.OpenMySqlConnection();
-                closeConnectionFlag = true;
+                if (cmd == null || cmd.Connection.State != ConnectionState.Open)
+                {
+                    cmd = MicroERPDataContext.OpenMySqlConnection ();
+                    closeConnectionFlag = true;
+                }
+
                 #region Search
 
                 string whereClause = " Where 1=1";
                 if (mod.Id != default && mod.Id != 0)
                     whereClause += $" AND Id={mod.Id}";
+                if (mod.ClientId != default && mod.ClientId != 0)
+                    whereClause += $" AND ClientId={mod.ClientId}";
                 if (mod.UserId != default && mod.UserId != "")
                     whereClause += $" AND UserId like ''" + mod.UserId + "''";
                 if (mod.Date.HasValue)
@@ -91,12 +110,12 @@ namespace QST.MicroERP.Service.CLT
             }
             return LogEvents;
         }
-        public bool MarkOutTime(string UserId)
+        public bool MarkOutTime(string UserId, int ClientId)
         {
             bool retVal = false;
             try
             {
-                string whereClause = "WHERE UserId like ''" + UserId + "'' ORDER BY Id DESC LIMIT 1";
+                string whereClause = "WHERE UserId like ''" + UserId + "''and ClientId="+ClientId+" ORDER BY Id DESC LIMIT 1";
                 var events = _LogEventDAL.SearchLogEvent(whereClause);
                 if (events != null && events.Count > 0)
                 {
@@ -117,7 +136,7 @@ namespace QST.MicroERP.Service.CLT
 
             }
         }
-        public void MarkInTime(string UserId)
+        public void MarkInTime(string UserId, int ClientId )
         {
             try
             {
@@ -126,6 +145,7 @@ namespace QST.MicroERP.Service.CLT
                 _event.Date = DateTime.Now;
                 _event.UserId = UserId;
                 _event.IsActive = true;
+                _event.ClientId=ClientId;
                 _event.DBoperation = DBoperations.Insert;
                 ManagementLogEvent(_event);
             }

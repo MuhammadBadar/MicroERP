@@ -42,16 +42,16 @@ namespace QST.MicroERP.WebAPI.Controllers.CTL
             List<LogEventDE> values = _LogEventSVC.SearchLogEvents(Search);
             return Ok(values);
         }
-        [HttpGet("MarkInTime/{userId}")]
-        public ActionResult MarkInTime(string userId)
+        [HttpPost("MarkInTime")]
+        public ActionResult MarkInTime(LogEventDE logEvent)
         {
-            _LogEventSVC.MarkInTime(userId);
+            _LogEventSVC.MarkInTime(logEvent.UserId, logEvent.ClientId);
             return Ok();
         }
-        [HttpGet("MarkOutTime/{userId}")]
-        public ActionResult MarkOutTime(string userId)
+        [HttpPost("MarkOutTime")]
+        public ActionResult MarkOutTime( LogEventDE logEvent )
         {
-            bool LogEvent = _LogEventSVC.MarkOutTime(userId);
+            bool LogEvent = _LogEventSVC.MarkOutTime(logEvent.UserId, logEvent.ClientId);
             return Ok(LogEvent);
         }
         [HttpPost]

@@ -162,7 +162,12 @@ namespace QST.MicroERP.WebAPI.Controllers.SEC
             List<UserDE> users = _userSvc.GetSupervisor(Search);
             return Ok(users);
         }
-
+        [HttpPost ("GetUserWithSubordinates")]
+        public ActionResult GetUserWithSubordinates ( UserDE Search )
+        {
+            List<UserDE> users = _userSvc.GetUserWithSubordinates (Search);
+            return Ok (users);
+        }
     }
 }
 

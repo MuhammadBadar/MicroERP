@@ -50,6 +50,18 @@
     <ProjectReference Include="..\QST.MicroERP.DAL\QST.MicroERP.DAL.csproj" />
     <ProjectReference Include="..\QST.MicroERP.Scheduling\QST.MicroERP.Scheduling.csproj" />
     <ProjectReference Include="..\QST.MicroERP.Service\QST.MicroERP.Service.csproj" />
+  </ItemGroup> 
+	
+	
+	
+	
+	
+	
+	
+	
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

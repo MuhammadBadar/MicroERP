@@ -8,7 +8,7 @@ namespace QST.MicroERP.Core.Enums
 {
     public enum Priority
     {
-        Emergency = 1011001,
+        Emergency = 1108001,
         Highest,
         High,
         Medium,

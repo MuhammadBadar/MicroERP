@@ -3,6 +3,7 @@ using QST.MicroERP.Core.Entities.Security;
 using QST.MicroERP.DAL.IDAL;
 using MySql.Data.MySqlClient;
 using System.Data;
+using QST.MicroERP.Core.Constants;
 
 namespace QST.MicroERP.DAL
 {
@@ -23,18 +24,19 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                cmd.CommandText = "ManagePermission";
-                cmd.Parameters.AddWithValue ("@id", Perm.Id);
-                cmd.Parameters.AddWithValue ("@routeId", Perm.RouteId);
-                cmd.Parameters.AddWithValue ("@userId", Perm.UserId);
-                cmd.Parameters.AddWithValue ("@roleId", Perm.RoleId);
-                cmd.Parameters.AddWithValue ("@permissionId", Perm.PermissionId);
-                cmd.Parameters.AddWithValue ("@createdOn", Perm.CreatedOn);
-                cmd.Parameters.AddWithValue ("@createdById", Perm.CreatedById);
-                cmd.Parameters.AddWithValue ("@modifiedOn", Perm.ModifiedOn);
-                cmd.Parameters.AddWithValue ("@modifiedById", Perm.ModifiedById);
-                cmd.Parameters.AddWithValue ("@isActive", Perm.IsActive);
-                cmd.Parameters.AddWithValue ("@DBoperation", Perm.DBoperation.ToString ());
+                cmd.CommandText = SPNames.SEC_Manage_Permission.ToString ();
+                cmd.Parameters.AddWithValue ("@prm_id", Perm.Id);
+                cmd.Parameters.AddWithValue ("@prm_clientId", Perm.ClientId);
+                cmd.Parameters.AddWithValue ("@prm_routeId", Perm.RouteId);
+                cmd.Parameters.AddWithValue ("@prm_userId", Perm.UserId);
+                cmd.Parameters.AddWithValue ("@prm_roleId", Perm.RoleId);
+                cmd.Parameters.AddWithValue ("@prm_permissionId", Perm.PermissionId);
+                cmd.Parameters.AddWithValue ("@prm_createdOn", Perm.CreatedOn);
+                cmd.Parameters.AddWithValue ("@prm_createdById", Perm.CreatedById);
+                cmd.Parameters.AddWithValue ("@prm_modifiedOn", Perm.ModifiedOn);
+                cmd.Parameters.AddWithValue ("@prm_modifiedById", Perm.ModifiedById);
+                cmd.Parameters.AddWithValue ("@prm_isActive", Perm.IsActive);
+                cmd.Parameters.AddWithValue ("@prm_DBoperation", Perm.DBoperation.ToString ());
 
                 cmd.ExecuteNonQuery ();
                 return true;
@@ -65,7 +67,7 @@ namespace QST.MicroERP.DAL
                     Console.WriteLine ("Connection  has been created");
                 else
                     Console.WriteLine ("Connection error");
-                top = cmd.Connection.Query<PermissionDE> ("call SearchPermissions( '" + whereClause + "')").ToList ();
+                top = cmd.Connection.Query<PermissionDE> ("call "+SPNames.SEC_Search_Permission.ToString () + "( '" + whereClause + "')").ToList ();
                 return top;
             }
             catch (Exception )
