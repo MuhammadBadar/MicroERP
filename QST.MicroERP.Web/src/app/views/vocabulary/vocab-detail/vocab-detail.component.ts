@@ -29,7 +29,7 @@ export class VocabDetailComponent implements OnInit {
   selectedVocabulary: VocabularyVM
   selectedUserVocabulary: UserVocabularyVM
   difficultyLevel: SettingsVM[];
-  novel: SettingsVM[];
+  novels: SettingsVM[];
   chapters: SettingsVM[];
   EnumTypes: EnumTypes[];
   @ViewChild('vocabForm', { static: true }) vocabForm!: NgForm;
@@ -130,7 +130,7 @@ export class VocabDetailComponent implements OnInit {
       if (etype == EnumTypes.VocabDifficuiltyLevels)
         this.difficultyLevel = res;
       else if (etype == EnumTypes.Novels)
-        this.novel = res;
+        this.novels = res;
       else if (etype == EnumTypes.Chapters)
         this.chapters = res;
     },

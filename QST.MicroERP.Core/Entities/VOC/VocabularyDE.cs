@@ -17,7 +17,8 @@ namespace QST.MicroERP.Core.Entities.VOC
         public string? Word { get; set; }
         public string? EnglishMeaning { get; set; }
         public string? UrduMeaning { get; set; }
-
+        public string? UserId { get; set; }
+        public int NovelId { get; set; }
         public UserVocabularyDE UserVocab { get; set; }
     }
 }

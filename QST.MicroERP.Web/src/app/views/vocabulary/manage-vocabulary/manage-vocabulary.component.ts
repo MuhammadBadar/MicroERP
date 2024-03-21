@@ -10,6 +10,8 @@ import { AppConstants } from 'src/app/app.constants';
 import { StorageService } from 'src/app/storage.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { RouteIds } from '../../catalog/Models/Enums/RouteIds';
+import { SettingsVM } from '../../catalog/Models/SettingsVM';
+import { EnumTypes } from 'src/app/enums/enumTypes';
 
 @Component({
   selector: 'app-manage-vocabulary',
@@ -29,39 +31,63 @@ export class ManageVocabularyComponent implements OnInit {
   userVocab: UserVocabularyVM[]
   vocLength: number
   isReadOnly: boolean = false
+  novels: SettingsVM[] = []
+  isLoading: boolean = false
   constructor(
     public dialog: MatDialog,
     private vocSvc: VocabularyService,
     private storeSvc: StorageService,
     private catSvc: CatalogService) {
     this.selectedVocabulary = new VocabularyVM
+    this.selectedVocabulary.userVocab = new UserVocabularyVM
   }
   ngOnInit(): void {
     this.isReadOnly = this.catSvc.getPermission(RouteIds.ManageVocabulary)
     this.GetVocabulary();
+    this.GetNovels()
+  }
+  SearchByNovel() {
+    var vocab = this.vocab.filter(x => x.userVocab?.novelId == this.selectedVocabulary.userVocab.novelId)
+    this.dataSource = vocab
+    this.vocLength = vocab.length
   }
   GetVocabulary() {
-    var vocab = new VocabularyVM
-    vocab.userVocab = new UserVocabularyVM
-    vocab.userVocab.userId = this.storeSvc.getItem(AppConstants.LOCAL_STORAGE_USER_ID)
-    vocab.clientId = +this.storeSvc.getItem(AppConstants.LOCAL_STORAGE_CLIENT_ID)
-    vocab.isActive = true
-    this.vocSvc.SearchVocabulary(vocab).subscribe({
+    this.isLoading = true
+    //this.selectedVocabulary.userId = this.storeSvc.getItem(AppConstants.LOCAL_STORAGE_USER_ID)
+    //this.selectedVocabulary.includeSubordinatesData = true
+    this.selectedVocabulary.userVocab.userId = this.storeSvc.getItem(AppConstants.LOCAL_STORAGE_USER_ID)
+    this.selectedVocabulary.clientId = +this.storeSvc.getItem(AppConstants.LOCAL_STORAGE_CLIENT_ID)
+    this.selectedVocabulary.isActive = true
+    this.vocSvc.SearchVocabulary(this.selectedVocabulary).subscribe({
       next: (vocabulary: VocabularyVM[]) => {
+        this.isLoading = false
         this.vocab = vocabulary;
         this.dataSource = this.vocab;
         this.vocLength = this.vocab.length
       },
       error: (err) => {
+        this.isLoading = false
         this.catSvc.ErrorMsgBar();
       },
     });
   }
+  GetNovels() {
+    var Settings = new SettingsVM;
+    Settings.enumTypeId = EnumTypes.Novels;
+    Settings.isActive = true
+    Settings.clientId = +this.storeSvc.getItem(AppConstants.LOCAL_STORAGE_CLIENT_ID)
+    this.catSvc.SearchSettings(Settings).subscribe({
+      next: (res) => {
+        this.novels = res
+      }, error: () => {
+        this.catSvc.ErrorMsgBar()
+      }
+    })
+  }
   Refresh() {
     this.GetVocabulary();
     this.selectedVocabulary = new VocabularyVM
-    this.EditMode = false
-    this.AddMode = true
+    this.selectedVocabulary.userVocab = new UserVocabularyVM
   }
   DeleteVocabulary(id) {
     Swal.fire({

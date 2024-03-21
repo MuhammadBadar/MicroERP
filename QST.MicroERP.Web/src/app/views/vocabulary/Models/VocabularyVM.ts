@@ -6,4 +6,6 @@ export class VocabularyVM extends BaseDomainVM {
     englishMeaning?: string
     urduMeaning?: string
     userVocab: UserVocabularyVM
+    userId: string
+    novelId: number
 }

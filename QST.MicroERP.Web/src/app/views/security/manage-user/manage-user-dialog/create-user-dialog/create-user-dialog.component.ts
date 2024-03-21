@@ -220,18 +220,21 @@ export class CreateUserDialogComponent implements OnInit {
     })
   }
   GetUserById() {
+    this.isLoading = true
     this.selectedUser.id = this.UserId
     // var cltId = +localStorage.getItem("ClientId")
     // if (cltId > 0)
     //   this.selectedUser.clientId = cltId
     this.securityService.SearchUserById(this.UserId).subscribe({
       next: (res: UserVM) => {
+        this.isLoading = false
         this.getbyIduser = res;
         this.selectedUser = this.getbyIduser
         this.selectedUser.confirmPassword = this.selectedUser.userPassword
         this.Edit = true
         this.Add = false
       }, error: (e) => {
+        this.isLoading = false
         this.catSvc.ErrorMsgBar()
       }
     })

@@ -20,7 +20,7 @@ import { RouteIds } from '../../catalog/Models/Enums/RouteIds';
 export class ManageUserComponent implements OnInit {
   dataSource: any;
   dialogRef: any
-  displayedColumns = ['userName', 'role', 'client', 'email', 'supervisor', 'phoneNumber',
+  displayedColumns = ['userName', 'role', 'email', 'supervisor', 'phoneNumber',
     'action'];
   users?: UserVM[];
   supervisorId: string = null
@@ -46,8 +46,8 @@ export class ManageUserComponent implements OnInit {
     this.isLoading = true
     var user = new UserVM
     user.clientId = +this.storeSvc.getItem(AppConstants.LOCAL_STORAGE_CLIENT_ID)
-    user.id = this.storeSvc.getItem(AppConstants.LOCAL_STORAGE_USER_ID)
-    user.includeSubordinatesData = true
+    //user.id = this.storeSvc.getItem(AppConstants.LOCAL_STORAGE_USER_ID)
+    //user.includeSubordinatesData = true
     this.secSvc.SearchUser(user).subscribe({
       next: (res: UserVM[]) => {
         this.users = res;

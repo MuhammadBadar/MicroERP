@@ -13,6 +13,8 @@ using MySql.Data.MySqlClient;
 using NLog;
 using static Dapper.SqlMapper;
 using System.Data;
+using QST.MicroERP.Core.Entities.SEC;
+using QST.MicroERP.Service.SEC;
 
 namespace QST.MicroERP.Service.VOC
 {
@@ -20,11 +22,13 @@ namespace QST.MicroERP.Service.VOC
     {
         #region Class Variables
         private VocabularyDAL _vcbDAL;
+        private UserService _userSvc;
         #endregion
         #region Constructor
         public VocabularyService()
         {
             _vcbDAL = new VocabularyDAL();
+            _userSvc = new UserService ();
         }
         #endregion
         #region  Vocabulary
@@ -138,13 +142,34 @@ namespace QST.MicroERP.Service.VOC
                     whereClause += $" AND ClientId={_vcb.ClientId}";
                 if (_vcb.Word != default)
                     whereClause += $" and Word like ''" + _vcb.Word + "'' ";
+                if (_vcb.NovelId != default)
+                    whereClause += $" and NovelId like ''" + _vcb.NovelId + "'' ";
+                if (_vcb.Id != default)
+                    whereClause += $" AND Id={_vcb.Id}";
                 if (_vcb.EnglishMeaning != default)
                     whereClause += $" and EnglishMeaning like ''" + _vcb.EnglishMeaning + "''";
                 if (_vcb.UrduMeaning != default)
                     whereClause += $" and UrduMeaning like ''" + _vcb.UrduMeaning + "''";
                 if (_vcb.IsActive != default && _vcb.IsActive == true)
                     whereClause += $" AND IsActive=1";
+                if (_vcb.IncludeSubordinatesData && _vcb.UserId != default)
+                {
+                    var user = new UserDE ();
+                    user.Id = _vcb.UserId;
+                    user.ClientId = _vcb.ClientId;
+                    var subordinateUsers = _userSvc.GetSubordinates (user);
 
+                    if (subordinateUsers.Count > 0)
+                    {
+                        string subordinateIds = string.Join ("'',''", subordinateUsers.Select (x => x.Id));
+                        whereClause += $" and (UserId like ''" + _vcb.UserId + "'' or UserId IN (''" + subordinateIds + "''))";
+                    }
+                }
+                else
+                {
+                    if (_vcb.UserId != default)
+                        whereClause += $" AND UserId like ''{_vcb.UserId}''";
+                }
                 retVal = _vcbDAL.SearchVocabulary(whereClause, cmd);
                 foreach (var vocab in retVal)
                 {

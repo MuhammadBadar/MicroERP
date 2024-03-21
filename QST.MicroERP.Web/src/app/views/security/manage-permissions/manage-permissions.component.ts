@@ -136,7 +136,8 @@ export class ManagePermissionsComponent implements OnInit {
   }
   SearchPermsByRole(role?: SettingsVM) {
     var perm = new PermissionVM
-    this.selectedpermission.clientId = role.clientId
+    if (role != null)
+      this.selectedpermission.clientId = role.clientId
     if (this.catSvc.isSuperAdmin())
       perm.cltId = +this.storeSvc.getItem(AppConstants.LOCAL_STORAGE_CLT_ID)
     else
@@ -146,7 +147,8 @@ export class ManagePermissionsComponent implements OnInit {
   }
   SearchPermsByUser(user?: UserVM) {
     var perm = new PermissionVM
-    this.selectedpermission.clientId = user.clientId
+    if (user != null)
+      this.selectedpermission.clientId = user.clientId
     if (this.catSvc.isSuperAdmin())
       perm.cltId = +this.storeSvc.getItem(AppConstants.LOCAL_STORAGE_CLT_ID)
     else
@@ -155,7 +157,6 @@ export class ManagePermissionsComponent implements OnInit {
     this.GetPermissions(perm)
   }
   Submit() {
-    debugger
     if (this.selectedpermission.userId == '' && this.selectedpermission.roleId == 0)
       this.catSvc.ErrorMsgBar("Please Select User or Role", 4000)
     else {
@@ -163,14 +164,17 @@ export class ManagePermissionsComponent implements OnInit {
         this.permissions = this.dataSource.data.map((item) => ({ ...item, roleId: this.selectedpermission.roleId, clientId: +this.storeSvc.getItem(AppConstants.LOCAL_STORAGE_CLIENT_ID) }))
       if (this.selectedpermission.userId != "default")
         this.permissions = this.dataSource.data.map((item) => ({ ...item, userId: this.selectedpermission.userId, clientId: +this.storeSvc.getItem(AppConstants.LOCAL_STORAGE_CLIENT_ID) }))
+      this.isLoading = true
       this.secSvc.SavePermissions(this.permissions).subscribe({
         next: () => {
+          this.isLoading = false
           this.catSvc.SuccessMsgBar("Successfully Saved", 4000)
           if (this.selectedpermission.roleId > 0)
             this.SearchPermsByRole()
           else if (this.selectedpermission.userId != "default")
             this.SearchPermsByUser()
         }, error: () => {
+          this.isLoading = false
           this.catSvc.ErrorMsgBar("Error Occurred", 4000)
         }
       })
